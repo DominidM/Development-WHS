@@ -35,6 +35,7 @@ function HomePage() {
       color="#0D3C6B"
       />
       <SeccionesProductos /> 
+      
       <Marcas/>
     </div>
   );

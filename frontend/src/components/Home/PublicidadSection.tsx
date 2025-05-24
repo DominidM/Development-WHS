@@ -4,9 +4,9 @@ export const ImagenPrincipalConSecundarias: React.FC = () => {
   const principalImageUrl = './assets/publicidad1.png'; // ¡REEMPLAZA CON LA RUTA REAL! (792x759)
   const principalAltText = 'Banner principal izquierdo';
   const principalTitle = 'Lo mejor para TU HOGAR';
-  const secondaryImageUrlTop = './assets/publicidad2.png'; // ¡REEMPLAZA CON LA RUTA REAL! (821x335)
+  const secondaryImageUrlTop = './assets/publicidad2.png'; // ¡REEMPLAZA CON LA RUTA REAL! 821 / 372
   const secondaryAltTextTop = 'Banner derecho arriba';
-  const secondaryImageUrlBottom = './assets/publicidad2.png'; // ¡REEMPLAZA CON LA RUTA REAL! (821x362)
+  const secondaryImageUrlBottom = './assets/publicidad3.png'; // ¡REEMPLAZA CON LA RUTA REAL! (821 / 372
   const secondaryAltTextBottom = 'Banner derecho abajo';
   const blueLineColor = '#0d3c6b';
 
