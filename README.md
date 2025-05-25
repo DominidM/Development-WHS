@@ -129,4 +129,4 @@ Este proyecto está licenciado bajo la Licencia MIT: https://opensource.org/lice
 
 Desarrollado por  
 Dominid – Estudiante de Ingeniería en Sistemas  
-© 2025 Sloan_WebSystem
+© 2025 SolveGrades
