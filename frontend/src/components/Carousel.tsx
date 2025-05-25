@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react"; 
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const images = [
   { src: "/assets/Ruleta1.webp", text: "elegante y moderno" },
@@ -20,34 +20,45 @@ export function Carousel() {
   };
 
   return (
-    <div className="relative w-full max-w-0xl mx-auto  rounded-lg overflow-hidden shadow-lg">
-      {/* Imagen con altura fija */}
-      <img
-        src={images[current].src}
-        alt={`Slide ${current}`}
-        className="w-full h-[500px] object-cover transition duration-100"
-      />
-      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/100 to-transparent"></div>
-      {/* Difuminado superior */}  
-      {/* Difuminado inferior */}
-      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/100 to-transparent"></div>
-
-      {/* Cuadro de texto decorativo superpuesto - Ajustado a la izquierda */}
-      <div className="absolute bottom-6 left-0 bg-[#0d3c6b] text-white px-10 py-4 rounded-md  shadow-lg text-lg font-semibold">
-        {images[current].text}
+    <div className="relative w-full h-[500px] overflow-hidden">
+      {/* Contenedor horizontal */}
+      <div
+        className="flex transition-transform duration-700 ease-in-out h-full"
+        style={{ transform: `translateX(-${current * 100}%)` }}
+      >
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className="w-full flex-shrink-0 relative h-full"
+          >
+            <img
+              src={image.src}
+              alt={`Slide ${index}`}
+              className="w-full h-full object-cover"
+            />
+            {/* Difuminado superior */}  
+            <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/100 to-transparent"></div>
+            {/* Difuminado inferior */}
+            <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/100 to-transparent"></div>
+            {/* Cuadro de texto decorativo superpuesto - Ajustado a la izquierda */}
+             <div className="absolute bottom-6 left-0 bg-[#0d3c6b] text-white px-10 py-4 rounded-md  shadow-lg text-lg font-semibold">
+              {image.text}
+            </div>
+          </div>
+        ))}
       </div>
-    
-      {/* Flechas */}
+
+         {/* Flechas */}
       <button
         onClick={prevSlide}
-        className="absolute top-1/2 left-4 -translate-y-1/2 bg-black/20 hover:bg-black text-gray-200 shadow"
+        className="absolute top-1/2 left-4 -translate-y-1/2 bg-black/30 hover:bg-black text-gray-200 shadow"
       >
         <ChevronLeft className="w-8 h-10" />
       </button>
-
-      <button
+      
+       <button
         onClick={nextSlide}
-        className="absolute top-1/2 right-4 -translate-y-1/2 bg-black/20 hover:bg-black text-gray-200 shadow"
+        className="absolute top-1/2 right-4 -translate-y-1/2 bg-black/30 hover:bg-black text-gray-200 shadow"
       >
         <ChevronRight className="w-8 h-10" />
       </button>
@@ -58,15 +69,14 @@ export function Carousel() {
           <div
             key={index}
             className={`w-2.5 h-2.5 rounded-full ${
-              index === current ? "bg-blue-600" : "bg-gray-400"
-
+              index === current ? "bg-blue-600" : "bg-gray-600"
             }`}
           />
         ))}
       </div>
-        {/* Línea negra decorativa */}
+
+      {/* Línea decorativa */}
       <div className="absolute bottom-0 left-0 w-full h-2 bg-[#000000]" />
-    
-    </div>
+     </div>
   );
 }

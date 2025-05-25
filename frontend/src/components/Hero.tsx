@@ -13,11 +13,11 @@ export function Hero() {
   }, []);
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto rounded-xl overflow-hidden shadow-xl">
+    <div className="relative w-full max-full mx-auto  overflow-hidden shadow-xl">
       <img
         src={images[currentImage].src}
         alt={images[currentImage].alt}
-        className="w-full h-[320px] md:h-[250px] object-cover transition-all duration-500"
+        className="w-full md:h-[140px] object-cover transition-all duration-500"
       />
 
       {/* Difuminado inferior para el efecto visual */}

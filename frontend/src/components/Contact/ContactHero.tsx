@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowDown } from 'lucide-react';
 
-const imageUrl1 = "/assets/Ruleta1.webp";
+const imageUrl1 = "/assets/hero1.png";
 const imageUrl2 = "/assets/contact2.png";
 
 export const ContactHero = () => {
@@ -28,13 +28,13 @@ export const ContactHero = () => {
                     <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/100 to-transparent"></div>
                     <div className="absolute inset-0 flex flex-col items-center justify-center rounded-md z-10">
                         {/* Cuadro azul superior izquierdo */}
-                        <div className="absolute top-[10%] left-[0%] w-32 md:w-72 h-9 bg-[#0d3c6b]" />
+                        <div className="absolute top-[10%] left-[0%] w-32 md:w-72 h-11 bg-[#0d3c6b] bg-gradient-to-t from-black/30" />
                         {/* Título */}
-                        <h2 className="text-3xl sm:text-4xl md:text-10xl font-bold text-black text-center z-40">
+                        <h2 className="text-3xl sm:text-4xl md:text-10xl font-bold text-white text-center z-40">
                             ¿Quiénes Somos?
                         </h2>
                         {/* Cuadro azul inferior derecho */}
-                        <div className="absolute bottom-[10%] right-[0%] w-32 md:w-72 h-9 bg-[#0d3c6b]" />
+                        <div className="absolute bottom-[10%] right-[0%] w-32 md:w-72 h-11 bg-[#0d3c6b] bg-gradient-to-t from-black/40" />
                     </div>
                 
                 </div>
