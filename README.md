@@ -1,111 +1,129 @@
-# Sloan_WebSystem – Plataforma e-commerce para productos de gasfitería
+Sloan_WebSystem – Plataforma E-commerce para Productos de Gasfitería
+===================================================================
 
-Sloan_WebSystem es un sistema web completo de tipo e-commerce, diseñado para la gestión, venta y administración de productos de gasfitería. El sistema integra tanto el frontend orientado al cliente final como el backend destinado a la administración del negocio, estructurado bajo una arquitectura moderna y escalable.
----
+Sloan_WebSystem es una solución web integral orientada al comercio electrónico de productos de gasfitería. El sistema abarca tanto el frontend de cara al cliente como el backend administrativo, garantizando una experiencia de usuario moderna y una gestión eficiente del negocio. Su arquitectura modular y escalable lo convierte en una herramienta robusta para empresas del rubro.
 
-## 📁 Estructura del Proyecto
-
+📁 Estructura del Proyecto
+--------------------------
+```bash
 Sloan_WebSystem/
 │
-├── backend/ # Lógica del servidor (API REST)
-├── frontend/ # Interfaz pública (React + Vite)
-├── docs/ # Documentación técnica y modelo de base de datos
-├── README.md # Este archivo
-└── .env # Variables de entorno (no versionado)
+├── backend/      # Backend del sistema (API REST con Spring Boot)
+├── frontend/     # Aplicación cliente (React + Vite)
+├── docs/         # Documentación técnica (diagramas, manuales, etc.)
+├── README.md     # Archivo actual
+└── .env          # Variables de entorno (excluidas del control de versiones)
+ ```
+🔧 Tecnologías Utilizadas
+--------------------------
+- Frontend:
+  - React
+  - Vite
+  - Tailwind CSS
+  - TypeScript
+  - Bun (gestor de paquetes)
+  Interfaz dinámica y responsiva, construida a partir de un diseño en Figma. Permite a los usuarios explorar productos, registrarse, iniciar sesión y efectuar compras.
 
+- Backend:
+  - Java Spring Boot (Maven)
+  - Spring Web (API RESTful)
+  - Spring MVC + Thymeleaf (panel administrativo)
+  - Spring Data JPA
+  - PostgreSQL Driver
+  API modular que permite gestionar productos, clientes, ventas, reportes y solicitudes. Incluye un panel administrativo interno.
 
----
+- Base de Datos:
+  - PostgreSQL
+  Motor relacional responsable del almacenamiento persistente de productos, usuarios, transacciones, estados, etc.
 
-## 🔧 Tecnologías utilizadas
-Frontend: React + Vite + Tailwind CSS
-Interfaz pública responsiva e intuitiva, diseñada según un layout profesional (Figma), donde los usuarios pueden explorar productos, registrarse, iniciar sesión y realizar compras.
-
-Backend: Java Spring Boot (Maven)
-API RESTful que gestiona productos, clientes, pedidos, ventas y reportes. Incluye un panel administrativo implementado con Spring MVC y Thymeleaf para el control interno del negocio.
-
-Base de datos: PosgreSQL
-Motor relacional utilizado para el almacenamiento persistente de la información del sistema (productos, usuarios, transacciones, etc.).
----
-
-## ⚙️ Instalación del Proyecto
-
-### 1. Clona el repositorio
-
-```bash
+⚙️ Instalación del Proyecto
+---------------------------
+1. Clonar el Repositorio:
+```bash 
 git clone https://github.com/tu-usuario/Sloan_WebSystem.git
 cd Sloan_WebSystem
 ```
+2. Instalación de Dependencias
 
-### 2. Instala las dependencias
-
-🔹 Frontend
-```bash Copiar Editar
-cd ../frontend
+Frontend:
+```bash 
+cd frontend
 bun install
 ```
----
+Backend:
 
+Importar el proyecto como un proyecto Maven en tu IDE (por ejemplo, IntelliJ o Eclipse) y construirlo.
 
-### ▶️ Ejecución del Proyecto
+▶️ Ejecución del Proyecto
+-------------------------
+1. Configura la base de datos:
 
-1. Levanta la base de datos
-Asegúrate de que tu base de datos MySQL esté corriendo y el esquema sloan_web esté creado.
+- Asegúrate de tener PostgreSQL instalado y corriendo.
+- Crea la base de datos `sloan_web`.
+- Configura las credenciales en el archivo `.env` o `application.properties`:
 
-2. Ejecuta el backend
+spring.datasource.url=jdbc:postgresql://localhost:5432/sloan_web  
+spring.datasource.username=TU_USUARIO  
+spring.datasource.password=TU_CONTRASEÑA  
 
-3. Ejecuta el frontend
-```bash Copiar Editar
-cd ../frontend
+2. Ejecuta el Backend:
+   
+```bash 
+cd backend  
+./mvnw spring-boot:run
+ ```
+3. Ejecuta el Frontend:
+   
+```bash 
+cd frontend  
 bun run dev
 ```
-Por defecto, el frontend estará disponible en http://localhost:5173 y el backend en http://localhost:3000.
+Frontend disponible en: http://localhost:5173  
+Backend disponible en: http://localhost:8080
 
----
+📚 Documentación
+----------------
+La carpeta `docs/` contiene:
 
-### 📚 Documentación
-La carpeta docs/ contiene:
+- Diagramas entidad-relación
+- Manual de usuario (cliente y administrador)
+- Instrucciones de despliegue en producción
+- Script para carga inicial de datos
 
-Diagramas de entidad-relación
-
-Instrucciones de despliegue
-
-Manual de usuario y administrador
-
-Carga inicial de la base de datos
-
----
-
-### 🧪 Tests (opcional)
-Si tienes pruebas implementadas:
-
-```bash Copiar Editar
+🧪 Pruebas
+----------
+Si se han implementado pruebas en el frontend, ejecutarlas con:
+```bash 
 bun test
 ```
+Para pruebas en el backend, emplear JUnit con Spring Boot Test desde el entorno de desarrollo.
 
----
-
-### 📦 Producción
-Para producción, se recomienda compilar el frontend y servirlo desde el backend:
-
-```bash Copiar Editar
-cd frontend
+🚀 Despliegue en Producción
+---------------------------
+Para compilar el frontend y servirlo desde el backend:
+```bash 
+cd frontend  
 bun run build
 ```
-Luego configura el backend para servir frontend/dist como estático.
+Luego, configurar Spring Boot para servir los archivos estáticos desde `frontend/dist`.
 
----
+Ejemplo básico en `WebConfig.java`:
+```bash
+@Configuration  
+public class WebConfig implements WebMvcConfigurer {  
+    @Override  
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {  
+        registry.addResourceHandler("/**")  
+            .addResourceLocations("classpath:/static/");  
+    }  
+}
+```
+Coloca los archivos generados en `frontend/dist` dentro de `backend/src/main/resources/static`.
 
-### 📌 Licencia
-Este proyecto está licenciado bajo MIT License.
+📌 Licencia
+-----------
+Este proyecto está licenciado bajo la Licencia MIT: https://opensource.org/licenses/MIT
 
-SolveGrades.com
----
-
-¿Te gustaría que genere este `README.md` directamente para guardarlo en tu proyecto o deseas adaptarlo tú mismo?
-
-
-
-
-
-
-
+Desarrollado por  
+Dominid – Estudiante de Ingeniería en Sistemas  
+© 2025 Sloan_WebSystem
