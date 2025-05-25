@@ -51,8 +51,9 @@ cd frontend
 bun install
 ```
 Backend:
-
+```bash 
 Importar el proyecto como un proyecto Maven en tu IDE (por ejemplo, IntelliJ o Eclipse) y construirlo.
+```
 
 ▶️ Ejecución del Proyecto
 -------------------------
@@ -61,10 +62,12 @@ Importar el proyecto como un proyecto Maven en tu IDE (por ejemplo, IntelliJ o E
 - Asegúrate de tener PostgreSQL instalado y corriendo.
 - Crea la base de datos `sloan_web`.
 - Configura las credenciales en el archivo `.env` o `application.properties`:
-
+ 
+```bash 
 spring.datasource.url=jdbc:postgresql://localhost:5432/sloan_web  
 spring.datasource.username=TU_USUARIO  
 spring.datasource.password=TU_CONTRASEÑA  
+```
 
 2. Ejecuta el Backend:
    
