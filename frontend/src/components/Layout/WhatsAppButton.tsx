@@ -3,7 +3,7 @@ import { BsWhatsapp } from 'react-icons/bs';
 export function WhatsAppButton() {
   const handleClick = () => {
     // Reemplaza con tu número de teléfono y mensaje opcional
-    const phoneNumber = 'TU_NUMERO_DE_TELEFONO';
+    const phoneNumber = '922862739';
     const message = 'Hola, quiero más información.';
     const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappURL, '_blank');

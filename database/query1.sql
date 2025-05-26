@@ -12,23 +12,14 @@ create table contacto(
 
 
 CREATE TABLE formulario (
-
     id SERIAL PRIMARY KEY,
-
     fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
     nombre_queja VARCHAR(100) NOT NULL,
-
     dni_queja VARCHAR(15) NOT NULL,
-
     correo_queja VARCHAR(100) NOT NULL,
-
     telefono_queja VARCHAR(20),
-
     producto_servicio_instalacion(seria no se como llamarla) VARCHAR(100) NOT NULL,
-
     texto TEXT NOT NULL
-
     tipoFormulario_id 
 
 );

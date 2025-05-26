@@ -9,10 +9,11 @@ const Layout: React.FC = () => {
     <>
       <Navbar />
       <main className="min-h-screen ">
-        <Outlet />
+      <Outlet />
       </main>
       <WhatsAppButton />
       <ScrollToTopButton/>
+      
       <Footer />
     </>
   );

@@ -7,7 +7,9 @@ export function DetalleProducto() {
   const { id } = useParams();
 
   // Adasdadasdquí puedes usar el id para hacer una llamada a la API y obtener los detalles del producto
-  // const [producto, setProducto] = useState<Producto | null>(null);
+  // c
+  // 
+  // onst [producto, setProducto] = useState<Producto | null>(null);
   return (
     <div>
         <Hero />  
