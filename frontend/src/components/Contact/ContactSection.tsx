@@ -1,6 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export const ContactSection = () => {
+    const [nombre, setNombre] = useState("");
+    const [correo, setCorreo] = useState("");
+    const [mensaje, setMensaje] = useState("");
+    const [enviando, setEnviando] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
+        setSuccess(null);
+
+        if (!nombre || !correo || !mensaje) {
+            setError("Por favor, completa todos los campos.");
+            return;
+        }
+
+        setEnviando(true);
+
+        const data = {
+            dniFormulario: "",
+            correoFormulario: correo,
+            telefonoFormulario: "",
+            pkTipoFormulario: 5, // Contacto
+            pkEstadoFormulario: 1, // Ajusta según tu lógica de estados
+            textEstado: `Nombre: ${nombre}\nMensaje: ${mensaje}`,
+        };
+
+        try {
+            const res = await fetch("http://localhost:8081/api/formularios", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!res.ok) throw new Error("No se pudo enviar el mensaje");
+
+            setNombre("");
+            setCorreo("");
+            setMensaje("");
+            setSuccess("¡Tu mensaje fue enviado correctamente!");
+        } catch (err) {
+            console.error(err);
+            setError("Ocurrió un error al enviar tu mensaje. Inténtalo nuevamente.");
+        } finally {
+            setEnviando(false);
+        }
+    };
+
     return (
         <section className="w-full px-4 md:px-16 py-10 bg-[#e4eaf2]">
             <h2 className="text-center text-2xl md:text-3xl font-bold mb-5 text-[#0d3c6b]">
@@ -20,28 +71,40 @@ export const ContactSection = () => {
                 </div>
 
                 {/* Formulario de contacto */}
-                <form className="space-y-4">
+                <form className="space-y-4" onSubmit={handleSubmit}>
                     <input
                         type="text"
                         placeholder="Nombre"
                         className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0d3c6b] transition"
+                        value={nombre}
+                        onChange={(e) => setNombre(e.target.value)}
+                        required
                     />
                     <input
                         type="email"
                         placeholder="Correo electrónico"
                         className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0d3c6b] transition"
+                        value={correo}
+                        onChange={(e) => setCorreo(e.target.value)}
+                        required
                     />
                     <textarea
                         placeholder="Mensaje"
                         rows={5}
                         className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0d3c6b] transition"
+                        value={mensaje}
+                        onChange={(e) => setMensaje(e.target.value)}
+                        required
                     />
                     <button
                         type="submit"
-                        className="bg-[#0d3c6b] text-white px-6 py-3 rounded-md hover:bg-[#0b325b] transition font-bold w-full"
+                        className={`bg-[#0d3c6b] text-white px-6 py-3 rounded-md hover:bg-[#0b325b] transition font-bold w-full ${enviando ? "opacity-50 cursor-not-allowed" : ""}`}
+                        disabled={enviando}
                     >
-                        Enviar mensaje
+                        {enviando ? "Enviando..." : "Enviar mensaje"}
                     </button>
+                    {error && <p className="text-red-600">{error}</p>}
+                    {success && <p className="text-green-600">{success}</p>}
                 </form>
             </div>
 

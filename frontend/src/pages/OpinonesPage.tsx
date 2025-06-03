@@ -1,4 +1,3 @@
-// src/pages/OpinionesPage.tsx
 import { useState } from "react";
 import { UserCircle } from "lucide-react";
 
@@ -30,19 +29,54 @@ export default function OpinionesPage() {
   const [opiniones, setOpiniones] = useState<Opinion[]>(opinionesFake);
   const [nombre, setNombre] = useState("");
   const [comentario, setComentario] = useState("");
+  const [enviando, setEnviando] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
     if (nombre && comentario) {
-      const nueva = { nombre, comentario };
-      setOpiniones([nueva, ...opiniones]);
-      setNombre("");
-      setComentario("");
+      setEnviando(true);
+      // Construye el objeto para el backend
+      const data = {
+        dniFormulario: "",
+        correoFormulario: "",
+        telefonoFormulario: "",
+        pkTipoFormulario: 4, // Opiniones de Clientes
+        pkEstadoFormulario: 1, // Estado inicial, ajusta según tu BD
+        textEstado: comentario,
+        // Puedes agregar más campos si backend lo requiere
+      };
+
+      try {
+        const res = await fetch("http://localhost:8081/api/formularios", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!res.ok) throw new Error("No se pudo enviar la opinión");
+
+        // Si fue exitoso, agrega a la lista local (opcional)
+        setOpiniones([{ nombre, comentario }, ...opiniones]);
+        setNombre("");
+        setComentario("");
+        setSuccess("¡Gracias por tu opinión!");
+      } catch (err) {
+        console.error(err);
+        setError("Error al enviar la opinión. Intenta de nuevo.");
+      } finally {
+        setEnviando(false);
+      }
     }
   };
 
   return (
-    
     <div className="max-w-4xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-center mb-8 text-[#0d3c6b]">
         Opiniones de nuestros clientes
@@ -59,19 +93,24 @@ export default function OpinionesPage() {
           className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
+          required
         />
         <textarea
           placeholder="Escribe tu opinión..."
           className="w-full border border-gray-300 rounded px-4 py-2 resize-none h-28 focus:outline-none focus:ring-2 focus:ring-blue-600"
           value={comentario}
           onChange={(e) => setComentario(e.target.value)}
+          required
         />
         <button
           type="submit"
-          className="bg-[#0d3c6b] text-white px-6 py-2 rounded hover:bg-blue-800 transition"
+          className={`bg-[#0d3c6b] text-white px-6 py-2 rounded hover:bg-blue-800 transition ${enviando ? "opacity-50 cursor-not-allowed" : ""}`}
+          disabled={enviando}
         >
-          Enviar
+          {enviando ? "Enviando..." : "Enviar"}
         </button>
+        {error && <p className="text-red-600">{error}</p>}
+        {success && <p className="text-green-600">{success}</p>}
       </form>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
