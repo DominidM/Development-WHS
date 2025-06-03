@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-// import axios from 'axios'; // No es necesario con fetch
 
 interface FormData {
   nombre: string;
   dni: string;
   email: string;
   telefono: string;
-  producto: string;
   detalle: string;
+  pkTipoFormulario: number | null;
   acepta: boolean;
 }
 
@@ -17,13 +16,18 @@ export function LibroReclamacionesForm() {
     dni: "",
     email: "",
     telefono: "",
-    producto: "",
     detalle: "",
+    pkTipoFormulario: null,
     acepta: false,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const opcionesTipo = [
+    { label: "Reclamo Producto", value: 1 },
+    { label: "Reclamo Servicio", value: 2 },
+    { label: "Reclamo Instalacion", value: 3 },
+  ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const target = e.target;
@@ -40,37 +44,47 @@ export function LibroReclamacionesForm() {
     }));
   };
 
+  const handleTipoChange = (value: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      pkTipoFormulario: value,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.acepta) {
       alert("Debe aceptar los términos para continuar.");
       return;
     }
-  
+    if (!formData.pkTipoFormulario) {
+      alert("Debes seleccionar el tipo de reclamo.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
+      // Nombres alineados con el DTO backend
       const dataToSend = {
-        nombreQueja: formData.nombre,
-        dniQueja: formData.dni,
-        correoQueja: formData.email,
-        telefonoQueja: formData.telefono,
-        productoServicio: formData.producto,
-        texto: formData.detalle,
+        dniFormulario: formData.dni,
+        correoFormulario: formData.email,
+        telefonoFormulario: formData.telefono,
+        pkTipoFormulario: formData.pkTipoFormulario,
+        pkEstadoFormulario: 1, // por defecto "SIN_ATENDER"
+        textEstado: formData.detalle,
       };
-  
-      const response = await fetch('http://localhost:8081/api/quejas', {
+
+      const response = await fetch('http://localhost:8081/api/formularios', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend),
       });
-  
+
       if (!response.ok) {
         throw new Error(`Error al enviar el reclamo: ${response.status}`);
       }
-  
+
       const responseData = await response.json();
       console.log('Reclamo enviado correctamente:', responseData);
       alert("Reclamo enviado correctamente");
@@ -79,25 +93,26 @@ export function LibroReclamacionesForm() {
         dni: "",
         email: "",
         telefono: "",
-        producto: "",
         detalle: "",
+        pkTipoFormulario: null,
         acepta: false,
       });
-  
-    } catch (error) { // TypeScript infiere error como unknown
-      if (error instanceof Error) {
-          setError(error.message);
-          console.error("Error al enviar el reclamo:", error);
-      } else {
-         setError("An unexpected error occurred");
-         console.error("Unexpected error", error);
-      }
-  }
 
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+        console.error("Error al enviar el reclamo:", error);
+      } else {
+        setError("An unexpected error occurred");
+        console.error("Unexpected error", error);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white px-6 py-16">
+    <section className="flex items-center justify-center bg-gradient-to-br from-blue-50 to-white px-6 py-8">
       <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl p-10 border border-blue-100">
         <h2 className="text-4xl font-extrabold text-center text-blue-800 mb-8 tracking-tight">
           Libro de Reclamaciones
@@ -158,21 +173,36 @@ export function LibroReclamacionesForm() {
             </div>
           </div>
 
-          {/* Reclamo */}
+          {/* Tipo de reclamo */}
           <div>
-            <label className="block mb-1 font-medium text-gray-700">
-              Producto o servicio o instalacion
+            <label className="block mb-4 font-medium text-gray-700">
+              Tipo de Reclamo
             </label>
-            <input
-              type="text"
-              name="producto"
-              value={formData.producto}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {opcionesTipo.map(({ label, value }) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={`w-full px-6 py-4 rounded-lg font-semibold border text-center transition ${
+                    formData.pkTipoFormulario === value
+                      ? "bg-blue-700 text-white border-blue-700"
+                      : "bg-white text-blue-700 border-blue-300 hover:bg-blue-50"
+                  }`}
+                  onClick={() => handleTipoChange(value)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {!formData.pkTipoFormulario && (
+              <p className="text-sm text-red-500 mt-2">Selecciona una opción</p>
+            )}
           </div>
 
+
+          {/* Detalle del reclamo */}
           <div>
             <label className="block mb-1 font-medium text-gray-700">
               Detalle del reclamo
