@@ -16,13 +16,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilita CORS
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                // Permitir acceso sin login a tu panel admin y estáticos
+                .requestMatchers("/admin/**", "/adminlte/**").permitAll()
+                // Permitir libre acceso a tus APIs abiertas
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/formularios/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/formularios/**").permitAll()
-                .anyRequest().authenticated()
+                // Todo lo demás requiere autenticación (puedes cambiarlo a .permitAll() si quieres todo abierto)
+                .anyRequest().permitAll()
             );
         return http.build();
     }
@@ -33,7 +37,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true); // Si usas cookies o autenticación
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

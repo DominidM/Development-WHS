@@ -21,7 +21,6 @@ import com.sloan.backend.repository.EstadoFormRepository;
 @RestController
 @RequestMapping("/api/formularios")
 @CrossOrigin(origins = "http://localhost:5173")
-
 public class FormularioController {
 
     private final FormularioService formularioService;
@@ -46,6 +45,7 @@ public class FormularioController {
     @PostMapping
     public ResponseEntity<Formulario> crear(@RequestBody FormularioRequest request) {
         Formulario formulario = new Formulario();
+        formulario.setNombreFormulario(request.getNombreFormulario()); // <-- ¡Agregado!
         formulario.setDniFormulario(request.getDniFormulario());
         formulario.setCorreoFormulario(request.getCorreoFormulario());
         formulario.setTelefonoFormulario(request.getTelefonoFormulario());

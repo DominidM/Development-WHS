@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Administrativo</title>
+    <link rel="stylesheet" th:href="@{/adminlte/css/admin-panel.css}" href="/adminlte/css/admin-panel.css">
+</head>
+<body>
+    <div class="centered-panel">
+        <h1>Panel Administrativo</h1>
+        <a th:href="@{/admin/productos}" class="admin-btn">
+            <span class="icon">📦</span> Gestionar Productos
+        </a>
+        <a th:href="@{/admin/formularios}" class="admin-btn">
+            <span class="icon">👤</span> Gestionar Clientes
+        </a>
+        <a th:href="@{/admin/pedidos}" class="admin-btn">
+            <span class="icon">💰</span> Gestionar Ventas
+        </a>
+    </div>
+</body>
+</html>

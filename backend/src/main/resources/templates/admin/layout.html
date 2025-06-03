@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="${title} ?: 'Panel Admin'">Panel Admin</title>
+    <link rel="stylesheet" th:href="@{/adminlte/css/adminlte.min.css}" />
+    <link rel="stylesheet" th:href="@{/adminlte/css/all.min.css}" />
+</head>
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        <!-- Navbar, sidebar, etc. -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <a href="/admin/dashboard" class="brand-link">
+                <span class="brand-text font-weight-light">Empresa Admin</span>
+            </a>
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview">
+                        <li class="nav-item"><a href="/admin/dashboard" class="nav-link"><i class="nav-icon fas fa-tachometer-alt"></i><p>Dashboard</p></a></li>
+                        <li class="nav-item"><a href="/admin/productos" class="nav-link"><i class="nav-icon fas fa-box"></i><p>Productos</p></a></li>
+                        <li class="nav-item"><a href="/admin/formularios" class="nav-link"><i class="nav-icon fas fa-file-alt"></i><p>Formularios</p></a></li>
+                        <li class="nav-item"><a href="/admin/pedidos" class="nav-link"><i class="nav-icon fas fa-shopping-cart"></i><p>Pedidos</p></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+        <div class="content-wrapper" th:insert="~{::content}"></div>
+    </div>
+    <script th:src="@{/adminlte/js/adminlte.min.js}"></script>
+</body>
+</html>

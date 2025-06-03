@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Productos</title>
+    <link rel="stylesheet" th:href="@{/adminlte/css/admin-panel.css}" href="/adminlte/css/admin-panel.css">
+</head>
+<body>
+    <div class="table-panel">
+        <h1>Productos</h1>
+        <a th:href="@{/admin/producto-form}" class="action-btn">+ Agregar Producto</a>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Categoría</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Ejemplo de fila -->
+                <tr>
+                    <td>1</td>
+                    <td>Producto A</td>
+                    <td>S/ 30.00</td>
+                    <td>General</td>
+                    <td>
+                        <a href="#" class="action-btn">Editar</a>
+                        <a href="#" class="action-btn">Eliminar</a>
+                    </td>
+                </tr>
+                <!-- Aquí van más filas con Thymeleaf -->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

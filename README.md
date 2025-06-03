@@ -82,7 +82,7 @@ cd frontend
 bun run dev
 ```
 Frontend disponible en: http://localhost:5173  
-Backend disponible en: http://localhost:8080
+Backend disponible en: http://localhost:8081
 
 📚 Documentación
 ----------------

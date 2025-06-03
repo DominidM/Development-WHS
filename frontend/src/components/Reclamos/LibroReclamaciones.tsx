@@ -67,6 +67,7 @@ export function LibroReclamacionesForm() {
     try {
       // Nombres alineados con el DTO backend
       const dataToSend = {
+        nombreFormulario: formData.nombre, // <-- AGREGADO Y CORRECTO
         dniFormulario: formData.dni,
         correoFormulario: formData.email,
         telefonoFormulario: formData.telefono,
@@ -201,7 +202,6 @@ export function LibroReclamacionesForm() {
             )}
           </div>
 
-
           {/* Detalle del reclamo */}
           <div>
             <label className="block mb-1 font-medium text-gray-700">
@@ -237,6 +237,7 @@ export function LibroReclamacionesForm() {
             <button
               type="submit"
               className="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-8 py-3 rounded-full shadow-lg transition duration-300 ease-in-out"
+              disabled={loading}
             >
               {loading ? 'Enviando...' : 'Enviar reclamo'}
             </button>

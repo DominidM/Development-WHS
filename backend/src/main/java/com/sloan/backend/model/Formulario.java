@@ -12,6 +12,10 @@ public class Formulario {
     @Column(name = "id_formulario")
     private Long idFormulario;
 
+    @Column(name = "nombre_formulario")
+    private String nombreFormulario;
+
+
     @Column(name = "fecha_formulario")
     private LocalDateTime fechaFormulario;
 
@@ -47,6 +51,14 @@ public class Formulario {
 
     public void setIdFormulario(Long idFormulario) {
         this.idFormulario = idFormulario;
+    }
+
+    public String getNombreFormulario() {
+    return nombreFormulario;
+    }
+
+    public void setNombreFormulario(String nombreFormulario) {
+        this.nombreFormulario = nombreFormulario;
     }
 
     public LocalDateTime getFechaFormulario() {

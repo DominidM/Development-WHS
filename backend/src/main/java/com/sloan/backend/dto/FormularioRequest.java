@@ -1,6 +1,7 @@
 package com.sloan.backend.dto;
 
 public class FormularioRequest {
+    private String nombreFormulario; // <-- Nuevo campo
     private String dniFormulario;
     private String correoFormulario;
     private String telefonoFormulario;
@@ -9,6 +10,14 @@ public class FormularioRequest {
     private String textEstado;
 
     // Getters y setters
+
+    public String getNombreFormulario() {
+        return nombreFormulario;
+    }
+    public void setNombreFormulario(String nombreFormulario) {
+        this.nombreFormulario = nombreFormulario;
+    }
+
     public String getDniFormulario() { return dniFormulario; }
     public void setDniFormulario(String dniFormulario) { this.dniFormulario = dniFormulario; }
 

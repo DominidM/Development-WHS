@@ -21,12 +21,13 @@ export const ContactSection = () => {
         setEnviando(true);
 
         const data = {
+            nombreFormulario: nombre,
             dniFormulario: "",
             correoFormulario: correo,
             telefonoFormulario: "",
             pkTipoFormulario: 5, // Contacto
             pkEstadoFormulario: 1, // Ajusta según tu lógica de estados
-            textEstado: `Nombre: ${nombre}\nMensaje: ${mensaje}`,
+            textEstado: mensaje, // <-- Solo el mensaje aquí
         };
 
         try {

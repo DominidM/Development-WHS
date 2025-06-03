@@ -42,13 +42,13 @@ export default function OpinionesPage() {
       setEnviando(true);
       // Construye el objeto para el backend
       const data = {
+        nombreFormulario: nombre, // <-- campo para la BD
         dniFormulario: "",
         correoFormulario: "",
         telefonoFormulario: "",
         pkTipoFormulario: 4, // Opiniones de Clientes
         pkEstadoFormulario: 1, // Estado inicial, ajusta según tu BD
         textEstado: comentario,
-        // Puedes agregar más campos si backend lo requiere
       };
 
       try {
