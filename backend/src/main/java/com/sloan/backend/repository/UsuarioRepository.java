@@ -8,4 +8,5 @@ import com.sloan.backend.model.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByCorreoPersona(String correoPersona);
+    Optional<Usuario> findByCorreoPersonaAndPassword(String correoPersona, String password);
 }

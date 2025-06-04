@@ -3,6 +3,7 @@ package com.sloan.backend.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.sloan.backend.model.Usuario;
 import com.sloan.backend.repository.UsuarioRepository;
 

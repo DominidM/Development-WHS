@@ -5,6 +5,9 @@ import { OfertasSection } from '../components/Home/OfertasSection';
 import { ImagenPrincipalConSecundarias } from '../components/Home/PublicidadSection'; // Importa el componente
 import { Publicidad } from '../components/Publicidad';
 import { SeccionesProductos } from '../components/Home/SeccionesProducto'; // Importa el nuevo componente
+import { SeccionesProductos1 } from '../components/Home/SeccionesProducto1'; // Importa el nuevo componente
+import { SeccionesProductos2 } from '../components/Home/SeccionesProducto2'; // Importa el nuevo componente
+
 import  Marcas from '../components/Marcas'; // Importa el nuevo componente
 import Text from "../components/ui/text"; // Importa el nuevo componente de texto
 //import ProductCarousel from "../components/ui/ProductCarousel";
@@ -24,17 +27,23 @@ function HomePage() {
       <ImagenPrincipalConSecundarias /> {/* Simplemente renderiza el componente */}
             <Publicidad textoPromocional="Delivery gratis a compras mayores a 200" />
       <Text
-      title="MEJORA TU BAÑO CON WHS"
-      subtitle="Encuentra los mejores productos para tu baño y cocina"
-      color="#0D3C6B"
-      />
-      <SeccionesProductos /> 
-      <Text
       title="LAVADEROS"
       subtitle="Encuentra los mejores productos para tu baño y cocina"
       color="#0D3C6B"
       />
       <SeccionesProductos /> 
+      <Text
+      title="FLUXOMETROS"
+      subtitle="Mejora la eficiencia de tu baño con nuestros fluxómetros de alta calidad"
+      color="#0D3C6B"
+      />
+      <SeccionesProductos1/> 
+     <Text
+      title="DUCHAS Y MEZCLADORAS"
+      subtitle="Disfruta de una experiencia de ducha única con nuestras duchas y mezcladoras"
+      color="#0D3C6B"
+      />
+      <SeccionesProductos2/> 
       
       <Marcas/>
     </div>

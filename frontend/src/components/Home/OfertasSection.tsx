@@ -3,12 +3,12 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const OfertasSection: React.FC = () => {
   const ofertas = [
-    { nombre: 'Sloan', descripcion: 'One Piece Oxford Descarga Dual - Blanco', precioOriginal: 1900, precioOferta: 799.99, imagenSrc: './oferta1.png' },
-    { nombre: 'Trebol', descripcion: 'One Piece Oxford Descarga Dual - Blanco', precioOriginal: 1900, precioOferta: 1099.99, imagenSrc: './oferta2.png' },
-    { nombre: 'Sloan', descripcion: 'One Piece Oxford Descarga Dual - Blanco', precioOriginal: 1500, precioOferta: 299.99, imagenSrc: './oferta3.png' },
-    { nombre: 'Otro Producto 1', descripcion: 'Descripción del producto 5', precioOriginal: 1200, precioOferta: 599.99, imagenSrc: './oferta4.png' },
-    { nombre: 'Otro Producto 2', descripcion: 'Descripción del producto 6', precioOriginal: 900, precioOferta: 399.99, imagenSrc: './oferta5.png' },
-    { nombre: 'Otro Producto 3', descripcion: 'Descripción del producto 7', precioOriginal: 900, precioOferta: 399.99, imagenSrc: './oferta6.png' },
+    { nombre: 'Sloan', descripcion: 'One Piece Oxford Descarga Dual - Blanco', precioOriginal: 1900, precioOferta: 799.99, imagenSrc: '/assets/oferta1.jpg' },
+    { nombre: 'Trebol', descripcion: 'One Piece Oxford Descarga Dual - Blanco', precioOriginal: 1900, precioOferta: 1099.99, imagenSrc: '/assets/oferta2.jpg' },
+    { nombre: 'Sloan', descripcion: 'One Piece Oxford Descarga Dual - Blanco', precioOriginal: 1500, precioOferta: 299.99, imagenSrc: '/assets/oferta3.jpg' },
+    { nombre: 'Otro Producto 1', descripcion: 'Descripción del producto 5', precioOriginal: 1200, precioOferta: 599.99, imagenSrc: '/assets/oferta4.jpg' },
+    { nombre: 'Otro Producto 2', descripcion: 'Descripción del producto 6', precioOriginal: 900, precioOferta: 399.99, imagenSrc: '/assets/oferta5.jpg' },
+    { nombre: 'Otro Producto 3', descripcion: 'Descripción del producto 7', precioOriginal: 900, precioOferta: 399.99, imagenSrc: '/assets/oferta6.jpg' },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
