@@ -21,7 +21,7 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
   useEffect(() => {
     setProducto(null);
     setError(null);
-    fetch(`/api/producto/${slug}`)
+    fetch("http://localhost:8081/producto")
       .then(res => {
         if (!res.ok) throw new Error("No encontrado");
         return res.json();

@@ -28,6 +28,7 @@ public class ProductoController {
     // Buscar producto por slug
     @GetMapping("/{slug}")
     public ResponseEntity<ProductoDTO> getProductoBySlug(@PathVariable String slug) {
+        System.out.println("Slug recibido: " + slug);
         return productoService.findBySlugAsDTO(slug)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
