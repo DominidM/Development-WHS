@@ -2,11 +2,24 @@ package com.sloan.backend.model;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "formulario")
 public class Formulario {
+    // Atributos de la entidad Formulario
+    // Cada formulario tiene un ID, nombre, fecha, DNI, correo, teléfono,
+    // tipo de formulario, estado del formulario, texto del estado y usuario de atención
+
+    // Identificador único del usuario
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_formulario")
@@ -28,6 +41,7 @@ public class Formulario {
     @Column(name = "telefono_formulario")
     private String telefonoFormulario;
 
+    // Relations
     @ManyToOne
     @JoinColumn(name = "pk_tipo_formulario", nullable = false)
     private TipoForm tipoFormulario;
@@ -42,6 +56,24 @@ public class Formulario {
     @ManyToOne
     @JoinColumn(name = "user_atencion")
     private Usuario usuarioAtencion; // Solo para admin, puede ser null
+
+    // Constructor por defecto
+    public Formulario() {
+    }
+
+    // Constructor con parámetros
+    public Formulario(String correoFormulario, String dniFormulario, EstadoForm estadoFormulario, LocalDateTime fechaFormulario, Long idFormulario, String nombreFormulario, String telefonoFormulario, String textEstado, TipoForm tipoFormulario, Usuario usuarioAtencion) {
+        this.correoFormulario = correoFormulario;
+        this.dniFormulario = dniFormulario;
+        this.estadoFormulario = estadoFormulario;
+        this.fechaFormulario = fechaFormulario;
+        this.idFormulario = idFormulario;
+        this.nombreFormulario = nombreFormulario;
+        this.telefonoFormulario = telefonoFormulario;
+        this.textEstado = textEstado;
+        this.tipoFormulario = tipoFormulario;
+        this.usuarioAtencion = usuarioAtencion;
+    }
 
     // Getters y setters
 

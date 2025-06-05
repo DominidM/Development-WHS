@@ -29,7 +29,7 @@ export const SeccionesProductos: React.FC = () => {
       <div className="container mx-auto text-center">  
         {/* Sección Mejora tu baño con WHS */}
         <div className="overflow-x-auto py-1 mb-3">
-          <div className="flex gap-7 w-max mb-4"> {/* Aumenté el gap a 16 */}
+          <div className="flex gap-7 w-max mb-4"> 
             {productosBano.map((producto, index) => (
               <div key={index} className="bg-white rounded-md shadow-md p-6 text-center w-72 flex-shrink-0">
                 <div className="h-90 w-full rounded-md mb-3 overflow-hidden">

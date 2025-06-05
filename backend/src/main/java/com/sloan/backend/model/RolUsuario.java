@@ -10,12 +10,23 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "RolUsuario")
 public class RolUsuario {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idRolUsuario;
 
     @Column(nullable = false, length = 50)
     private String nombreRol;
+
+    // Constructor por defecto
+    public RolUsuario() {
+    }
+
+    // Constructor con parámetros
+    public RolUsuario(Long idRolUsuario, String nombreRol) {
+        this.idRolUsuario = idRolUsuario;
+        this.nombreRol = nombreRol;
+    }
 
     // Getters y setters
     public Long getIdRolUsuario() {

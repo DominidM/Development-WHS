@@ -27,7 +27,7 @@ Sloan_WebSystem/
 - Backend:
   - Java Spring Boot (Maven)
   - Spring Web (API RESTful)
-  - Spring MVC + Thymeleaf (panel administrativo)
+  - Spring MVC + Thymeleaf (panel administrativo) 
   - Spring Data JPA
   - PostgreSQL Driver
   API modular que permite gestionar productos, clientes, ventas, reportes y solicitudes. Incluye un panel administrativo interno.
@@ -82,7 +82,7 @@ cd frontend
 bun run dev
 ```
 Frontend disponible en: http://localhost:5173  
-Backend disponible en: http://localhost:8081
+Backend disponible en: http://localhost:8081/admin/login
 
 📚 Documentación
 ----------------

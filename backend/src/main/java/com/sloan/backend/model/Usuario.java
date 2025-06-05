@@ -30,6 +30,19 @@ public class Usuario {
     @JoinColumn(name = "pk_rolUsuario", nullable = false)
     private RolUsuario rolUsuario;
 
+    // Constructor por defecto
+    public Usuario() {
+    }   
+
+    // Constructor con parámetros
+    public Usuario(String correoPersona, Long idUsuario, String nombrePersona, String password, RolUsuario rolUsuario) {
+        this.correoPersona = correoPersona;
+        this.idUsuario = idUsuario;
+        this.nombrePersona = nombrePersona;
+        this.password = password;
+        this.rolUsuario = rolUsuario;
+    }
+
     // Getters y setters
     public Long getIdUsuario() {
         return idUsuario;

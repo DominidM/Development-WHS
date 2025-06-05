@@ -45,7 +45,7 @@ public class FormularioController {
     @PostMapping
     public ResponseEntity<Formulario> crear(@RequestBody FormularioRequest request) {
         Formulario formulario = new Formulario();
-        formulario.setNombreFormulario(request.getNombreFormulario()); // <-- ¡Agregado!
+        formulario.setNombreFormulario(request.getNombreFormulario()); 
         formulario.setDniFormulario(request.getDniFormulario());
         formulario.setCorreoFormulario(request.getCorreoFormulario());
         formulario.setTelefonoFormulario(request.getTelefonoFormulario());

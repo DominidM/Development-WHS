@@ -75,7 +75,7 @@ export function LibroReclamacionesForm() {
         pkEstadoFormulario: 1, // por defecto "SIN_ATENDER"
         textEstado: formData.detalle,
       };
-
+    
       const response = await fetch('http://localhost:8081/api/formularios', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

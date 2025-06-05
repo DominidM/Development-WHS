@@ -1,7 +1,7 @@
 package com.sloan.backend.dto;
 
 public class FormularioRequest {
-    private String nombreFormulario; // <-- Nuevo campo
+    private String nombreFormulario; 
     private String dniFormulario;
     private String correoFormulario;
     private String telefonoFormulario;
