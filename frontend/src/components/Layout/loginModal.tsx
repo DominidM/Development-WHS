@@ -1,6 +1,12 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
-import { User, X } from 'lucide-react'
+import { Fragment, useEffect, useState } from 'react'
+import { User, X, LogOut, ShoppingBag } from 'lucide-react'
+
+type Usuario = {
+  nombrePersona: string
+  correoPersona: string
+  // Agrega más campos si tu backend devuelve otros
+}
 
 export default function LoginModal() {
   const [isOpen, setIsOpen] = useState(false)
@@ -9,6 +15,15 @@ export default function LoginModal() {
   const [password, setPassword] = useState('')
   const [nombre, setNombre] = useState('')
   const [error, setError] = useState('')
+  const [usuario, setUsuario] = useState<Usuario | null>(null)
+
+  // Al cargar, busca usuario en localStorage
+  useEffect(() => {
+    const u = window.localStorage.getItem('usuario')
+    if (u) {
+      setUsuario(JSON.parse(u))
+    }
+  }, [])
 
   const openModal = () => setIsOpen(true)
   const closeModal = () => {
@@ -20,7 +35,7 @@ export default function LoginModal() {
     setError('')
   }
 
-  // Lógica para login
+  // Login
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -33,18 +48,15 @@ export default function LoginModal() {
       if (!response.ok) throw new Error('Datos inválidos')
       const usuario = await response.json()
       window.localStorage.setItem('usuario', JSON.stringify(usuario))
+      setUsuario(usuario)
       closeModal()
-      // window.localStorage.setItem('usuario', JSON.stringify(usuario))
     } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message)
-        } else {
-          setError("Error desconocido")
-        }
+      if (err instanceof Error) setError(err.message)
+      else setError("Error desconocido")
     }
   }
 
-  // Lógica para registro
+  // Registro
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -55,20 +67,38 @@ export default function LoginModal() {
         body: JSON.stringify({ correo, password, nombre })
       })
       if (!response.ok) throw new Error('No se pudo registrar')
-      closeModal()
-      // Puedes mostrar un mensaje de éxito o loguear automáticamente
-   } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message)
-        } else {
-          setError("Error desconocido")
-        }
+      setIsRegister(false)
+      setCorreo('')
+      setPassword('')
+      setNombre('')
+      setError('')
+    } catch (err: unknown) {
+      if (err instanceof Error) setError(err.message)
+      else setError('Error desconocido')
     }
   }
 
+  // Cerrar sesión
+  const handleLogout = () => {
+    window.localStorage.removeItem('usuario')
+    setUsuario(null)
+    closeModal()
+  }
+
+  // URL para pedidos anteriores, podrías personalizarlo
+  const pedidosUrl = "/mis-pedidos"
+
   return (
     <>
-      <User className="w-8 h-7 text-gray-900 hover:text-blue-600 cursor-pointer" onClick={openModal} />
+      <button
+        className="flex items-center gap-2 p-2 bg-transparent hover:bg-blue-50 rounded cursor-pointer"
+        onClick={openModal}
+      >
+        <User className="w-7 h-7 text-blue-900" />
+        <span className="font-medium text-gray-800">
+          {usuario ? `Hola, ${usuario.nombrePersona}` : 'Hola, Iniciar sesión'}
+        </span>
+      </button>
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={closeModal}>
           <Transition.Child
@@ -82,7 +112,6 @@ export default function LoginModal() {
           >
             <div className="fixed inset-0 bg-black bg-opacity-30" />
           </Transition.Child>
-
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4">
               <Transition.Child
@@ -95,18 +124,41 @@ export default function LoginModal() {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-md transform rounded-2xl bg-white p-6 shadow-xl transition-all">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center mb-2">
                     <Dialog.Title className="text-lg font-bold text-gray-900">
-                      {isRegister ? 'Crear cuenta' : 'Iniciar sesión'}
+                      {usuario
+                        ? `Bienvenido, ${usuario.nombrePersona}`
+                        : (isRegister ? 'Crear cuenta' : 'Iniciar sesión')
+                      }
                     </Dialog.Title>
                     <button onClick={closeModal}>
                       <X className="w-5 h-5 text-gray-500 hover:text-gray-700" />
                     </button>
                   </div>
 
-                  {/* Login Form */}
-                  {!isRegister && (
-                    <form className="mt-4 flex flex-col gap-4" onSubmit={handleLogin}>
+                  {/* Si está logueado, muestra menú */}
+                  {usuario ? (
+                    <div className="flex flex-col items-center gap-4 mt-6">
+                      <span className="text-lg text-gray-800 mb-2">
+                        ¡Hola, <b>{usuario.nombrePersona}</b>!
+                      </span>
+                      <a
+                        href={pedidosUrl}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                      >
+                        <ShoppingBag className="w-5 h-5" />
+                        Ver pedidos anteriores
+                      </a>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition"
+                      >
+                        <LogOut className="w-5 h-5" />
+                        Cerrar sesión
+                      </button>
+                    </div>
+                  ) : !isRegister ? (
+                    <form className="flex flex-col gap-4 mt-4" onSubmit={handleLogin}>
                       <input
                         type="email"
                         value={correo}
@@ -114,6 +166,7 @@ export default function LoginModal() {
                         placeholder="Correo electrónico"
                         className="border rounded px-3 py-2 w-full"
                         required
+                        autoFocus
                       />
                       <input
                         type="password"
@@ -141,11 +194,8 @@ export default function LoginModal() {
                         </button>
                       </span>
                     </form>
-                  )}
-
-                  {/* Register Form */}
-                  {isRegister && (
-                    <form className="mt-4 flex flex-col gap-4" onSubmit={handleRegister}>
+                  ) : (
+                    <form className="flex flex-col gap-4 mt-4" onSubmit={handleRegister}>
                       <input
                         type="text"
                         value={nombre}
@@ -153,6 +203,7 @@ export default function LoginModal() {
                         placeholder="Nombre completo"
                         className="border rounded px-3 py-2 w-full"
                         required
+                        autoFocus
                       />
                       <input
                         type="email"

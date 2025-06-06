@@ -27,7 +27,7 @@ public class Producto {
     @Column(name = "precio_producto", precision = 10, scale = 2, nullable = false)
     private BigDecimal precioProducto;
 
-    @Column(name = "descripcion_pro")
+    @Column(name = "descripcion_producto")
     private String descripcionProducto;
 
     @Column(name = "imagen_producto", length = 255)

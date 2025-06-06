@@ -4,9 +4,7 @@ import { Carousel } from "../components/Carousel";
 import { OfertasSection } from '../components/Home/OfertasSection';
 import { ImagenPrincipalConSecundarias } from '../components/Home/PublicidadSection'; // Importa el componente
 import { Publicidad } from '../components/Publicidad';
-import { SeccionesProductos } from '../components/Home/SeccionesProducto'; // Importa el nuevo componente
-import { SeccionesProductos1 } from '../components/Home/SeccionesProducto1'; // Importa el nuevo componente
-import { SeccionesProductos2 } from '../components/Home/SeccionesProducto2'; // Importa el nuevo componente
+import  ProductCarousel from "../components/Home/ProductCarousel"; // Importa el nuevo componente de carrusel de productos
 
 import  Marcas from '../components/Marcas'; // Importa el nuevo componente
 import Text from "../components/ui/text"; // Importa el nuevo componente de texto
@@ -26,24 +24,22 @@ function HomePage() {
       <OfertasSection />
       <ImagenPrincipalConSecundarias /> {/* Simplemente renderiza el componente */}
             <Publicidad textoPromocional="Delivery gratis a compras mayores a 200" />
-      <Text
-      title="LAVADEROS"
-      subtitle="Encuentra los mejores productos para tu baño y cocina"
-      color="#0D3C6B"
+
+     <ProductCarousel
+            pkCategoria="lavaderos"
+            titulo="LAVADEROS"
+            subtitulo="Encuentra los mejores productos para tu baño y cocina"
+            maxProductos={10} // Puedes ajustar el número máximo de productos a mostrar
       />
-      <SeccionesProductos /> 
-      <Text
-      title="FLUXOMETROS"
-      subtitle="Mejora la eficiencia de tu baño con nuestros fluxómetros de alta calidad"
-      color="#0D3C6B"
+      <ProductCarousel
+        pkCategoria="fluxometros"
+        titulo="FLUXOMETROS"
+        subtitulo="Mejora la eficiencia de tu baño con nuestros fluxómetros de alta calidad"
+        maxProductos={10} // Puedes ajustar el número máximo de productos a mostrar
       />
-      <SeccionesProductos1/> 
-     <Text
-      title="DUCHAS Y MEZCLADORAS"
-      subtitle="Disfruta de una experiencia de ducha única con nuestras duchas y mezcladoras"
-      color="#0D3C6B"
-      />
-      <SeccionesProductos2/> 
+
+      
+    
       
       <Marcas/>
     </div>

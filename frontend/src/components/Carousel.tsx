@@ -37,11 +37,12 @@ export function Carousel() {
               className="w-full h-full object-cover"
             />
             {/* Difuminado superior */}  
+            <div className="absolute top-0 left-0 w-full h-6 bg-gradient-to-b from-black/80 to-transparent"></div>
+             {/* Difuminado inferior */}
+            <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-black/100 to-transparent"></div>
             <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/100 to-transparent"></div>
-            {/* Difuminado inferior */}
-            <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-black/100 to-transparent"></div>
-            {/* Cuadro de texto decorativo superpuesto - Ajustado a la izquierda */}
-             <div className="absolute bottom-6 left-0 bg-[#0d3c6b] text-white px-10 py-4 rounded-md  shadow-lg text-lg font-semibold">
+             {/* Texto elegante, bien alineado y con glassmorphism */}
+            <div className="absolute bottom-10 left-10 bg-white/10 backdrop-blur-md text-white px-8 py-3 rounded-lg shadow-xl text-xl font-semibold border border-white/20">
               {image.text}
             </div>
           </div>

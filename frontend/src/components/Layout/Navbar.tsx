@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { ShoppingCart } from "lucide-react";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useCart } from '../ui/CartContext'; // Asegúrate de que la ruta a tu CartContext sea correcta
-import { ShoppingCartModal } from './ShoppingCartModal'; // Asegúrate de que la ruta a tu modal sea correcta
-import LoginModal from '../Layout/loginModal'; // Asegúrate de que la ruta a tu modal de login sea correcta
-
+import { useCart } from '../ui/CartContext';
+import { ShoppingCartModal } from './ShoppingCartModal';
+import LoginModal from '../Layout/loginModal';
 
 export function Navbar() {
-  const desiredScrollOffset = 480;
+  const desiredScrollOffset = 520;
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -47,7 +46,7 @@ export function Navbar() {
   }, []);
 
   const navbarClasses = `
-    w-full bg-white shadow-md border-t-[15px] border-[#0D3C6B]
+    w-full bg-[#f7fafd] shadow-md border-t-[10px] border-[#0D3C6B]
     transition-all duration-300 ease-in-out
     ${isScrolled ? "fixed top-0 left-0 z-50" : "relative"}
   `;
@@ -61,65 +60,56 @@ export function Navbar() {
 
   return (
     <>
+      {/* NAVBAR PRINCIPAL */}
       <header className={navbarClasses}>
-        <div className="max-w-7xl mx-auto px-2 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-1 border-r-2 border-[#0D3C6B] pr-12">
+        <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
+          {/* Logo box */}
+          <div className="flex items-center space-x-3 border-r-2 border-[#1e62a6] pr-12">
             <Link to="/">
-              <img src="/logo.png" className="h-14 w-auto" alt="Logo WHC" />
+              <img src="/logo.png" className="h-16 w-auto drop-shadow-lg" alt="Logo WHC" />
             </Link>
           </div>
-          <div className="hidden md:flex flex-1 mx-2 max-w-md">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              className="hidden md:block px-4 py-2 border border-blue-800 rounded-md w-full"
-            />
+          {/* Search box grande y decorado */}
+          <div className="hidden md:flex flex-1 justify-center mx-8">
+            <div className="relative w-full max-w-2xl">
+              <input
+                type="text"
+                placeholder="Buscar..."
+                className="
+                  w-full px-8 py-4 text-lg border border-blue-900 rounded-full shadow-md
+                  focus:outline-none focus:ring-2 focus:ring-blue-900 bg-white
+                  placeholder:text-blaxk-800 font-medium transition
+                "
+                style={{
+                  boxShadow: "0 4px 24px 0 rgba(13,60,107,0.08)",
+                  letterSpacing: "0.03em"
+                }}
+              />
+              <span className="absolute right-6 top-1/2 -translate-y-1/2 text-blue-800 pointer-events-none">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </span>
+            </div>
           </div>
-
-          {/* NAV LINKS */}
-          <nav className="hidden md:flex items-center space-x-10 text-[17px] font-semibold text-black drop-shadow-sm">
-            <Link 
-              to="/" 
-              onClick={handleInicioClick} 
-              className="hover:text-blue-600 transition-colors duration-200"
-            >
-              Ofertas
-            </Link>
-            <Link 
-              to="/productos" 
-              className="hover:text-blue-600 transition-colors duration-200"
-            >
-              Catálogo
-            </Link>
-            <Link 
-              to="/contacto" 
-              className="hover:text-blue-600 transition-colors duration-200"
-            >
-              Contacto
-            </Link>
-            
-          </nav>
-
-
           {/* ICONOS */}
           <div className="flex items-center space-x-10">
             <LoginModal />
-            <div onClick={openCart} className="relative cursor-pointer">
-              <ShoppingCart className="h-6 w-6" />
+            <div onClick={openCart} className="relative cursor-pointer group">
+              <ShoppingCart className="h-7 w-7 text-blue-900 group-hover:text-blue-600 transition" />
               {items.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-1 text-xs">
+                <span className="absolute -top-2 -right-2 bg-gradient-to-tr from-red-400 to-red-700 text-white rounded-full px-2 text-xs font-bold shadow-md border-2 border-white">
                   {items.length}
                 </span>
               )}
             </div>
-
-
             <button
               className="md:hidden text-gray-700 focus:outline-none"
               onClick={() => setIsOpen(!isOpen)}
             >
               <svg
-                className="w-6 h-6"
+                className="w-8 h-8"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -131,26 +121,53 @@ export function Navbar() {
                 )}
               </svg>
             </button>
-            
           </div>
         </div>
 
+        {/* MOBILE NAV */}
         {isOpen && (
-          <div className="md:hidden px-4 pb-4 space-y-4">
+          <div className="md:hidden px-4 pb-4 space-y-4 bg-[#f7fafd]">
             <input
               type="text"
               placeholder="Buscar..."
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+              className="w-full px-4 py-3 border-2 border-blue-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-200 shadow"
             />
-            <nav className="flex flex-col space-y-2 text-sm font-medium">
+            <nav className="flex flex-col space-y-2 text-base font-semibold">
               <Link to="/" onClick={handleInicioClick}>Ofertas</Link>
               <Link to="/productos" className="hover:text-blue-500">Catálogo</Link>
               <Link to="/contacto" className="hover:text-blue-500">Contacto</Link>
-
             </nav>
           </div>
         )}
       </header>
+
+      {/* BARRA DE LINKS SECUNDARIA DEBAJO DEL NAVBAR */}
+      <nav className="w-full bg-[#ededed] border-b border-blue-100 shadow-sm hidden md:flex">
+        <div className="max-w-7xl mx-auto flex flex-row w-full justify-center">
+          <Link
+            to="/"
+            onClick={handleInicioClick}
+            className="flex-1 py-3.5 text-center font-bold text-blue-900 border-r border-blue-200 text-lg hover:bg-blue-200/40 hover:text-blue-700 transition-colors"
+            style={{ minWidth: 180, letterSpacing: "0.01em" }}
+          >
+            Ofertas
+          </Link>
+          <Link
+            to="/productos"
+            className="flex-1 py-3.5 text-center font-bold text-blue-900 border-r border-blue-200 text-lg hover:bg-blue-200/40 hover:text-blue-700 transition-colors"
+            style={{ minWidth: 180, letterSpacing: "0.01em" }}
+          >
+            Catálogo
+          </Link>
+          <Link
+            to="/contacto"
+            className="flex-1 py-3.5 text-center font-bold text-blue-900 text-lg hover:bg-blue-200/40 hover:text-blue-700 transition-colors"
+            style={{ minWidth: 180, letterSpacing: "0.01em" }}
+          >
+            Contacto
+          </Link>
+        </div>
+      </nav>
 
       {isCartOpen && <ShoppingCartModal onClose={closeCart} />}
     </>

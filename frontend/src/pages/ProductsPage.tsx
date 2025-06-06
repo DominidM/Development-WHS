@@ -4,11 +4,10 @@ import { Publicidad } from '../components/Publicidad';
 import Marcas from '../components/Marcas';
 import ProductCard from '../components/ui/ProductCard';
 
-// Define el tipo que viene del backend (con nombres exactos)
 type ProductoBackend = {
   idProducto: number;
   nombreProducto: string;
-  precioProducto: number | string; // Puede llegar como string si es BigDecimal
+  precioProducto: number | string;
   descripcionProducto: string;
   imagenProducto?: string;
   stockProducto: number;
@@ -18,7 +17,6 @@ type ProductoBackend = {
   estado: string;
 };
 
-// Tipo para el frontend, para usarlo con seguridad
 interface Producto {
   idProducto: number;
   nombreProducto: string;
@@ -30,8 +28,11 @@ interface Producto {
 }
 
 const MARCAS = [
-  "Trebol", "Sloan", "Genebre", "Vainsa", "Helvex", "Leeyes", "Sunmixer", "Otros"
+  "Trébol", "Sloan", "Genebre", "Vainsa", "Helvex", "Leeyes", "Sunmixer"
 ];
+
+// Cantidad de productos por página (tanto mobile como desktop)
+const PAGE_SIZE = 8;
 
 const ProductsPage: React.FC = () => {
   const [productos, setProductos] = useState<Producto[]>([]);
@@ -39,11 +40,13 @@ const ProductsPage: React.FC = () => {
   const [filtroMarcas, setFiltroMarcas] = useState<string[]>([]);
   const [precioMax, setPrecioMax] = useState<number>(0);
 
+  // Paginación
+  const [paginaActual, setPaginaActual] = useState(1);
+
   useEffect(() => {
     fetch("http://localhost:8081/producto")
       .then(res => res.json())
       .then((data: ProductoBackend[]) => {
-        // Adaptar los nombres y tipos
         const adaptados: Producto[] = data.map((p) => ({
           idProducto: p.idProducto,
           nombreProducto: p.nombreProducto,
@@ -76,6 +79,7 @@ const ProductsPage: React.FC = () => {
         ? prev.filter(m => m !== marca)
         : [...prev, marca]
     );
+    setPaginaActual(1); // Reset a página 1 al cambiar filtro
   };
 
   const productosFiltrados = productos
@@ -85,13 +89,96 @@ const ProductsPage: React.FC = () => {
     )
     .sort((a, b) => a.precio - b.precio);
 
+  // Paginación
+  const cantidadResultados = productosFiltrados.length;
+  const totalPaginas = Math.ceil(cantidadResultados / PAGE_SIZE);
+  const productosPaginados = productosFiltrados.slice(
+    (paginaActual - 1) * PAGE_SIZE,
+    paginaActual * PAGE_SIZE
+  );
+
+  const cambiarPagina = (pagina: number) => {
+    if (pagina >= 1 && pagina <= totalPaginas) setPaginaActual(pagina);
+  };
+
+  // Renderizador de paginación
+  const Pagination = () => (
+    <div className="flex justify-center items-center gap-2 my-6">
+      <button
+        onClick={() => cambiarPagina(paginaActual - 1)}
+        disabled={paginaActual === 1}
+        className="px-2 py-1 text-blue-700 disabled:text-gray-400"
+        aria-label="Página anterior"
+      >
+        &lt;
+      </button>
+      {Array.from({ length: totalPaginas }, (_, i) => (
+        <button
+          key={i + 1}
+          onClick={() => cambiarPagina(i + 1)}
+          className={`px-2 py-1 rounded ${paginaActual === i + 1 ? 'bg-blue-600 text-white' : 'text-blue-700 hover:bg-blue-100'}`}
+        >
+          {i + 1}
+        </button>
+      ))}
+      <button
+        onClick={() => cambiarPagina(paginaActual + 1)}
+        disabled={paginaActual === totalPaginas}
+        className="px-2 py-1 text-blue-700 disabled:text-gray-400"
+        aria-label="Página siguiente"
+      >
+        &gt;
+      </button>
+    </div>
+  );
+
   return (
     <div>
       <Carousel />
-      <div className="container mx-auto py-8 grid grid-cols-4 gap-8">
-        {/* Barra lateral de filtros */}
-        <aside className="col-span-1">
-          <div className="mb-6">
+
+      {/* Filtros y cantidad en mobile */}
+      <div className="block lg:hidden px-4 mb-4">
+        <div className="bg-white rounded-lg shadow p-4 mb-2 flex flex-col gap-4">
+          <div>
+            <span className="font-semibold">Marca</span>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {MARCAS.map(marca => (
+                <label key={marca} className="flex items-center space-x-1">
+                  <input
+                    type="checkbox"
+                    checked={filtroMarcas.includes(marca)}
+                    onChange={() => handleMarcaChange(marca)}
+                    className="accent-blue-600"
+                  />
+                  <span className="text-sm">{marca}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <span className="font-semibold">Precio máximo</span>
+            <input
+              type="range"
+              min={precioMasBajo}
+              max={precioMasAlto}
+              value={precioMax}
+              onChange={e => setPrecioMax(Number(e.target.value))}
+              className="w-full accent-sky-500"
+              disabled={precioMasBajo === precioMasAlto}
+            />
+            <div className="flex justify-between text-xs mt-1">
+              <span>S/. {precioMasBajo}</span>
+              <span className="font-semibold text-sky-700">Hasta S/. {precioMax}</span>
+            </div>
+          </div>
+        </div>
+        <div className="text-sm font-medium text-gray-700 mb-2">{cantidadResultados} Resultados</div>
+      </div>
+
+      {/* Filtros y cantidad en desktop */}
+      <div className="container mx-auto py-8 flex flex-col lg:flex-row gap-8">
+        <aside className="hidden lg:block w-1/4 flex-shrink-0">
+          <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">Marca</h3>
             {MARCAS.map(marca => (
               <div key={marca}>
@@ -102,6 +189,7 @@ const ProductsPage: React.FC = () => {
                   value={marca}
                   checked={filtroMarcas.includes(marca)}
                   onChange={() => handleMarcaChange(marca)}
+                  className="accent-blue-600"
                 />
                 <label htmlFor={marca.toLowerCase()} className="ml-2">{marca}</label>
               </div>
@@ -129,28 +217,35 @@ const ProductsPage: React.FC = () => {
               <div className="text-gray-400 text-sm">No hay productos para filtrar</div>
             )}
           </div>
+          <div className="text-sm font-medium text-gray-700 mb-2">{cantidadResultados} Resultados</div>
         </aside>
 
         {/* Grilla de productos */}
-        <main className="col-span-3 grid grid-cols-2 md:grid-cols-3 gap-6">
-          {loading ? (
-            <div className="col-span-full text-center">Cargando productos...</div>
-          ) : productosFiltrados.length === 0 ? (
-            <div className="col-span-full text-center">No hay productos disponibles.</div>
-          ) : (
-            productosFiltrados.map(producto => (
-              <ProductCard
-                key={producto.idProducto}
-                nombre={producto.nombreProducto}
-                descripcion={producto.descripcionProducto}
-                imagen={producto.imagenProducto}
-                slug={producto.slug}
-                precio={producto.precio}
-              />
-            ))
-          )}
+        <main className="w-full lg:w-3/4">
+          <div className="text-sm font-medium text-gray-700 mb-2 hidden lg:block">{cantidadResultados} Resultados</div>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {loading ? (
+              <div className="col-span-full text-center">Cargando productos...</div>
+            ) : productosPaginados.length === 0 ? (
+              <div className="col-span-full text-center">No hay productos disponibles.</div>
+            ) : (
+              productosPaginados.map(producto => (
+                <ProductCard
+                  key={producto.idProducto}
+                  nombre={producto.nombreProducto}
+                  descripcion={producto.descripcionProducto}
+                  imagen={producto.imagenProducto}
+                  slug={producto.slug}
+                  precio={producto.precio}
+                />
+              ))
+            )}
+          </div>
+          {/* Paginación */}
+          {totalPaginas > 1 && <Pagination />}
         </main>
       </div>
+
       <Publicidad textoPromocional="Delivery gratis a compras mayores a 200" />
       <Marcas />
     </div>

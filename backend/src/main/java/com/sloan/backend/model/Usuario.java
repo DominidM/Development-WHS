@@ -13,6 +13,8 @@ import jakarta.persistence.Table;
 @Table(name = "Usuario")
 
 public class Usuario {
+    // Atributos
+    // Identificador único del usuario
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUsuario;
@@ -26,6 +28,7 @@ public class Usuario {
     @Column(nullable = false, length = 100)
     private String nombrePersona;
 
+    // Relations
     @ManyToOne
     @JoinColumn(name = "pk_rolUsuario", nullable = false)
     private RolUsuario rolUsuario;
