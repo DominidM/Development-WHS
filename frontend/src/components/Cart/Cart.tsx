@@ -1,49 +1,14 @@
-import { useState } from "react";
+import { useCart } from "../ui/CartContext";
 
-type CartItem = {
-  id: number;
-  name: string;
-  brand: string;
-  description: string;
-  price: number;
-  originalPrice: number;
-  quantity: number;
-  image: string;
-};
 
 export function Cart() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "producto xxx",
-      brand: "Sloan",
-      description: "Fluxometro de 6mm - Green",
-      price: 84.32,
-      originalPrice: 93.94,
-      quantity: 6,
-      image: "/assets/fluxometro1.webp",
-    },
-    {
-      id: 2,
-      name: "producto xxx",
-      brand: "Trebol",
-      description: "Fluxometro de 6mm - BlueCyan",
-      price: 70.30,
-      originalPrice: 93.94,
-      quantity: 3,
-      image: "/assets/fluxometro2.webp",
-    },
-  ]);
+  const { items, updateQuantity } = useCart();
 
-  const handleQuantityChange = (id: number, quantity: number) => {
-    setCartItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, quantity } : item
-      )
-    );
+  const handleQuantityChange = (id: string, quantity: number) => {
+    updateQuantity(id, quantity);
   };
 
-  const total = cartItems.reduce(
+  const total = items.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
@@ -54,7 +19,8 @@ export function Cart() {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Lista de productos */}
         <div className="flex-1 bg-white border rounded-x1 p-8 space-y-7">
-          {cartItems.map(item => (
+          {items.length === 0 && <div className="text-gray-500">Tu carrito está vacío.</div>}
+          {items.map(item => (
             <div key={item.id} className="flex items-center gap-10 border-b pb-6">
               {/* Imagen del producto */}
               <img src={item.image} alt={item.name} className="w-24 h-24 bg-gray-200 rounded-md" />
@@ -64,7 +30,9 @@ export function Cart() {
                 <p className="text-sm text-gray-600">{item.description}</p>
                 <div className="mt-2 flex items-center gap-2 text-sm">
                   <span className="font-semibold text-gray-800">US ${item.price.toFixed(2)}</span>
-                  <span className="line-through text-gray-400 text-xs">US ${item.originalPrice.toFixed(2)}</span>
+                  {item.originalPrice && (
+                    <span className="line-through text-gray-400 text-xs">US ${item.originalPrice.toFixed(2)}</span>
+                  )}
                 </div>
                 <label className="text-sm mt-2 block">Cant</label>
                 <select
@@ -72,10 +40,9 @@ export function Cart() {
                   value={item.quantity}
                   onChange={e =>
                     handleQuantityChange(item.id, Number(e.target.value))
-                  
                   }
                 >
-                  {[...Array(10).keys()].map(n => (
+                  {[...Array((item.stock ?? 10)).keys()].map(n => (
                     <option key={n + 1} value={n + 1}>
                       {n + 1}
                     </option>
@@ -89,7 +56,7 @@ export function Cart() {
         {/* Resumen del pedido */}
         <div className="w-full md:w-80 bg-gray-100 rounded-xl p-4">
           <div className="mb-2 flex justify-between">
-            <span>Artículos ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})</span>
+            <span>Artículos ({items.reduce((acc, item) => acc + item.quantity, 0)})</span>
             <span className="font-semibold">US ${total.toFixed(2)}</span>
           </div>
           <div className="mb-2 flex justify-between">
@@ -101,9 +68,37 @@ export function Cart() {
             <span>Subtotal</span>
             <span>US ${total.toFixed(2)}</span>
           </div>
-          <button className="mt-6 w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full">
-            Completar la transacción
-          </button>
+          <button
+          className="
+            mt-6 w-full py-3
+            bg-gradient-to-r from-green-400 to-blue-500
+            hover:from-green-500 hover:to-blue-600
+            text-white font-bold rounded-xl
+            shadow-lg transition transform duration-300
+            hover:scale-105 hover:shadow-2xl
+            flex items-center justify-center gap-3
+            group
+          "
+        >
+          <span className="transition-all duration-300 group-hover:-translate-y-1">
+            <svg
+              className="inline mr-2"
+              width="26"
+              height="26"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              viewBox="0 0 24 24"
+            >
+              <rect x="2" y="7" width="20" height="13" rx="2" fill="#a3f9bb" />
+              <rect x="5" y="10" width="5" height="3" rx="1.5" fill="#56be3e" />
+              <circle cx="10" cy="16" r="1" fill="#379e1f" />
+              <circle cx="14" cy="16" r="1" fill="#379e1f" />
+              <circle cx="18" cy="16" r="1" fill="#379e1f" />
+            </svg>
+          </span>
+          Completar la transacción
+        </button>
           <div className="flex justify-center items-center gap-2 mt-4">
             <img src="./assets/visa.png" alt="Visa" className="h-6" />
             <img src="./assets/yape.png" alt="Yape" className="h-6" />

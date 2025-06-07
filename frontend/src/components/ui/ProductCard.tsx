@@ -1,28 +1,31 @@
 import { useNavigate } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
+import { useCart } from "./CartContext";
 
 interface ProductCardProps {
+  id?: string | number;
   nombre: string;
   descripcion: string;
   imagen?: string;
   slug: string;
   precio: number;
-  precioOriginal?: number; // <-- Nueva prop para mostrar el precio original tachado
-  onAddToCart?: () => void;
+  precioOriginal?: number;
+  stock?: number; // Stock real del producto
 }
 
 export default function ProductCard({
+  id,
   nombre,
   descripcion,
   imagen,
   slug,
   precio,
   precioOriginal,
-  onAddToCart,
+  stock, // No pongas valor por defecto aquí
 }: ProductCardProps) {
   const navigate = useNavigate();
+  const { addItem, items } = useCart();
 
-  // Navega al detalle al hacer click en la card (excepto si el click fue en el botón de carrito)
   const handleCardClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -31,6 +34,33 @@ export default function ProductCard({
     navigate(`/productos/${slug}`);
   };
 
+  // Verifica si el producto está en el carrito y cuál es su cantidad actual
+  const cartItem = items.find(
+    item => item.id === ((id ?? slug).toString())
+  );
+  const cantidadEnCarrito = cartItem?.quantity ?? 0;
+  const stockDisponible = stock ?? 99;
+
+  const handleAddToCart = () => {
+    if (stockDisponible === 0) {
+      alert("Producto sin stock.");
+      return;
+    }
+    if (cantidadEnCarrito >= stockDisponible) {
+      alert("Ya tienes el máximo disponible de este producto en el carrito.");
+      return;
+    }
+    addItem({
+      id: (id ?? slug).toString(),
+      name: nombre,
+      price: precio,
+      quantity: 1,
+      image: imagen,
+      stock: stockDisponible // Asegura que el stock se envía correctamente
+    });
+  };
+
+  console.log('STOCK recibido:', stock, typeof stock);
   return (
     <div
       className="
@@ -49,7 +79,12 @@ export default function ProductCard({
     >
       <div className="h-80 w-full flex items-center justify-center bg-white">
         {imagen ? (
-          <img src={imagen} alt={nombre} className="object-contain h-32 w-full" />
+          <img
+            src={imagen}
+            alt={nombre}
+            className="object-contain h-32 w-full"
+            onError={e => { e.currentTarget.src = ""; }}
+          />
         ) : (
           <span className="text-blue-200">Sin imagen</span>
         )}
@@ -78,7 +113,7 @@ export default function ProductCard({
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              onAddToCart?.();
+              handleAddToCart();
             }}
             className="
               add-to-cart-btn flex items-center justify-center
@@ -92,6 +127,7 @@ export default function ProductCard({
             title="Añadir al carrito"
             tabIndex={0}
             aria-label="Añadir al carrito"
+            disabled={stockDisponible === 0 || cantidadEnCarrito >= stockDisponible}
           >
             <ShoppingCart className="w-6 h-6 text-green-600 group-hover:text-green-700 transition" />
           </button>

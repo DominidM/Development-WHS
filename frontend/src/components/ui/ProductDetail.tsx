@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Heart, Truck } from "lucide-react";
+import { useCart } from "./CartContext";
 
 interface ProductDetailProps {
   slug: string;
@@ -13,12 +14,14 @@ interface Producto {
   imagenProducto?: string;
   slug: string;
   marca: string;
-  stockProducto?: number; // Opcional, si quieres mostrar el stock
+  stockProducto?: number;
 }
 
 export default function ProductDetail({ slug }: ProductDetailProps) {
   const [producto, setProducto] = useState<Producto | null>(null);
   const [cantidad, setCantidad] = useState<number>(1);
+
+  const { addItem, items } = useCart();
 
   useEffect(() => {
     fetch(`http://localhost:8081/producto/${slug}`)
@@ -28,7 +31,18 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
   }, [slug]);
 
   // Limitar cantidad máxima si hay stock
-  const maxCantidad = producto?.stockProducto ?? 99;
+  const stockDisponible = producto?.stockProducto ?? 0;
+
+  // Buscar si ya está en el carrito y cuántos hay
+  const cartItem = items.find(item => item.id === (producto?.idProducto?.toString() ?? ""));
+  const cantidadEnCarrito = cartItem?.quantity ?? 0;
+  // El máximo que puede seleccionar es el stock menos lo que ya tiene en el carrito
+  const cantidadMaxSeleccionable = Math.max(0, stockDisponible - cantidadEnCarrito);
+
+  // Si cambia el producto, resetea cantidad
+  useEffect(() => {
+    setCantidad(1);
+  }, [producto?.idProducto]);
 
   if (!producto) {
     return <div className="text-center py-12 text-gray-400">Cargando producto...</div>;
@@ -46,6 +60,7 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
                   src={producto.imagenProducto}
                   alt={producto.nombreProducto}
                   className="h-72 transition-transform duration-300 object-contain group-hover:scale-110"
+                  onError={e => { e.currentTarget.src = "https://via.placeholder.com/240x200?text=Sin+imagen"; }}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-blue-200">Sin imagen</div>
@@ -87,16 +102,30 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
               <span className="text-lg font-semibold w-6 text-center">{cantidad}</span>
               <button
                 className="w-8 h-8 rounded border border-blue-300 text-blue-700 font-bold hover:bg-blue-100 active:bg-blue-200 transition"
-                onClick={() => setCantidad(Math.min(maxCantidad, cantidad + 1))}
+                onClick={() => setCantidad(Math.min(cantidadMaxSeleccionable, cantidad + 1))}
                 aria-label="Aumentar cantidad"
-                disabled={cantidad >= maxCantidad}
+                disabled={cantidad >= cantidadMaxSeleccionable}
               >+</button>
-              {producto.stockProducto !== undefined && (
-                <span className="ml-2 text-xs text-gray-500">Stock: {producto.stockProducto}</span>
-              )}
+              <span className={`ml-2 text-xs ${cantidadMaxSeleccionable === 0 ? "text-red-500" : "text-gray-500"}`}>
+                {cantidadMaxSeleccionable === 0 ? "Sin stock" : `Stock: ${cantidadMaxSeleccionable}`}
+              </span>
             </div>
             {/* Botón principal de carrito */}
-            <button className="flex items-center justify-center w-full py-3 rounded bg-blue-700 hover:bg-blue-800 text-white font-bold shadow transition mb-3 gap-2">
+            <button
+              className="flex items-center justify-center w-full py-3 rounded bg-blue-700 hover:bg-blue-800 text-white font-bold shadow transition mb-3 gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              onClick={() => {
+                if (cantidadMaxSeleccionable === 0) return;
+                addItem({
+                  id: producto.idProducto.toString(),
+                  name: producto.nombreProducto,
+                  price: producto.precioProducto,
+                  quantity: cantidad,
+                  image: producto.imagenProducto,
+                  stock: stockDisponible
+                });
+              }}
+              disabled={cantidadMaxSeleccionable === 0}
+            >
               <Truck className="w-5 h-5" />
               Agregar al carro
             </button>

@@ -1,11 +1,15 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
-interface CartItem {
+export interface CartItem {
   id: string;
   name: string;
   price: number;
+  originalPrice?: number; // <--- agrégalo aquí (o "precioOriginal" si prefieres)
   quantity: number;
-  // Puedes añadir más propiedades según tus necesidades
+  image?: string;
+  stock?: number;
+  brand?: string;
+  description?: string;
 }
 
 interface CartContextType {
@@ -13,7 +17,7 @@ interface CartContextType {
   addItem: (item: CartItem) => void;
   removeItem: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
-  addTestProduct: () => void; // Nueva función para agregar un producto de prueba
+  clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextType>({
@@ -21,55 +25,70 @@ const CartContext = createContext<CartContextType>({
   addItem: () => {},
   removeItem: () => {},
   updateQuantity: () => {},
-  addTestProduct: () => {}, // Valor por defecto para la nueva función
+  clearCart: () => {},
 });
 
 export const useCart = () => useContext(CartContext);
 
+const CART_KEY = "shopping_cart_data";
+
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
+  useEffect(() => {
+    const saved = localStorage.getItem(CART_KEY);
+    if (saved) setItems(JSON.parse(saved));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
+  }, [items]);
+
   const addItem = (newItem: CartItem) => {
-    console.log('CartContext - addItem llamado con:', newItem);
-    const existingItemIndex = items.findIndex(item => item.id === newItem.id);
-    let updatedItems = [...items];
-    if (existingItemIndex > -1) {
-      updatedItems[existingItemIndex].quantity += newItem.quantity;
-    } else {
-      updatedItems = [...items, newItem];
-    }
-    setItems(updatedItems);
-    console.log('CartContext - Items después de addItem:', updatedItems);
+    setItems(prevItems => {
+      const existingItemIndex = prevItems.findIndex(item => item.id === newItem.id);
+      let updatedItems = [...prevItems];
+      if (existingItemIndex > -1) {
+        const item = updatedItems[existingItemIndex];
+        // Actualiza el stock si viene en newItem (por si cambió en el backend)
+        if (newItem.stock !== undefined) {
+          item.stock = newItem.stock;
+        }
+        const maxQuantity = item.stock ?? newItem.stock ?? 99;
+        const newQuantity = item.quantity + newItem.quantity;
+        item.quantity = Math.min(newQuantity, maxQuantity);
+      } else {
+        const maxQuantity = newItem.stock ?? 99;
+        updatedItems = [...updatedItems, { ...newItem, quantity: Math.min(newItem.quantity, maxQuantity) }];
+      }
+      return updatedItems;
+    });
   };
 
   const removeItem = (itemId: string) => {
-    console.log('CartContext - removeItem llamado con ID:', itemId);
-    const filteredItems = items.filter(item => item.id !== itemId);
-    setItems(filteredItems);
-    console.log('CartContext - Items después de removeItem:', filteredItems);
+    setItems(prevItems => prevItems.filter(item => item.id !== itemId));
   };
 
   const updateQuantity = (itemId: string, quantity: number) => {
-    console.log('CartContext - updateQuantity llamado con ID:', itemId, 'y cantidad:', quantity);
-    const updatedItems = items.map(item =>
-      item.id === itemId ? { ...item, quantity: Math.max(1, quantity) } : item
+    setItems(prevItems =>
+      prevItems.map(item =>
+        item.id === itemId
+          ? {
+              ...item,
+              quantity: Math.max(
+                1,
+                Math.min(quantity, item.stock ?? 99)
+              ),
+            }
+          : item
+      )
     );
-    setItems(updatedItems);
-    console.log('CartContext - Items después de updateQuantity:', updatedItems);
   };
 
-  const addTestProduct = () => {
-    const testProduct: CartItem = {
-      id: 'test-product-1',
-      name: 'Producto de Prueba',
-      price: 0.1,
-      quantity: 1,
-    };
-    addItem(testProduct);
-  };
+  const clearCart = () => setItems([]);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, addTestProduct }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart }}>
       {children}
     </CartContext.Provider>
   );

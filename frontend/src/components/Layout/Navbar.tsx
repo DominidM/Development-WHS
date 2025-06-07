@@ -25,7 +25,7 @@ export function Navbar() {
   const [scrollToOfertas, setScrollToOfertas] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const { items, addTestProduct } = useCart();
+  const { items} = useCart();
 
   useEffect(() => {
     if (location.pathname === '/' && scrollToOfertas) {
@@ -55,7 +55,6 @@ export function Navbar() {
   const closeCart = () => setIsCartOpen(false);
 
   useEffect(() => {
-    addTestProduct();
   }, []);
 
   return (
