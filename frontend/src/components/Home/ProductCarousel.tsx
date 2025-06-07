@@ -9,29 +9,33 @@ interface Producto {
   imagenProducto?: string;
   slug: string;
   marca: string;
-  categoria: string;
+  categoria: string; // nombre de la categoría
 }
 
 interface ProductCarouselProps {
-  pkCategoria: string;
+  pkCategoria: string; // nombre de la categoría
   titulo: string;
   subtitulo?: string;
-  maxProductos?: number; // <-- nuevo prop para controlar
 }
 
-export default function ProductCarousel({ pkCategoria, titulo, subtitulo, maxProductos = 8 }: ProductCarouselProps) {
+export default function ProductCarousel({ pkCategoria, titulo, subtitulo }: ProductCarouselProps) {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:8081/producto?categoria=${encodeURIComponent(pkCategoria)}`)
+    fetch("http://localhost:8081/producto")
       .then(res => res.json())
       .then(data => {
         setProductos(data);
         setLoading(false);
       });
-  }, [pkCategoria]);
+  }, []);
+
+  // Filtrado SOLO por nombre de categoría, insensible a mayúsculas
+  const productosFiltrados = productos.filter(prod =>
+    prod.categoria?.toLowerCase() === pkCategoria.toLowerCase()
+  );
 
   return (
     <section className="py-10 bg-gray-50">
@@ -49,10 +53,10 @@ export default function ProductCarousel({ pkCategoria, titulo, subtitulo, maxPro
                style={{ WebkitOverflowScrolling: "touch" }}>
             {loading ? (
               <div className="text-center w-full py-8 text-gray-400">Cargando productos...</div>
-            ) : productos.length === 0 ? (
+            ) : productosFiltrados.length === 0 ? (
               <div className="text-center w-full py-8 text-gray-400">No hay productos para esta categoría.</div>
             ) : (
-              productos.slice(0, maxProductos).map(producto => (
+              productosFiltrados.map(producto => (
                 <div
                   key={producto.idProducto}
                   className="min-w-[260px] max-w-[280px] snap-start"

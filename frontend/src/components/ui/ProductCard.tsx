@@ -7,6 +7,7 @@ interface ProductCardProps {
   imagen?: string;
   slug: string;
   precio: number;
+  precioOriginal?: number; // <-- Nueva prop para mostrar el precio original tachado
   onAddToCart?: () => void;
 }
 
@@ -16,6 +17,7 @@ export default function ProductCard({
   imagen,
   slug,
   precio,
+  precioOriginal,
   onAddToCart,
 }: ProductCardProps) {
   const navigate = useNavigate();
@@ -35,7 +37,7 @@ export default function ProductCard({
         bg-white rounded-4xl shadow-md border border-blue-100
         transition-transform hover:scale-105 hover:shadow-xl cursor-pointer
         w-[280px] h-[320px] flex flex-col justify-between
-        mx-auto p-
+        mx-auto
       "
       onClick={handleCardClick}
       tabIndex={0}
@@ -55,9 +57,22 @@ export default function ProductCard({
       <div className="flex-1 flex flex-col px-4 py-3 justify-between">
         <h4 className="text-blue-800 font-bold text-base truncate mb-2">{nombre}</h4>
         <p className="text-xs text-gray-600 mb-2 line-clamp-2">{descripcion}</p>
-        <span className="bg-blue-100 text-blue-800 font-semibold px-3 py-1 rounded-full text-sm shadow w-fit mb-3">
-          S/. {precio.toFixed(2)}
-        </span>
+        <div className="mb-3">
+          {precioOriginal && precioOriginal !== precio ? (
+            <>
+              <span className="bg-red-100 text-red-700 font-bold px-3 py-1 rounded-full text-sm shadow w-fit mr-3">
+                S/. {precio.toFixed(2)}
+              </span>
+              <span className="text-gray-400 line-through text-sm">
+                S/. {precioOriginal.toFixed(2)}
+              </span>
+            </>
+          ) : (
+            <span className="bg-blue-100 text-blue-800 font-semibold px-3 py-1 rounded-full text-sm shadow w-fit">
+              S/. {precio.toFixed(2)}
+            </span>
+          )}
+        </div>
         <div className="flex justify-end items-end mt-auto">
           <button
             type="button"
