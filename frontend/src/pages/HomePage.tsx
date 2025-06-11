@@ -21,7 +21,7 @@ function HomePage() {
       color="#0D3C6B"
       />
 
-     <OfertaCarousel /> {/* Simplemente renderiza el componente */}
+     <OfertaCarousel /> 
 
       <ImagenPrincipalConSecundarias /> {/* Simplemente renderiza el componente */}
             <Publicidad textoPromocional="Delivery gratis a compras mayores a 200" />

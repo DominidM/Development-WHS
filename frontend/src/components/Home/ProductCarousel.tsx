@@ -24,7 +24,8 @@ export default function ProductCarousel({ pkCategoria, titulo, subtitulo }: Prod
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:8081/producto")
+
+    fetch("http://localhost:8081/api/public/productos")
       .then(res => res.json())
       .then(data => {
         setProductos(data);

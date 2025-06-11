@@ -33,6 +33,30 @@ public class ProductoService {
         return dto;
     }
 
+    public Producto toEntity(ProductoDTO dto) {
+        Producto producto = new Producto();
+        producto.setIdProducto(dto.getIdProducto());
+        producto.setNombreProducto(dto.getNombreProducto());
+        producto.setPrecioProducto(dto.getPrecioProducto());
+        producto.setDescripcionProducto(dto.getDescripcionProducto());
+        producto.setImagenProducto(dto.getImagenProducto());
+        producto.setStockProducto(dto.getStockProducto());
+        producto.setSlug(dto.getSlug());
+        // TODO: Asignar categoria, marca, estado si tu modelo lo requiere
+        return producto;
+    }
+
+    // Guardar un producto
+    public ProductoDTO save(ProductoDTO productoDTO) {
+        Producto producto = toEntity(productoDTO);
+        // Si el slug no viene, lo generamos
+        if (producto.getSlug() == null || producto.getSlug().isBlank()) {
+            producto.setSlug(toSlug(producto.getNombreProducto()));
+        }
+        Producto saved = productoRepository.save(producto);
+        return toDTO(saved);
+    }
+
     // Generar slug a partir del nombre de producto (evita tildes y caracteres raros)
     public String toSlug(String nombre) {
         String normalized = Normalizer.normalize(nombre, Normalizer.Form.NFD);
@@ -55,9 +79,16 @@ public class ProductoService {
 
     // Listar todos los productos como DTOs
     public List<ProductoDTO> findAllAsDTO() {
-        return productoRepository.findAll()
-                .stream()
-                .map(this::toDTO)
-                .toList();
+        try {
+            List<Producto> productos = productoRepository.findAll();
+            return productos.stream()
+                    .map(this::toDTO)
+                    .filter(dto -> dto != null)
+                    .toList();
+        } catch (Exception e) {
+            System.err.println("Error en findAllAsDTO: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

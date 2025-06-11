@@ -10,7 +10,13 @@ public class ProductoDTO {
     private String imagenProducto;
     private Integer stockProducto;
     private String slug;
-    // Relaciones como nombre para simplificar
+
+    // Relaciones como IDs para persistencia
+    private Long pkCategoriaProducto;
+    private Long pkMarcaProducto;
+    private Long pkEstadoProducto;
+
+    // Relaciones como nombre para mostrar (opcional)
     private String categoria;
     private String marca;
     private String estado;
@@ -57,6 +63,24 @@ public class ProductoDTO {
     }
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+    public Long getPkCategoriaProducto() {
+        return pkCategoriaProducto;
+    }
+    public void setPkCategoriaProducto(Long pkCategoriaProducto) {
+        this.pkCategoriaProducto = pkCategoriaProducto;
+    }
+    public Long getPkMarcaProducto() {
+        return pkMarcaProducto;
+    }
+    public void setPkMarcaProducto(Long pkMarcaProducto) {
+        this.pkMarcaProducto = pkMarcaProducto;
+    }
+    public Long getPkEstadoProducto() {
+        return pkEstadoProducto;
+    }
+    public void setPkEstadoProducto(Long pkEstadoProducto) {
+        this.pkEstadoProducto = pkEstadoProducto;
     }
     public String getCategoria() {
         return categoria;

@@ -1,8 +1,6 @@
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\BackendApplication.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\config\SecurityConfig.java
-C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\config\WebConfig.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\controller\AdminController.java
-C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\controller\AdminLoginController.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\controller\AuthController.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\controller\FormularioController.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\controller\OfertaController.java
@@ -20,13 +18,18 @@ C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\j
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\model\RolUsuario.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\model\TipoForm.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\model\Usuario.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\CategoriaProductoRepository.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\EstadoFormRepository.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\EstadoProductoRepository.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\FormularioRepository.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\MarcaProductoRepository.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\OfertaRepository.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\ProductoRepository.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\RolUsuarioRepository.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\TipoFormRepository.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\UsuarioRepository.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\security\CustomUserDetails.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\security\CustomUserDetailsService.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\AuthService.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\AuthServiceImpl.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\FormularioService.java

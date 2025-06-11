@@ -24,7 +24,7 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
   const { addItem, items } = useCart();
 
   useEffect(() => {
-    fetch(`http://localhost:8081/producto/${slug}`)
+    fetch(`http://localhost:8081/api/public/productos/${slug}`)
       .then(res => res.json())
       .then(setProducto)
       .catch(() => setProducto(null));

@@ -44,8 +44,8 @@ const ProductsPage: React.FC = () => {
   const [paginaActual, setPaginaActual] = useState(1);
 
   useEffect(() => {
-    fetch("http://localhost:8081/producto")
-      .then(res => res.json())
+  fetch("http://localhost:8081/api/public/productos")
+    .then(res => res.json())
       .then((data: ProductoBackend[]) => {
         const adaptados: Producto[] = data.map((p) => ({
           idProducto: p.idProducto,

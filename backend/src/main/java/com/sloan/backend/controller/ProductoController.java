@@ -13,27 +13,20 @@ import com.sloan.backend.dto.ProductoDTO;
 import com.sloan.backend.service.ProductoService;
 
 @RestController
-@RequestMapping("/producto")
+@RequestMapping("/api/public/productos")
 public class ProductoController {
-
     @Autowired
     private ProductoService productoService;
 
-    // Listar todos los productos
     @GetMapping
     public ResponseEntity<List<ProductoDTO>> getAllProductos() {
         return ResponseEntity.ok(productoService.findAllAsDTO());
     }
 
-    // Buscar producto por slug
     @GetMapping("/{slug}")
     public ResponseEntity<ProductoDTO> getProductoBySlug(@PathVariable String slug) {
-        System.out.println("Slug recibido: " + slug);
         return productoService.findBySlugAsDTO(slug)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
-
-    
 }

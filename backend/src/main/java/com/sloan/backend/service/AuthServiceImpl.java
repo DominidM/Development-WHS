@@ -1,7 +1,9 @@
 package com.sloan.backend.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.sloan.backend.model.Usuario;
@@ -10,12 +12,12 @@ import com.sloan.backend.repository.UsuarioRepository;
 @Service
 public class AuthServiceImpl implements AuthService {
     private final UsuarioRepository usuarioRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthServiceImpl(UsuarioRepository usuarioRepository) {
+    public AuthServiceImpl(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -35,5 +37,10 @@ public class AuthServiceImpl implements AuthService {
         }
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         return usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public List<Usuario> listarTodos() {
+        return usuarioRepository.findAll();
     }
 }

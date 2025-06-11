@@ -76,7 +76,7 @@ export function LibroReclamacionesForm() {
         textEstado: formData.detalle,
       };
     
-      const response = await fetch('http://localhost:8081/api/formularios', {
+      const response = await fetch('http://localhost:8081/api/public/formularios', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend),

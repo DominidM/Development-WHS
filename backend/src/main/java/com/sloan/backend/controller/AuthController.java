@@ -1,19 +1,19 @@
 package com.sloan.backend.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.ResponseEntity;
 
-import com.sloan.backend.model.Usuario;
 import com.sloan.backend.model.RolUsuario;
-import com.sloan.backend.service.AuthService;
-import com.sloan.backend.repository.RolUsuarioRepository; // Asegúrate de tener este repositorio
+import com.sloan.backend.model.Usuario;
+import com.sloan.backend.repository.RolUsuarioRepository;
+import com.sloan.backend.service.AuthService; // Asegúrate de tener este repositorio
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/admin/auth")
 @CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
     private final AuthService authService;

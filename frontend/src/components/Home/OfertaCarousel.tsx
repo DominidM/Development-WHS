@@ -20,7 +20,7 @@ export default function OfertaCarousel() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:8081/oferta/activas")
+    fetch("http://localhost:8081/api/public/ofertas/activas")
       .then(res => {
         if (!res.ok) throw new Error("No se pudo obtener ofertas");
         return res.json();

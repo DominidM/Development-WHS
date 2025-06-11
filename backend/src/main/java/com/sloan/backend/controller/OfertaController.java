@@ -10,7 +10,7 @@ import com.sloan.backend.dto.OfertaDTO;
 import com.sloan.backend.service.OfertaService;
 
 @RestController
-@RequestMapping("/oferta")
+@RequestMapping("/api/public/ofertas")
 public class OfertaController {
 
     private final OfertaService ofertaService;

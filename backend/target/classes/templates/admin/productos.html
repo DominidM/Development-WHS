@@ -2,38 +2,126 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Productos</title>
-    <link rel="stylesheet" th:href="@{/adminlte/css/admin-panel.css}" href="/adminlte/css/admin-panel.css">
+    <title>Gestión de Productos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/adminlte/css/productos-admin.css}">
+    <style>
+        /* Responsive table improvements */
+        @media (max-width: 991px) {
+            .table-responsive-stack tr {
+                display: flex;
+                flex-direction: column;
+                border-bottom: 1px solid #dee2e6;
+                margin-bottom: 1rem;
+            }
+            .table-responsive-stack td,
+            .table-responsive-stack th {
+                display: block;
+                width: 100%;
+                text-align: left;
+            }
+            .table-responsive-stack thead {
+                display: none;
+            }
+            .table-responsive-stack .actions-cell {
+                display: flex;
+                flex-direction: row;
+                gap: 0.5rem;
+                justify-content: flex-start;
+            }
+        }
+        .table thead th {
+            vertical-align: middle;
+        }
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            font-size: 1.1rem;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+    </style>
 </head>
-<body>
-    <div class="table-panel">
-        <h1>Productos</h1>
-        <a th:href="@{/admin/producto-form}" class="action-btn">+ Agregar Producto</a>
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Categoría</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Ejemplo de fila -->
-                <tr>
-                    <td>1</td>
-                    <td>Producto A</td>
-                    <td>S/ 30.00</td>
-                    <td>General</td>
-                    <td>
-                        <a href="#" class="action-btn">Editar</a>
-                        <a href="#" class="action-btn">Eliminar</a>
-                    </td>
-                </tr>
-                <!-- Aquí van más filas con Thymeleaf -->
-            </tbody>
-        </table>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" th:href="@{/admin/dashboard}">AdminPanel</a>
+            <div class="d-flex">
+                <a th:href="@{/admin/logout}" class="btn btn-outline-light btn-sm ms-2">Cerrar sesión</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container py-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+            <h2 class="fw-bold text-primary mb-0">Productos</h2>
+            <div class="d-flex gap-2">
+                <a th:href="@{/admin/dashboard}" class="btn btn-outline-secondary me-2">
+                    <i class="bi bi-arrow-left"></i> Regresar a Dashboard
+                </a>
+                <a th:href="@{/admin/productos/nuevo}" class="btn btn-success">
+                    <i class="bi bi-plus-circle me-1"></i> Agregar Producto
+                </a>
+            </div>
+        </div>
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <div class="table-responsive table-responsive-stack">
+                    <table class="table align-middle table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="prod : ${productos}">
+                            <td th:data-label="ID" th:text="${prod.idProducto}">1</td>
+                            <td th:data-label="Nombre" th:text="${prod.nombreProducto}">Ejemplo Producto</td>
+                            <td th:data-label="Categoría" th:text="${prod.categoria}">Categoría</td>
+                            <td th:data-label="Precio">
+                                <span th:text="${#numbers.formatDecimal(prod.precioProducto, 1, 'COMMA', 2, 'POINT')}">1200.00</span>
+                                <span class="text-muted small">S/.</span>
+                            </td>
+                            <td th:data-label="Stock">
+                                <span th:text="${prod.stockProducto}">20</span>
+                            </td>
+                            <td class="text-center actions-cell">
+                                <a th:href="@{'/admin/productos/' + ${prod.idProducto}}" class="btn btn-info btn-action me-1 mb-1 mb-lg-0" title="Ver">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a th:href="@{'/admin/productos/editar/' + ${prod.idProducto}}" class="btn btn-warning btn-action me-1 mb-1 mb-lg-0" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form th:action="@{'/admin/productos/eliminar/' + ${prod.idProducto}}" method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar este producto?');">
+                                    <button type="submit" class="btn btn-danger btn-action" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(productos)}">
+                            <td colspan="6" class="text-center text-secondary">No hay productos registrados.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- Bootstrap icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Bootstrap JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
