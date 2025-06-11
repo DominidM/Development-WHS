@@ -9,7 +9,16 @@ export function Navbar() {
   const desiredScrollOffset = 520;
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchText, setSearchText] = useState("");
 
+ const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (searchText.trim().length > 0) {
+      navigate(`/productos?search=${encodeURIComponent(searchText.trim())}`);
+      setSearchText("");
+    }
+  };
+  
   const handleInicioClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     navigate('/');
@@ -69,27 +78,35 @@ export function Navbar() {
             </Link>
           </div>
           {/* Search box grande y decorado */}
-          <div className="hidden md:flex flex-1 justify-center mx-8">
+           <div className="hidden md:flex flex-1 justify-center mx-8">
             <div className="relative w-full max-w-2xl">
-              <input
-                type="text"
-                placeholder="Buscar..."
-                className="
-                  w-full px-8 py-4 text-lg border border-blue-900 rounded-full shadow-md
-                  focus:outline-none focus:ring-2 focus:ring-blue-900 bg-white
-                  placeholder:text-blaxk-800 font-medium transition
-                "
-                style={{
-                  boxShadow: "0 4px 24px 0 rgba(13,60,107,0.08)",
-                  letterSpacing: "0.03em"
-                }}
-              />
-              <span className="absolute right-6 top-1/2 -translate-y-1/2 text-blue-800 pointer-events-none">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-              </span>
+              <form onSubmit={handleSearchSubmit}>
+                <input
+                  type="text"
+                  placeholder="Buscar..."
+                  value={searchText}
+                  onChange={e => setSearchText(e.target.value)}
+                  className="
+                    w-full px-8 py-4 text-lg border border-blue-900 rounded-full shadow-md
+                    focus:outline-none focus:ring-2 focus:ring-blue-900 bg-white
+                    placeholder:text-blaxk-800 font-medium transition
+                  "
+                  style={{
+                    boxShadow: "0 4px 24px 0 rgba(13,60,107,0.08)",
+                    letterSpacing: "0.03em"
+                  }}
+                />
+                <button
+                  type="submit"
+                  className="absolute right-6 top-1/2 -translate-y-1/2 text-blue-800"
+                  tabIndex={-1}
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                </button>
+              </form>
             </div>
           </div>
           {/* ICONOS */}
@@ -125,12 +142,16 @@ export function Navbar() {
 
         {/* MOBILE NAV */}
         {isOpen && (
-          <div className="md:hidden px-4 pb-4 space-y-4 bg-[#f7fafd]">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              className="w-full px-4 py-3 border-2 border-blue-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-200 shadow"
-            />
+            <div className="md:hidden px-4 pb-4 space-y-4 bg-[#f7fafd]">
+            <form onSubmit={handleSearchSubmit}>
+              <input
+                type="text"
+                placeholder="Buscar..."
+                value={searchText}
+                onChange={e => setSearchText(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-blue-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-200 shadow"
+              />
+            </form>
             <nav className="flex flex-col space-y-2 text-base font-semibold">
               <Link to="/" onClick={handleInicioClick}>Ofertas</Link>
               <Link to="/productos" className="hover:text-blue-500">Catálogo</Link>

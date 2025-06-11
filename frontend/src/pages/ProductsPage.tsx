@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from "react-router-dom";
 import { Carousel } from "@/components/Carousel";
 import { Publicidad } from '../components/Publicidad';
 import Marcas from '../components/Marcas';
@@ -25,6 +26,7 @@ interface Producto {
   imagenProducto?: string;
   slug: string;
   marca: string;
+  stockProducto: number;
 }
 
 const MARCAS = [
@@ -43,9 +45,14 @@ const ProductsPage: React.FC = () => {
   // Paginación
   const [paginaActual, setPaginaActual] = useState(1);
 
+  // Lógica de búsqueda
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const searchQuery = params.get("search")?.toLowerCase() || "";
+
   useEffect(() => {
-  fetch("http://localhost:8081/api/public/productos")
-    .then(res => res.json())
+    fetch("http://localhost:8081/api/public/productos")
+      .then(res => res.json())
       .then((data: ProductoBackend[]) => {
         const adaptados: Producto[] = data.map((p) => ({
           idProducto: p.idProducto,
@@ -55,6 +62,7 @@ const ProductsPage: React.FC = () => {
           imagenProducto: p.imagenProducto,
           slug: p.slug,
           marca: p.marca,
+          stockProducto: p.stockProducto,
         }));
         setProductos(adaptados);
         setLoading(false);
@@ -82,10 +90,12 @@ const ProductsPage: React.FC = () => {
     setPaginaActual(1); // Reset a página 1 al cambiar filtro
   };
 
+  // Filtrado por búsqueda, marcas y precio
   const productosFiltrados = productos
     .filter(prod =>
       (filtroMarcas.length === 0 || filtroMarcas.includes(prod.marca)) &&
-      prod.precio <= precioMax
+      prod.precio <= precioMax &&
+      prod.nombreProducto.toLowerCase().includes(searchQuery)
     )
     .sort((a, b) => a.precio - b.precio);
 
@@ -237,6 +247,7 @@ const ProductsPage: React.FC = () => {
                   imagen={producto.imagenProducto}
                   slug={producto.slug}
                   precio={producto.precio}
+                  stock={producto.stockProducto}
                 />
               ))
             )}

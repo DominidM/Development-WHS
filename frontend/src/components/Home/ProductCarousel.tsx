@@ -9,7 +9,8 @@ interface Producto {
   imagenProducto?: string;
   slug: string;
   marca: string;
-  categoria: string; // nombre de la categoría
+  categoria: string;
+  stockProducto: number; 
 }
 
 interface ProductCarouselProps {
@@ -63,12 +64,13 @@ export default function ProductCarousel({ pkCategoria, titulo, subtitulo }: Prod
                   className="min-w-[260px] max-w-[280px] snap-start"
                 >
                   <ProductCard
-                    nombre={producto.nombreProducto}
-                    descripcion={producto.descripcionProducto}
-                    imagen={producto.imagenProducto}
-                    slug={producto.slug}
-                    precio={producto.precioProducto}
-                  />
+                  nombre={producto.nombreProducto}
+                  descripcion={producto.descripcionProducto}
+                  imagen={producto.imagenProducto}
+                  slug={producto.slug}
+                  precio={producto.precioProducto}
+                  stock={producto.stockProducto} 
+                />
                 </div>
               ))
             )}

@@ -36,47 +36,46 @@ export default function LoginModal() {
   }
 
   // Login
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    try {
-      const response = await fetch('http://localhost:8081/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ correo, password })
-      })
-      if (!response.ok) throw new Error('Datos inválidos')
-      const usuario = await response.json()
-      window.localStorage.setItem('usuario', JSON.stringify(usuario))
-      setUsuario(usuario)
-      closeModal()
-    } catch (err: unknown) {
-      if (err instanceof Error) setError(err.message)
-      else setError("Error desconocido")
-    }
+const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setError('')
+  try {
+    const response = await fetch('http://localhost:8081/api/admin/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ correo, password })
+    })
+    if (!response.ok) throw new Error('Datos inválidos')
+    const usuario = await response.json()
+    window.localStorage.setItem('usuario', JSON.stringify(usuario))
+    setUsuario(usuario)
+    closeModal()
+  } catch (err: unknown) {
+    if (err instanceof Error) setError(err.message)
+    else setError("Error desconocido")
   }
+}
 
-  // Registro
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault()
+const handleRegister = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setError('')
+  try {
+    const response = await fetch('http://localhost:8081/api/admin/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ correo, password, nombre })
+    })
+    if (!response.ok) throw new Error('No se pudo registrar')
+    setIsRegister(false)
+    setCorreo('')
+    setPassword('')
+    setNombre('')
     setError('')
-    try {
-      const response = await fetch('http://localhost:8081/api/admin/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ correo, password, nombre })
-      })
-      if (!response.ok) throw new Error('No se pudo registrar')
-      setIsRegister(false)
-      setCorreo('')
-      setPassword('')
-      setNombre('')
-      setError('')
-    } catch (err: unknown) {
-      if (err instanceof Error) setError(err.message)
-      else setError('Error desconocido')
-    }
+  } catch (err: unknown) {
+    if (err instanceof Error) setError(err.message)
+    else setError('Error desconocido')
   }
+}
 
   // Cerrar sesión
   const handleLogout = () => {

@@ -32,10 +32,10 @@ public class OfertaService {
                 prod.getImagenProducto(),
                 prod.getSlug(),
                 prod.getPrecioProducto(),
-                oferta.getPrecioOferta()
+                oferta.getPrecioOferta(),
+                prod.getStockProducto() 
             );
         }).collect(Collectors.toList());
     }
 
-    // Los otros métodos pueden quedar igual
 }

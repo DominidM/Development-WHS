@@ -39,7 +39,10 @@ export default function ProductCard({
     item => item.id === ((id ?? slug).toString())
   );
   const cantidadEnCarrito = cartItem?.quantity ?? 0;
-  const stockDisponible = stock ?? 99;
+
+  // Si stock es undefined, muestra "Sin stock" o deshabilita el botón
+  // Cambia 99 por 0 si prefieres que undefined sea stock agotado
+  const stockDisponible = typeof stock === "number" ? stock : 0;
 
   const handleAddToCart = () => {
     if (stockDisponible === 0) {
@@ -61,6 +64,7 @@ export default function ProductCard({
   };
 
   console.log('STOCK recibido:', stock, typeof stock);
+
   return (
     <div
       className="
@@ -108,7 +112,10 @@ export default function ProductCard({
             </span>
           )}
         </div>
-        <div className="flex justify-end items-end mt-auto">
+        <div className="flex justify-between items-end mt-auto">
+          <span className={`text-xs font-medium mr-2 ${stockDisponible === 0 ? "text-red-600" : "text-green-700"}`}>
+            {stockDisponible === 0 ? "Sin stock" : `Stock: ${stockDisponible}`}
+          </span>
           <button
             type="button"
             onClick={(e) => {

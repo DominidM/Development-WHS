@@ -42,7 +42,6 @@ public class SecurityConfig {
                     "/bootstrap.bundle.min.js"
                 ).permitAll()
                 .requestMatchers("/admin/login").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()   // <-- Asegúrate que esto permite el register
                 .requestMatchers("/api/public/**").permitAll()
                 .requestMatchers("/api/admin/auth/**").permitAll()
                 // 2. Rutas protegidas

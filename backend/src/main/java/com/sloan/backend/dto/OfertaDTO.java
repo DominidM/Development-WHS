@@ -11,11 +11,12 @@ public class OfertaDTO {
     private String slug;
     private BigDecimal precioProducto; // precio original
     private BigDecimal precioOferta;   // precio de oferta
+    private Integer stockProducto;     // <--- Añadido stock
 
     public OfertaDTO() {}
 
     public OfertaDTO(Long idOferta, Long idProducto, String nombreProducto, String descripcionProducto,
-                     String imagenProducto, String slug, BigDecimal precioProducto, BigDecimal precioOferta) {
+                     String imagenProducto, String slug, BigDecimal precioProducto, BigDecimal precioOferta, Integer stockProducto) {
         this.idOferta = idOferta;
         this.idProducto = idProducto;
         this.nombreProducto = nombreProducto;
@@ -24,6 +25,7 @@ public class OfertaDTO {
         this.slug = slug;
         this.precioProducto = precioProducto;
         this.precioOferta = precioOferta;
+        this.stockProducto = stockProducto;
     }
 
     // Getters y setters...
@@ -50,4 +52,7 @@ public class OfertaDTO {
 
     public BigDecimal getPrecioOferta() { return precioOferta; }
     public void setPrecioOferta(BigDecimal precioOferta) { this.precioOferta = precioOferta; }
+
+    public Integer getStockProducto() { return stockProducto; }
+    public void setStockProducto(Integer stockProducto) { this.stockProducto = stockProducto; }
 }

@@ -12,6 +12,7 @@ interface Oferta {
   precioOferta: number;
   fechaInicio?: string;
   fechaFin?: string;
+  stockProducto: number; // <--- STOCK AÑADIDO
 }
 
 export default function OfertaCarousel() {
@@ -68,6 +69,7 @@ export default function OfertaCarousel() {
                   slug={oferta.slug}
                   precio={oferta.precioOferta}
                   precioOriginal={oferta.precioProducto}
+                  stock={oferta.stockProducto} // <-- PASA EL STOCK AQUÍ
                 />
               </div>
             ))
@@ -89,6 +91,7 @@ export default function OfertaCarousel() {
                   slug={oferta.slug}
                   precio={oferta.precioOferta}
                   precioOriginal={oferta.precioProducto}
+                  stock={oferta.stockProducto} // <-- PASA EL STOCK AQUÍ TAMBIÉN
                 />
               </div>
             ))
