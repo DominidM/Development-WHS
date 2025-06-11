@@ -47,6 +47,31 @@
         .table td, .table th {
             vertical-align: middle;
         }
+        /* Custom button colors for better visual distinction */
+        .btn-action.btn-info {
+            background-color: #0d6efd;
+            border: none;
+            color: #fff;
+        }
+        .btn-action.btn-warning {
+            background-color: #ffc107;
+            border: none;
+            color: #fff;
+        }
+        .btn-action.btn-danger {
+            background-color: #ef4444;
+            border: none;
+            color: #fff;
+        }
+        .btn-action.btn-info:hover {
+            background-color: #0b5ed7;
+        }
+        .btn-action.btn-warning:hover {
+            background-color: #e0a800;
+        }
+        .btn-action.btn-danger:hover {
+            background-color: #dc2626;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -97,12 +122,15 @@
                                 <span th:text="${prod.stockProducto}">20</span>
                             </td>
                             <td class="text-center actions-cell">
-                                <a th:href="@{'/admin/productos/' + ${prod.idProducto}}" class="btn btn-info btn-action me-1 mb-1 mb-lg-0" title="Ver">
+                                <!-- Ver (azul) -->
+                                <a th:href="@{'/admin/productos/' + ${prod.slug}}" class="btn btn-info btn-action me-1 mb-1 mb-lg-0" title="Ver">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a th:href="@{'/admin/productos/editar/' + ${prod.idProducto}}" class="btn btn-warning btn-action me-1 mb-1 mb-lg-0" title="Editar">
+                                <!-- Editar (amarillo) -->
+                                <a th:href="@{'/admin/productos/editar/' + ${prod.slug}}" class="btn btn-warning btn-action me-1 mb-1 mb-lg-0" title="Editar">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
+                                <!-- Eliminar (rojo) -->
                                 <form th:action="@{'/admin/productos/eliminar/' + ${prod.idProducto}}" method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar este producto?');">
                                     <button type="submit" class="btn btn-danger btn-action" title="Eliminar">
                                         <i class="bi bi-trash"></i>

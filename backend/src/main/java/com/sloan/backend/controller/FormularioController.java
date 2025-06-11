@@ -2,7 +2,6 @@ package com.sloan.backend.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,7 @@ import com.sloan.backend.service.FormularioService;
 @RequestMapping("/api/public/formularios")
 public class FormularioController {
 
-    @Autowired
+    
     private final FormularioService formularioService;
     private final TipoFormRepository tipoFormRepository;
     private final EstadoFormRepository estadoFormRepository;

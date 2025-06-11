@@ -1,12 +1,13 @@
 package com.sloan.backend.controller;
-
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -104,6 +105,34 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/productos/{slug}")
+    public String detalleProductoPorSlug(@PathVariable String slug, Model model) {
+        Optional<ProductoDTO> productoOpt = productoService.findBySlugAsDTO(slug);
+        if (productoOpt.isEmpty()) {
+            return "redirect:/admin/productos?notfound";
+        }
+        model.addAttribute("producto", productoOpt.get());
+        return "admin/producto-detalle"; // Este nombre debe coincidir con tu archivo
+    }
+
+
+    @GetMapping("/productos/editar/{slug}")
+    public String editarProductoPorSlug(@PathVariable String slug, Model model) {
+    Optional<ProductoDTO> productoOpt = productoService.findBySlugAsDTO(slug);
+    if (productoOpt.isEmpty()) {
+        // Si no existe, puedes redirigir al listado con un error
+        return "redirect:/admin/productos?notfound";
+    }
+    ProductoDTO producto = productoOpt.get();
+    model.addAttribute("producto", producto);
+    model.addAttribute("categorias", categoriaRepo.findAll());
+    model.addAttribute("marcas", marcaRepo.findAll());
+    model.addAttribute("estados", estadoRepo.findAll());
+    return "admin/producto-editar"; // nombre de la plantilla para editar producto
+    }
+
+
+    
     @GetMapping("/formularios")
     public String formularios(Model model) {
         List<Usuario> listaUsuarios = usuarioService.listarTodos();
