@@ -1,4 +1,4 @@
-Sloan_WebSystem – Plataforma E-commerce para Productos de Gasfitería
+WHS Representaciones – Plataforma E-commerce para Productos de Gasfitería
 ===================================================================
 
 Sloan_WebSystem es una solución web integral orientada al comercio electrónico de productos de gasfitería. El sistema abarca tanto el frontend de cara al cliente como el backend administrativo, garantizando una experiencia de usuario moderna y una gestión eficiente del negocio. Su arquitectura modular y escalable lo convierte en una herramienta robusta para empresas del rubro.
