@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Detalle Producto</title>
@@ -12,8 +12,12 @@
         body {
             background: #f4f8fb;
         }
+        nav.navbar {
+            border-radius: 0 !important;
+            box-shadow: 0 4px 18px rgba(13,110,253,0.13);
+        }
         .product-card {
-            max-width: 550px;
+            max-width: 540px;
             margin: 2rem auto;
             border-radius: 1rem;
             box-shadow: 0 2px 24px 0 rgba(0,0,0,.08);
@@ -24,74 +28,113 @@
             font-weight: 700;
             color: #2563eb;
             letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
         }
         .product-attribute {
             font-size: 1.1rem;
+            margin-bottom: .35rem;
         }
         .product-value {
             font-weight: 500;
         }
         .btn-back {
             margin-top: 1.5rem;
+            font-weight: 500;
         }
         .price {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: #16a34a;
             font-weight: 700;
+            letter-spacing: 1px;
         }
         .icon-box {
             color: #0d6efd;
-            margin-right: .5rem;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            vertical-align: middle;
+            margin-right: .4rem;
+        }
+        .list-icon {
+            color: #2563eb;
+            margin-right: .35rem;
+            font-size: 1.15rem;
+        }
+        .img-producto {
+            display: block;
+            margin: 1.1rem auto 1.5rem auto;
+            max-width: 180px;
+            max-height: 210px;
+            object-fit: contain;
+            border-radius: .6rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            background: #f9f9f9;
+        }
+        .code-muted {
+            color: #888ea8;
+            font-size: 0.98rem;
+            margin-bottom: 0.7rem;
+        }
+        @media (max-width: 560px) {
+            .product-card {
+                max-width: 98vw;
+                padding: 0.7rem !important;
+            }
+            .product-title {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" th:href="@{/admin/dashboard}">AdminPanel</a>
-            <div class="d-flex">
-                <a th:href="@{/admin/logout}" class="btn btn-outline-light btn-sm ms-2">Cerrar sesión</a>
-            </div>
-        </div>
-    </nav>
+    <div th:replace="~{admin/fragments/navbar :: navbar}"></div>
     <main class="container py-4">
         <div class="product-card card p-4">
-            <div class="mb-4">
-                <h1 class="product-title mb-0">
-                    <i class="bi bi-box-seam icon-box"></i>
-                    <span th:text="${producto.nombreProducto}">Nombre de producto</span>
-                </h1>
-                <div class="text-muted mt-1" th:text="'Código: ' + ${producto.idProducto}"></div>
-            </div>
-
-            <div class="mb-3">
-                <div class="product-attribute mb-2">
-                    <strong><i class="bi bi-card-text icon-box"></i>Descripción:</strong>
-                    <span class="product-value" th:text="${producto.descripcionProducto}">Descripción</span>
+            <!-- Imagen del producto -->
+            <img th:if="${producto.imagenProducto != null and !#strings.isEmpty(producto.imagenProducto)}"
+                 th:src="${producto.imagenProducto}"
+                 alt="Imagen del producto"
+                 class="img-producto">
+            <!-- Título -->
+            <h1 class="product-title mb-0">
+                <i class="bi bi-box-seam icon-box"></i>
+                <span th:text="${producto.nombreProducto}">Nombre de producto</span>
+            </h1>
+            <div class="code-muted" th:text="'Código: ' + ${producto.idProducto}"></div>
+            <!-- Detalles -->
+            <div class="mb-2">
+                <div class="product-attribute">
+                    <i class="bi bi-card-text list-icon"></i>
+                    <b>Descripción:</b>
+                    <span class="product-value" th:text="${producto.descripcionProducto}">Descripción...</span>
                 </div>
-                <div class="product-attribute mb-2">
-                    <strong><i class="bi bi-tags icon-box"></i>Categoría:</strong>
-                    <span class="product-value" th:text="${producto.categoria}">Categoría</span>
+                <div class="product-attribute">
+                    <i class="bi bi-tags list-icon"></i>
+                    <b>Categoría:</b>
+                    <span th:text="${producto.categoria}">Categoría</span>
                 </div>
-                <div class="product-attribute mb-2">
-                    <strong><i class="bi bi-building icon-box"></i>Marca:</strong>
-                    <span class="product-value" th:text="${producto.marca}">Marca</span>
+                <div class="product-attribute">
+                    <i class="bi bi-building list-icon"></i>
+                    <b>Marca:</b>
+                    <span th:text="${producto.marca}">Marca</span>
                 </div>
-                <div class="product-attribute mb-2">
-                    <strong><i class="bi bi-check-circle icon-box"></i>Estado:</strong>
-                    <span class="product-value" th:text="${producto.estado}">Activo</span>
+                <div class="product-attribute">
+                    <i class="bi bi-check-circle list-icon"></i>
+                    <b>Estado:</b>
+                    <span th:text="${producto.estado}">Activo</span>
                 </div>
-                <div class="product-attribute mb-2">
-                    <strong><i class="bi bi-stack icon-box"></i>Stock:</strong>
-                    <span class="product-value" th:text="${producto.stockProducto}">0</span>
+                <div class="product-attribute">
+                    <i class="bi bi-stack list-icon"></i>
+                    <b>Stock:</b>
+                    <span th:text="${producto.stockProducto}">0</span>
                 </div>
-                <div class="product-attribute mb-2">
-                    <strong><i class="bi bi-currency-dollar icon-box"></i>Precio:</strong>
+                <div class="product-attribute">
+                    <i class="bi bi-currency-dollar list-icon"></i>
+                    <b>Precio:</b>
                     <span class="price" th:text="'S/ ' + ${producto.precioProducto}">S/ 0.00</span>
                 </div>
             </div>
-            <a href="/admin/productos" class="btn btn-outline-primary btn-back">
+            <a href="/admin/productos" class="btn btn-outline-primary btn-back w-100 mt-3">
                 <i class="bi bi-arrow-left"></i> Volver al listado
             </a>
         </div>

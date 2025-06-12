@@ -47,6 +47,7 @@ public class SecurityConfig {
                 // 2. Rutas protegidas
                 .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
                 .requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
+                
                 // 3. Todo lo demás: denegado
                 .anyRequest().denyAll()
             );

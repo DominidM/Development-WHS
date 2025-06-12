@@ -1,7 +1,4 @@
-body {
-    background: linear-gradient(140deg, #eaf6ff 0%, #e2eafc 100%);
-    min-height: 100vh;
-}
+
 
 .admin-action {
     border: 2px solid transparent;
@@ -28,14 +25,7 @@ body {
 .card-body p {
     color: #5c5c5c;
 }
-.navbar-brand {
-    font-size: 1.5rem;
-    letter-spacing: .5px;
-}
-.navbar {
-    border-bottom-left-radius: .7rem;
-    border-bottom-right-radius: .7rem;
-}
+
 @media (max-width: 575.98px) {
     .admin-action {
         min-height: 160px;
