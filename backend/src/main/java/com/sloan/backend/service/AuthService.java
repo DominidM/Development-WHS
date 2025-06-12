@@ -8,4 +8,6 @@ public interface AuthService {
     Usuario login(String correo, String password);
     Usuario register(Usuario usuario);
     List<Usuario> listarTodos();
+
+    
 }

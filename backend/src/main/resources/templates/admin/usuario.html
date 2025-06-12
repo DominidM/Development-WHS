@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Usuarios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/adminlte/css/usuario-admin.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #eaf6ff 0%, #f5f7fa 100%);
+            min-height: 100vh;
+        }
+        nav.navbar {
+            border-radius: 0 !important;
+            box-shadow: 0 4px 18px rgba(13,110,253,0.13);
+        }
+        .section-title {
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #0d6efd;
+        }
+        .card-custom {
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(0, 123, 255, .09);
+            border: none;
+        }
+        .table thead th {
+            background-color: #eaf2fb;
+            color: #0d6efd;
+            font-weight: 700;
+            border-top: none;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f0f8ff;
+        }
+        .badge-role {
+            font-size: 1em;
+            background: linear-gradient(90deg, #0d6efd 70%, #80bfff 100%);
+            color: #fff;
+            border-radius: 0.5rem;
+            padding: 0.4em 0.9em;
+            box-shadow: 0 2px 8px rgba(13,110,253,0.10);
+        }
+        .actions-cell .btn-action {
+            min-width: 38px;
+            min-height: 38px;
+            border-radius: 50%;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .actions-cell .btn-action:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+            transform: scale(1.08);
+        }
+        .table-responsive-stack {
+            overflow-x: auto;
+        }
+        .btn-add-user {
+            background: linear-gradient(90deg, #0d6efd 60%, #66aaff 100%);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: .7rem;
+            box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+            transition: background 0.15s;
+        }
+        .btn-add-user:hover {
+            background: linear-gradient(90deg, #0b5ed7 70%, #338fff 100%);
+            color: #fff;
+        }
+        .search-box {
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{admin/fragments/navbar :: navbar}"></div>
+    <div class="container py-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+            <h2 class="section-title mb-0">
+                <i class="bi bi-people"></i> Usuarios
+            </h2>
+            <div class="d-flex gap-2">
+                <form class="d-flex search-box" method="get" th:action="@{/admin/usuarios}">
+                    <input class="form-control me-2" type="search" name="nombre" placeholder="Buscar usuario..." th:value="${param.nombre}">
+                    <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
+                </form>
+                <a th:href="@{/admin/usuarios/nuevo}" class="btn btn-add-user px-4 py-2">
+                    <i class="bi bi-person-plus"></i> Nuevo Usuario
+                </a>
+            </div>
+        </div>
+        <div class="card card-custom shadow-sm border-0">
+            <div class="card-body p-4">
+                <div class="table-responsive table-responsive-stack">
+                    <table class="table align-middle table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="bi bi-hash"></i> ID</th>
+                                <th><i class="bi bi-person"></i> Nombre</th>
+                                <th><i class="bi bi-envelope"></i> Correo</th>
+                                <th><i class="bi bi-person-bounding-box"></i> Rol</th>
+                                <th class="text-center"><i class="bi bi-gear"></i> Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user : ${usuarios}">
+                            <td th:text="${user.idUsuario}">1</td>
+                            <td th:text="${user.nombrePersona}">Nombre Ejemplo</td>
+                            <td th:text="${user.correoPersona}">correo@ejemplo.com</td>
+                            <td>
+                                <span class="badge badge-role" th:text="${user.rolUsuario.nombreRol}">ROL</span>
+                            </td>
+                            <td class="text-center actions-cell">
+                                <a th:href="@{'/admin/usuarios/' + ${user.idUsuario}}" class="btn btn-info btn-action me-1 mb-1 mb-lg-0" title="Ver">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a th:href="@{'/admin/usuarios/editar/' + ${user.idUsuario}}" class="btn btn-warning btn-action me-1 mb-1 mb-lg-0" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a th:href="@{'/admin/usuarios/' + ${user.idUsuario} + '/movimientos'}" class="btn btn-secondary btn-action me-1 mb-1 mb-lg-0" title="Ver movimientos">
+                                    <i class="bi bi-list-columns-reverse"></i>
+                                </a>
+                                <form th:action="@{'/admin/usuarios/eliminar/' + ${user.idUsuario}}" method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar este usuario?');">
+                                    <button type="submit" class="btn btn-danger btn-action" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(usuarios)}">
+                            <td colspan="5" class="text-center text-secondary">No hay usuarios registrados.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

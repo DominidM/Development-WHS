@@ -11,15 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sloan.backend.dto.FormularioRequest;
 import com.sloan.backend.dto.ProductoDTO;
 import com.sloan.backend.model.Formulario;
 import com.sloan.backend.model.Usuario;
 import com.sloan.backend.repository.CategoriaProductoRepository;
-import com.sloan.backend.repository.EstadoFormRepository;
 import com.sloan.backend.repository.EstadoProductoRepository;
 import com.sloan.backend.repository.MarcaProductoRepository;
-import com.sloan.backend.repository.TipoFormRepository;
 import com.sloan.backend.service.AuthService;
 import com.sloan.backend.service.FormularioService;
 import com.sloan.backend.service.ProductoService;
@@ -45,10 +42,10 @@ public class AdminController {
     private EstadoProductoRepository estadoRepo;
 
     // Repositorios para tipos y estados de formularios
-    @Autowired
-    private TipoFormRepository tipoFormRepository;
-    @Autowired
-    private EstadoFormRepository estadoFormRepository;
+    //@Autowired
+    //private TipoFormRepository tipoFormRepository;
+    //@Autowired
+    //private EstadoFormRepository estadoFormRepository;
 
     @GetMapping({"", "/"})
     public String adminRoot() {
@@ -66,6 +63,9 @@ public class AdminController {
         return "admin/dashboard";
     }
 
+
+    //PRODUCTOS
+    // Mostrar lista de productos
     @GetMapping("/productos")
     public String productos(Model model) {
         try {
@@ -105,6 +105,7 @@ public class AdminController {
         }
     }
 
+    // Mostrar detalle de producto por SLUG
     @GetMapping("/productos/{slug}")
     public String detalleProductoPorSlug(@PathVariable String slug, Model model) {
         Optional<ProductoDTO> productoOpt = productoService.findBySlugAsDTO(slug);
@@ -115,7 +116,7 @@ public class AdminController {
         return "admin/producto-detalle"; // Este nombre debe coincidir con tu archivo
     }
 
-
+    // Editar producto por SLUG
     @GetMapping("/productos/editar/{slug}")
     public String editarProductoPorSlug(@PathVariable String slug, Model model) {
     Optional<ProductoDTO> productoOpt = productoService.findBySlugAsDTO(slug);
@@ -132,36 +133,67 @@ public class AdminController {
     }
 
 
-    
+    //FRMULARIOS
+    // Mostrar lista de formularios
     @GetMapping("/formularios")
     public String formularios(Model model) {
-        List<Usuario> listaUsuarios = usuarioService.listarTodos();
         List<Formulario> listaFormularios = formularioService.listarTodos();
-        model.addAttribute("usuarios", listaUsuarios);
         model.addAttribute("formularios", listaFormularios);
-        return "admin/formularios";
+        return "admin/formularios"; // archivo: formularios.html
     }
 
-    @GetMapping("/formularios/nuevo")
-    public String mostrarFormularioNuevo(Model model) {
-        model.addAttribute("formulario", new FormularioRequest());
-        model.addAttribute("tipos", tipoFormRepository.findAll());
-        model.addAttribute("estados", estadoFormRepository.findAll());
-        return "admin/formulario-nuevo";
+
+    //USUARIOS
+    // Mostrar lista de usuarios
+    @GetMapping("/usuarios")
+    public String usuarios(Model model) {
+        List<Usuario> listaUsuarios = usuarioService.listarTodos();
+        model.addAttribute("usuarios", listaUsuarios);
+        return "admin/usuario"; // el archivo debe llamarse usuario.html
     }
 
-    // Guardar formulario (opcional, puedes implementar este método si lo necesitas)
-    /*
-    @PostMapping("/formularios/guardar")
-    public String guardarFormulario(@ModelAttribute("formulario") FormularioRequest formularioRequest, Model model) {
-        // Implementa el guardado según tu lógica de servicio y redirecciona
-        // formularioService.save(formularioRequest);
-        // return "redirect:/admin/formularios";
+    // Mostrar formulario para crear un nuevo usuario
+    //@GetMapping("/usuarios/{id}")
+    //public String verUsuario(@PathVariable Long id, Model model) {
+       // Usuario usuario = usuarioService.buscarPorId(id); // tu método de servicio
+      //  model.addAttribute("usuario", usuario);
+     //   return "admin/usuario-detalle";
+    //}
+
+    // Guardar usuario (puedes usar el mismo método para crear y editar)
+    //@GetMapping("/usuarios/editar/{id}")
+    //public String editarUsuario(@PathVariable Long id, Model model) {
+      //  Usuario usuario = usuarioService.buscarPorId(id);
+       // model.addAttribute("usuario", usuario);
+        //return "admin/usuario-editar";
+    //}
+
+    //@GetMapping("/usuarios/{id}/movimientos")
+    //public String movimientosUsuario(@PathVariable Long id, Model model) {
+      //  Usuario usuario = usuarioService.buscarPorId(id);
+        // Asume que tienes un método para traer los pedidos/movimientos de ese usuario
+        //List<Pedido> movimientos = pedidoService.buscarPorUsuarioId(id);
+        //model.addAttribute("usuario", usuario);
+        //model.addAttribute("movimientos", movimientos);
+        //return "admin/usuario-movimientos";
+    //}
+
+
+    @GetMapping("/usuarios/nuevo")
+    public String nuevoUsuario(Model model) {
+        model.addAttribute("usuario", new Usuario());
+        return "admin/usuario-nuevo";
     }
-    */
+
+    //@PostMapping("/usuarios/eliminar/{id}")
+    //public String eliminarUsuario(@PathVariable Long id) {
+      //  usuarioService.eliminarPorId(id);
+        //return "redirect:/admin/usuarios";
+    //}
 
     @GetMapping("/pedidos")
     public String pedidos() {
         return "admin/pedidos";
     }
+
 }

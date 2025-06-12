@@ -63,7 +63,6 @@ export default function ProductCard({
     });
   };
 
-  console.log('STOCK recibido:', stock, typeof stock);
 
   return (
     <div

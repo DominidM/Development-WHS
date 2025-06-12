@@ -4,7 +4,7 @@ export interface CartItem {
   id: string;
   name: string;
   price: number;
-  originalPrice?: number; // <--- agrégalo aquí (o "precioOriginal" si prefieres)
+  originalPrice?: number; 
   quantity: number;
   image?: string;
   stock?: number;

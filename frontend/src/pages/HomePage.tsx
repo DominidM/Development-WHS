@@ -23,7 +23,7 @@ function HomePage() {
 
      <OfertaCarousel /> 
 
-      <ImagenPrincipalConSecundarias /> {/* Simplemente renderiza el componente */}
+      <ImagenPrincipalConSecundarias /> 
             <Publicidad textoPromocional="Delivery gratis a compras mayores a 200" />
 
       <ProductCarousel

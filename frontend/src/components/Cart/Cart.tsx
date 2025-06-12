@@ -29,9 +29,9 @@ export function Cart() {
                 <p className="text-sm text-gray-500">{item.brand}</p>
                 <p className="text-sm text-gray-600">{item.description}</p>
                 <div className="mt-2 flex items-center gap-2 text-sm">
-                  <span className="font-semibold text-gray-800">US ${item.price.toFixed(2)}</span>
+                  <span className="font-semibold text-gray-800"> S/{item.price.toFixed(2)}</span>
                   {item.originalPrice && (
-                    <span className="line-through text-gray-400 text-xs">US ${item.originalPrice.toFixed(2)}</span>
+                    <span className="line-through text-gray-400 text-xs"> S/{item.originalPrice.toFixed(2)}</span>
                   )}
                 </div>
                 <label className="text-sm mt-2 block">Cant</label>

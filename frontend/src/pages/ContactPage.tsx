@@ -18,7 +18,7 @@ const ContactPage = () => {
             shadow-xl
             overflow-hidden
             bg-gradient-to-br from-blue-800/20 via-blue-900/10 to-blue-700/90
-            border-t-8 border-blue-900
+            border-t-8 border-blue-900 
             max-w-4xl w-full
             p-1
             sm:p-4

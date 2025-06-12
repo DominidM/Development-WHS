@@ -31,7 +31,7 @@ export const ContactSection = () => {
         };
 
         try {
-            const res = await fetch("http://localhost:8081/api/formularios", {
+            const res = await fetch('http://localhost:8081/api/public/formularios', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

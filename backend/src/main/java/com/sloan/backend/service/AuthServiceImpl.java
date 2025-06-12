@@ -43,4 +43,15 @@ public class AuthServiceImpl implements AuthService {
     public List<Usuario> listarTodos() {
         return usuarioRepository.findAll();
     }
+
+    @Override
+    public Usuario buscarPorId(Long id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    }
+
+    @Override
+    public void eliminarPorId(Long id) {
+        usuarioRepository.deleteById(id);
+    }
 }

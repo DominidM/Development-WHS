@@ -41,7 +41,7 @@
     </style>
 </head>
 <body>
-    <div th:replace="admin/fragments/navbar :: navbar"></div>
+    <div th:replace="~{admin/fragments/navbar :: navbar}"></div>
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
@@ -54,6 +54,7 @@
                             <p class="lead text-muted mb-0">Gestiona los recursos clave de tu plataforma</p>
                         </div>
                         <div class="row g-4 justify-content-center">
+                            <!-- Productos -->
                             <div class="col-12 col-sm-6 col-md-4">
                                 <a th:href="@{/admin/productos}" class="card admin-action h-100 text-decoration-none text-dark">
                                     <div class="card-body text-center">
@@ -65,17 +66,31 @@
                                     </div>
                                 </a>
                             </div>
+                            <!-- Usuarios -->
                             <div class="col-12 col-sm-6 col-md-4">
-                                <a th:href="@{/admin/formularios}" class="card admin-action h-100 text-decoration-none text-dark">
+                                <a th:href="@{/admin/usuarios}" class="card admin-action h-100 text-decoration-none text-dark">
                                     <div class="card-body text-center">
                                         <div class="admin-icon mb-2">
-                                            <i class="bi bi-people text-success" style="font-size: 2.5rem;"></i>
+                                            <i class="bi bi-person-lines-fill text-primary" style="font-size: 2.5rem;"></i>
                                         </div>
-                                        <h5 class="fw-bold">Clientes</h5>
-                                        <p class="text-muted small mb-0">Gestiona formularios y clientes</p>
+                                        <h5 class="fw-bold">Usuarios</h5>
+                                        <p class="text-muted small mb-0">Gestiona usuarios registrados</p>
                                     </div>
                                 </a>
                             </div>
+                            <!-- Atención Cliente -->
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <a th:href="@{/admin/atencion}" class="card admin-action h-100 text-decoration-none text-dark">
+                                    <div class="card-body text-center">
+                                        <div class="admin-icon mb-2">
+                                            <i class="bi bi-headset text-success" style="font-size: 2.5rem;"></i>
+                                        </div>
+                                        <h5 class="fw-bold">Atención Cliente</h5>
+                                        <p class="text-muted small mb-0">Gestiona reclamos y atención al cliente</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- Ventas -->
                             <div class="col-12 col-sm-6 col-md-4">
                                 <a th:href="@{/admin/pedidos}" class="card admin-action h-100 text-decoration-none text-dark">
                                     <div class="card-body text-center">
