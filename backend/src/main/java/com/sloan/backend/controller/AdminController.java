@@ -1,4 +1,6 @@
 package com.sloan.backend.controller;
+import java.security.Principal;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,14 +12,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sloan.backend.dto.ProductoDTO;
+import com.sloan.backend.model.EstadoForm;
 import com.sloan.backend.model.Formulario;
+import com.sloan.backend.model.TipoForm;
 import com.sloan.backend.model.Usuario;
 import com.sloan.backend.repository.CategoriaProductoRepository;
 import com.sloan.backend.repository.EstadoProductoRepository;
 import com.sloan.backend.repository.MarcaProductoRepository;
+import com.sloan.backend.repository.TipoFormRepository;
 import com.sloan.backend.service.AuthService;
+import com.sloan.backend.service.EstadoFormService;
 import com.sloan.backend.service.FormularioService;
 import com.sloan.backend.service.ProductoService;
 
@@ -41,11 +48,14 @@ public class AdminController {
     @Autowired
     private EstadoProductoRepository estadoRepo;
 
+
+    @Autowired
+    private EstadoFormService estadoFormService;
+
+
     // Repositorios para tipos y estados de formularios
-    //@Autowired
-    //private TipoFormRepository tipoFormRepository;
-    //@Autowired
-    //private EstadoFormRepository estadoFormRepository;
+    @Autowired
+    private TipoFormRepository tipoFormRepository;
 
     @GetMapping({"", "/"})
     public String adminRoot() {
@@ -132,15 +142,58 @@ public class AdminController {
     return "admin/producto-editar"; // nombre de la plantilla para editar producto
     }
 
-
-    //FRMULARIOS
     // Mostrar lista de formularios
-    @GetMapping("/formularios")
-    public String formularios(Model model) {
-        List<Formulario> listaFormularios = formularioService.listarTodos();
-        model.addAttribute("formularios", listaFormularios);
-        return "admin/formularios"; // archivo: formularios.html
+   @GetMapping("/formularios")
+    public String listarFormularios(@RequestParam(required = false) List<String> tipo, Model model) {
+        List<Formulario> formularios = formularioService.listarTodos();
+        List<TipoForm> tiposFormulario = tipoFormRepository.findAll();
+
+        // Filtra si hay tipos seleccionados
+        if (tipo != null && !tipo.isEmpty()) {
+            formularios = formularios.stream()
+                .filter(f -> tipo.contains(f.getTipoFormulario().getNombreTipo()))
+                .toList();
+        }
+
+        model.addAttribute("formularios", formularios);
+        model.addAttribute("tiposFormulario", tiposFormulario);
+        model.addAttribute("dateFormatter", DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+        return "admin/formularios";
     }
+
+    
+    // GET: Mostrar el formulario
+    @GetMapping("/formularios/atender/{id}")
+    public String mostrarAtenderFormulario(@PathVariable Long id, Model model) {
+        Formulario formulario = formularioService.buscarPorId(id);
+        model.addAttribute("formulario", formulario);
+        return "admin/formulario-atender";
+    }
+        
+   // POST: Procesar la atención
+    @PostMapping("/formularios/atender/{id}")
+    public String atenderFormulario(
+            @PathVariable Long id,
+            @RequestParam(value = "textEstado", required = false) String textEstado,
+            Principal principal) {
+
+        Formulario form = formularioService.buscarPorId(id);
+        Usuario usuarioLogueado = usuarioService.findByUsername(principal.getName());
+        EstadoForm estadoAtendido = estadoFormService.buscarPorNombre("ATENDIDO");
+
+        form.setUsuarioAtencion(usuarioLogueado);
+        form.setEstadoFormulario(estadoAtendido);
+        form.setTextEstado(textEstado); // Guarda la respuesta
+
+        formularioService.guardar(form);
+
+        return "redirect:/admin/formularios";
+    }
+
+
+
+
+
 
 
     //USUARIOS
@@ -153,20 +206,20 @@ public class AdminController {
     }
 
     // Mostrar formulario para crear un nuevo usuario
-    //@GetMapping("/usuarios/{id}")
-    //public String verUsuario(@PathVariable Long id, Model model) {
-       // Usuario usuario = usuarioService.buscarPorId(id); // tu método de servicio
-      //  model.addAttribute("usuario", usuario);
-     //   return "admin/usuario-detalle";
-    //}
+    @GetMapping("/usuarios/{id}")
+    public String verUsuario(@PathVariable Long id, Model model) {
+        Usuario usuario = usuarioService.buscarPorId(id); // tu método de servicio
+        model.addAttribute("usuario", usuario);
+        return "admin/usuario-detalle";
+    }
 
     // Guardar usuario (puedes usar el mismo método para crear y editar)
-    //@GetMapping("/usuarios/editar/{id}")
-    //public String editarUsuario(@PathVariable Long id, Model model) {
-      //  Usuario usuario = usuarioService.buscarPorId(id);
-       // model.addAttribute("usuario", usuario);
-        //return "admin/usuario-editar";
-    //}
+    @GetMapping("/usuarios/editar/{id}")
+    public String editarUsuario(@PathVariable Long id, Model model) {
+        Usuario usuario = usuarioService.buscarPorId(id);
+        model.addAttribute("usuario", usuario);
+        return "admin/usuario-editar";
+    }
 
     //@GetMapping("/usuarios/{id}/movimientos")
     //public String movimientosUsuario(@PathVariable Long id, Model model) {
@@ -185,11 +238,15 @@ public class AdminController {
         return "admin/usuario-nuevo";
     }
 
-    //@PostMapping("/usuarios/eliminar/{id}")
-    //public String eliminarUsuario(@PathVariable Long id) {
-      //  usuarioService.eliminarPorId(id);
-        //return "redirect:/admin/usuarios";
-    //}
+    @PostMapping("/usuarios/eliminar/{id}")
+    public String eliminarUsuario(@PathVariable Long id) {
+        usuarioService.eliminarPorId(id);
+        return "redirect:/admin/usuarios";
+    }
+
+
+
+
 
     @GetMapping("/pedidos")
     public String pedidos() {

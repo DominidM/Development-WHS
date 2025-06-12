@@ -15,11 +15,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "formulario")
 public class Formulario {
-    // Atributos de la entidad Formulario
-    // Cada formulario tiene un ID, nombre, fecha, DNI, correo, teléfono,
-    // tipo de formulario, estado del formulario, texto del estado y usuario de atención
-
-    // Identificador único del usuario
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_formulario")
@@ -27,7 +22,6 @@ public class Formulario {
 
     @Column(name = "nombre_formulario")
     private String nombreFormulario;
-
 
     @Column(name = "fecha_formulario")
     private LocalDateTime fechaFormulario;
@@ -41,7 +35,7 @@ public class Formulario {
     @Column(name = "telefono_formulario")
     private String telefonoFormulario;
 
-    // Relations
+    // Relaciones
     @ManyToOne
     @JoinColumn(name = "pk_tipo_formulario", nullable = false)
     private TipoForm tipoFormulario;
@@ -57,12 +51,17 @@ public class Formulario {
     @JoinColumn(name = "user_atencion")
     private Usuario usuarioAtencion; // Solo para admin, puede ser null
 
+    // --- ELIMINADO textRespuesta (text_respuesta) ---
+
     // Constructor por defecto
     public Formulario() {
     }
 
     // Constructor con parámetros
-    public Formulario(String correoFormulario, String dniFormulario, EstadoForm estadoFormulario, LocalDateTime fechaFormulario, Long idFormulario, String nombreFormulario, String telefonoFormulario, String textEstado, TipoForm tipoFormulario, Usuario usuarioAtencion) {
+    public Formulario(String correoFormulario, String dniFormulario, EstadoForm estadoFormulario,
+                      LocalDateTime fechaFormulario, Long idFormulario, String nombreFormulario,
+                      String telefonoFormulario, String textEstado, TipoForm tipoFormulario,
+                      Usuario usuarioAtencion) {
         this.correoFormulario = correoFormulario;
         this.dniFormulario = dniFormulario;
         this.estadoFormulario = estadoFormulario;
@@ -86,7 +85,7 @@ public class Formulario {
     }
 
     public String getNombreFormulario() {
-    return nombreFormulario;
+        return nombreFormulario;
     }
 
     public void setNombreFormulario(String nombreFormulario) {

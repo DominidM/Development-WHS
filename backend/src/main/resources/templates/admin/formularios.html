@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Formularios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background: #f5f8fa;
+        }
+        .filter-form {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px 24px;
+        }
+        .filter-form label.fw-bold { font-size: 1.08rem; color: #212529; margin-right: 10px; }
+        .filter-form .form-check { margin-right: 8px; }
+        .filter-form .btn-primary { background: #2563eb; border: none; }
+        .main-card {
+            border-radius: 14px;
+            box-shadow: 0 3px 18px rgba(50,50,93,0.06), 0 1.5px 4px rgba(0,0,0,0.03);
+            border: none;
+            margin-bottom: 30px;
+        }
+        .main-card .card-body { padding: 2rem 2rem 1.5rem 2rem; }
+        .table-box-shadow {
+            background: #fff;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+        .table {
+            background: #fff;
+            border-radius: 10px;
+            margin-bottom: 0;
+            min-width: 1050px;
+        }
+        .table th {
+            background: #f2f6fc;
+            color: #2d3748;
+            font-weight: 600;
+            border: none;
+            font-size: 1.06rem;
+            vertical-align: middle;
+        }
+        .table td {
+            vertical-align: middle;
+            border: none;
+            font-size: 1.01rem;
+            padding-top: 0.7rem;
+            padding-bottom: 0.7rem;
+        }
+        .table-striped>tbody>tr:nth-of-type(odd) {
+            background-color: #f9fafb;
+        }
+        .badge.bg-danger {
+            background: #e53e3e !important;
+            font-size: 0.97em;
+            padding: 0.45em 0.9em;
+            letter-spacing: 0.5px;
+        }
+        .badge.bg-success {
+            background: #38a169 !important;
+            font-size: 0.97em;
+            padding: 0.45em 0.9em;
+            letter-spacing: 0.5px;
+        }
+        .btn-primary.btn-sm {
+            background: #2563eb;
+            border: none;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding-left: 1.1em;
+            padding-right: 1.1em;
+        }
+        .btn-primary.btn-sm i {
+            margin-right: 4px;
+        }
+        .table td.text-secondary {
+            color: #a0aec0 !important;
+        }
+        .table thead th {
+            border-bottom: 2px solid #bee3f8 !important;
+        }
+        .mb-0 .bi-ui-checks {
+            color: #2563eb;
+        }
+        .table th, .table td {
+            min-width: 92px;
+        }
+        .table .text-center {
+            text-align: center !important;
+        }
+        @media (max-width: 1200px) {
+            .main-card .card-body {
+                padding: 1rem;
+            }
+        }
+        @media (max-width: 900px) {
+            .table th, .table td {
+                min-width: 60px;
+                font-size: 0.95em;
+            }
+            .main-card .card-body {
+                padding: 0.5rem;
+            }
+        }
+        @media (max-width: 700px) {
+            .table th, .table td {
+                font-size: 0.9em;
+                min-width: 40px;
+            }
+            .main-card .card-body {
+                padding: 0.3rem;
+            }
+        }
+        .tipo-title {
+            font-size: 1.08em;
+            font-weight: 500;
+            color: #6366f1;
+            margin-top: 0.7em;
+            margin-bottom: 1.4em;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{admin/fragments/navbar :: navbar}"></div>
+    <div class="container py-5">
+        <!-- Filtro por tipo de formulario -->
+        <form method="get" class="filter-form">
+            <label class="fw-bold">Tipo de Formulario:</label>
+            <th:block th:each="tipo : ${tiposFormulario}">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="tipo"
+                           th:id="'tipo_' + ${tipo.idTipoForm}"
+                           th:value="${tipo.nombreTipo}"
+                           th:checked="${#lists.contains(param.tipo ?: {}, tipo.nombreTipo)}">
+                    <label class="form-check-label" th:for="'tipo_' + ${tipo.idTipoForm}"
+                           th:text="${tipo.nombreTipo}"></label>
+                </div>
+            </th:block>
+            <button type="submit" class="btn btn-primary btn-sm ms-2">Filtrar</button>
+        </form>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div style="width:100%;">
+                <h2 class="mb-0"><i class="bi bi-ui-checks"></i> Formularios Recibidos</h2>
+                <!-- Mostrar tipo de formulario activo correctamente tabulado debajo del título -->
+                <div class="tipo-title" th:if="${param.tipo != null}">
+                    <span th:each="t,iter : ${param.tipo}">
+                        <span th:text="${t}"></span><span th:if="${!iter.last}">, </span>
+                    </span>
+                </div>
+            </div>
+            <a th:href="@{/admin/dashboard}" class="btn btn-secondary mb-2 ms-auto">
+                <i class="bi bi-arrow-bar-left"></i> Regresar a Dashboard
+            </a>
+        </div>
+        <div class="card main-card shadow-sm">
+            <div class="card-body">
+                <div class="table-box-shadow">
+                    <table class="table align-middle table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tipo</th>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>DNI</th>
+                                <th>Teléfono</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Respuesta</th>
+                                <th>Atendido por</th>
+                                <th class="text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="form : ${formularios}">
+                            <td th:text="${form.idFormulario}"></td>
+                            <td th:text="${form.tipoFormulario.nombreTipo}"></td>
+                            <td th:text="${form.nombreFormulario}"></td>
+                            <td th:text="${form.correoFormulario}"></td>
+                            <td th:text="${form.dniFormulario}"></td>
+                            <td th:text="${form.telefonoFormulario}"></td>
+                            <td th:text="${form.fechaFormulario != null} ? ${form.fechaFormulario.format(dateFormatter)} : ''"></td>
+                            <td>
+                                <span th:text="${form.estadoFormulario.nombreEstado == 'SIN_ATENDER' ? 'Sin Atender' : 'Atendido'}"
+                                      th:classappend="${form.estadoFormulario.nombreEstado == 'SIN_ATENDER'} ? 'badge bg-danger' : 'badge bg-success'"></span>
+                            </td>
+                            <td>
+                                <span th:text="${form.estadoFormulario.textEstado} ?: 'Sin respuesta'"></span>
+                            </td>
+                            <td>
+                                <span th:text="${form.usuarioAtencion != null ? form.usuarioAtencion.nombrePersona : '---'}"></span>
+                            </td>
+                            <td class="text-center">
+                                <a th:if="${form.estadoFormulario.nombreEstado == 'SIN_ATENDER'}"
+                                   th:href="@{'/admin/formularios/atender/' + ${form.idFormulario}}"
+                                   class="btn btn-primary btn-sm">
+                                    <i class="bi bi-pencil-square"></i> Atender
+                                </a>
+                                <span th:if="${form.estadoFormulario.nombreEstado != 'SIN_ATENDER'}" class="text-secondary"><i class="bi bi-check-lg"></i></span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(formularios)}">
+                            <td colspan="11" class="text-center text-secondary">No hay formularios registrados.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

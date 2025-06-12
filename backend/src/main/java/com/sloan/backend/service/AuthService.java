@@ -8,6 +8,7 @@ public interface AuthService {
     Usuario login(String correo, String password);
     Usuario register(Usuario usuario);
     List<Usuario> listarTodos();
-
-    
+    Usuario buscarPorId(Long id);
+    void eliminarPorId(Long id);
+    Usuario findByUsername(String username);
 }

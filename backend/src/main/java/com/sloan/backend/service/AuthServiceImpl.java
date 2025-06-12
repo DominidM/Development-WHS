@@ -31,6 +31,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public Usuario findByUsername(String username) {
+        return usuarioRepository.findByCorreoPersona(username)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    }
+
+    @Override
     public Usuario register(Usuario usuario) {
         if (usuarioRepository.findByCorreoPersona(usuario.getCorreoPersona()).isPresent()) {
             throw new RuntimeException("El correo ya está registrado");
