@@ -1,90 +1,192 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Agregar Formulario</title>
+    <title>Nuevo Producto</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/adminlte/css/productos-admin.css}">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background: #f4f8fb;
+        }
+        nav.navbar {
+            border-radius: 0 !important;
+            box-shadow: 0 4px 18px rgba(13,110,253,0.13);
+        }
+        .form-card {
+            max-width: 900px;
+            margin: 2rem auto;
+            border-radius: 1rem;
+            box-shadow: 0 2px 24px 0 rgba(0,0,0,.08);
+            background: #fff;
+        }
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+        .btn-save {
+            min-width: 120px;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .btn-save i, .btn-outline-secondary i {
+            vertical-align: middle;
+        }
+        .preview-img {
+            max-width: 240px;
+            max-height: 260px;
+            object-fit: contain;
+            border-radius: 0.7rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            background: #f9f9f9;
+            margin-bottom: 1rem;
+        }
+        .img-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100%;
+            border-right: 1px solid #f1f1f1;
+        }
+        @media (max-width: 767px) {
+            .form-card {
+                max-width: 98%;
+            }
+            .img-col {
+                border-right: none;
+                border-bottom: 1px solid #f1f1f1;
+                margin-bottom: 1rem;
+            }
+        }
+        .form-icon {
+            color: #0d6efd;
+            margin-right: .5rem;
+            font-size: 1.15rem;
+        }
+    </style>
 </head>
-<body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" th:href="@{/admin/dashboard}">AdminPanel</a>
-            <div class="d-flex">
-                <a th:href="@{/admin/logout}" class="btn btn-outline-light btn-sm ms-2">Cerrar sesión</a>
-            </div>
-        </div>
-    </nav>
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-8 col-lg-6">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body p-4">
-                        <h2 class="fw-bold text-primary mb-4">Agregar Formulario</h2>
-                        <form th:action="@{/admin/formularios/guardar}" method="post" autocomplete="off">
-                            <div class="mb-3">
-                                <label for="nombreFormulario" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="nombreFormulario" name="nombreFormulario" th:value="${formulario.nombreFormulario}" required>
+<body>
+    <div th:replace="~{admin/fragments/navbar :: navbar}"></div>
+    <main class="container py-4">
+        <div class="form-card card p-4">
+            <h1 class="form-title mb-4">
+                <i class="bi bi-plus-square-dotted"></i> Nuevo Producto
+            </h1>
+            <div class="row g-3">
+                <!-- Imagen a la izquierda para previsualización URL -->
+                <div class="col-md-4 img-col mb-3 mb-md-0">
+                    <img id="previewImg"
+                         th:if="${producto.imagenProducto != null and !#strings.isEmpty(producto.imagenProducto)}"
+                         th:src="${producto.imagenProducto}"
+                         alt="Imagen del producto"
+                         class="img-fluid preview-img"
+                         style="display:none;">
+                    <div id="noImgText"
+                         th:if="${producto.imagenProducto == null or #strings.isEmpty(producto.imagenProducto)}"
+                         class="text-muted small fst-italic">Sin imagen</div>
+                </div>
+                <!-- Formulario a la derecha -->
+                <div class="col-md-8">
+                    <form th:action="@{/admin/productos/guardar}" th:object="${producto}" method="post" autocomplete="off">
+                        <input type="hidden" th:field="*{idProducto}" />
+                        <input type="hidden" th:field="*{slug}" />
+
+                        <div class="mb-3">
+                            <label for="imagenProducto" class="form-label"><i class="bi bi-image form-icon"></i>Imagen (URL)</label>
+                            <input type="text" th:field="*{imagenProducto}" class="form-control" id="imagenProducto" placeholder="https://...">
+                        </div>
+                        <div class="mb-3">
+                            <label for="nombreProducto" class="form-label"><i class="bi bi-card-heading form-icon"></i>Nombre</label>
+                            <input type="text" th:field="*{nombreProducto}" class="form-control" id="nombreProducto" required maxlength="255" placeholder="Ingrese nombre del producto">
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcionProducto" class="form-label"><i class="bi bi-card-text form-icon"></i>Descripción</label>
+                            <textarea th:field="*{descripcionProducto}" class="form-control" id="descripcionProducto" rows="3" maxlength="500" placeholder="Descripción detallada"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pkCategoriaProducto" class="form-label"><i class="bi bi-tags form-icon"></i>Categoría</label>
+                            <select th:field="*{pkCategoriaProducto}" class="form-select" id="pkCategoriaProducto" required>
+                                <option value="">-- Selecciona Categoría --</option>
+                                <option th:each="cat : ${categorias}" 
+                                        th:value="${cat.idCategoriaProducto}" 
+                                        th:text="${cat.nombreCategoriaProducto}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pkMarcaProducto" class="form-label"><i class="bi bi-building form-icon"></i>Marca</label>
+                            <select th:field="*{pkMarcaProducto}" class="form-select" id="pkMarcaProducto" required>
+                                <option value="">-- Selecciona Marca --</option>
+                                <option th:each="mar : ${marcas}" 
+                                        th:value="${mar.idMarcaProducto}" 
+                                        th:text="${mar.nombreMarcaProducto}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pkEstadoProducto" class="form-label"><i class="bi bi-check-circle form-icon"></i>Estado</label>
+                            <select th:field="*{pkEstadoProducto}" class="form-select" id="pkEstadoProducto" required>
+                                <option value="">-- Selecciona Estado --</option>
+                                <option th:each="est : ${estados}" 
+                                        th:value="${est.idEstadoProducto}" 
+                                        th:text="${est.nombreEstadoProducto}"></option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="precioProducto" class="form-label"><i class="bi bi-currency-dollar form-icon"></i>Precio (S/.)</label>
+                                <input type="number" th:field="*{precioProducto}" class="form-control" id="precioProducto" step="0.01" min="0" required placeholder="0.00">
                             </div>
-                            <div class="mb-3">
-                                <label for="dniFormulario" class="form-label">DNI</label>
-                                <input type="text" maxlength="20" class="form-control" id="dniFormulario" name="dniFormulario" th:value="${formulario.dniFormulario}" required>
+                            <div class="col-md-6 mb-3">
+                                <label for="stockProducto" class="form-label"><i class="bi bi-stack form-icon"></i>Stock</label>
+                                <input type="number" th:field="*{stockProducto}" class="form-control" id="stockProducto" min="0" required placeholder="0">
                             </div>
-                            <div class="mb-3">
-                                <label for="correoFormulario" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="correoFormulario" name="correoFormulario" th:value="${formulario.correoFormulario}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="telefonoFormulario" class="form-label">Teléfono</label>
-                                <input type="text" maxlength="20" class="form-control" id="telefonoFormulario" name="telefonoFormulario" th:value="${formulario.telefonoFormulario}">
-                            </div>
-                            <!-- Tipo de formulario dinámico -->
-                            <div class="mb-3">
-                                <label for="pkTipoFormulario" class="form-label">Tipo de Formulario</label>
-                                <select class="form-select" id="pkTipoFormulario" name="pkTipoFormulario" required>
-                                    <option value="" disabled selected>Selecciona un tipo</option>
-                                    <option th:each="tipo : ${tipos}"
-                                            th:value="${tipo.idTipoForm}"
-                                            th:text="${tipo.nombreTipo}"
-                                            th:selected="${formulario.pkTipoFormulario} == ${tipo.idTipoForm}">
-                                    </option>
-                                </select>
-                            </div>
-                            <!-- Estado dinámico -->
-                            <div class="mb-3">
-                                <label for="pkEstadoFormulario" class="form-label">Estado</label>
-                                <select class="form-select" id="pkEstadoFormulario" name="pkEstadoFormulario" required>
-                                    <option value="" disabled selected>Selecciona un estado</option>
-                                    <option th:each="est : ${estados}"
-                                            th:value="${est.idEstadoForm}"
-                                            th:text="${est.nombreEstado}"
-                                            th:selected="${formulario.pkEstadoFormulario} == ${est.idEstadoForm}">
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="textEstado" class="form-label">Mensaje / Observaciones</label>
-                                <textarea class="form-control" id="textEstado" name="textEstado" rows="3" required th:text="${formulario.textEstado}"></textarea>
-                            </div>
-                            <div class="d-flex justify-content-between mt-4">
-                                <a th:href="@{/admin/formularios}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-arrow-left"></i> Cancelar
-                                </a>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="bi bi-check-circle"></i> Guardar Formulario
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a th:href="@{/admin/productos}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success btn-save">
+                                <i class="bi bi-check-circle"></i> Guardar Producto
+                            </button>
+                        </div>
+                        <div th:if="${errorGuardar}" class="alert alert-danger mt-3" th:text="${errorGuardar}"></div>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Bootstrap icons CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- Bootstrap JS CDN -->
+    </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const input = document.getElementById('imagenProducto');
+        const img = document.getElementById('previewImg');
+        const noImgText = document.getElementById('noImgText');
+
+        function updatePreview() {
+            const url = input.value.trim();
+            if (url) {
+                img.src = url;
+                img.style.display = '';
+                noImgText.style.display = 'none';
+            } else {
+                img.src = '';
+                img.style.display = 'none';
+                noImgText.style.display = '';
+                noImgText.textContent = "Sin imagen";
+                noImgText.style.display = '';
+            }
+        }
+
+        // Si ya hay valor, mostrarlo al cargar
+        updatePreview();
+
+        input.addEventListener('input', updatePreview);
+    });
+    </script>
 </body>
 </html>

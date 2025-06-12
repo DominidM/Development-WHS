@@ -17,7 +17,7 @@
             box-shadow: 0 4px 18px rgba(13,110,253,0.13);
         }
         .form-card {
-            max-width: 800px;
+            max-width: 900px;
             margin: 2rem auto;
             border-radius: 1rem;
             box-shadow: 0 2px 24px 0 rgba(0,0,0,.08);
@@ -38,7 +38,7 @@
             vertical-align: middle;
         }
         .preview-img {
-            max-width: 220px;
+            max-width: 240px;
             max-height: 260px;
             object-fit: contain;
             border-radius: 0.7rem;
@@ -63,6 +63,11 @@
                 border-bottom: 1px solid #f1f1f1;
                 margin-bottom: 1rem;
             }
+        }
+        .form-icon {
+            color: #0d6efd;
+            margin-right: .5rem;
+            font-size: 1.15rem;
         }
     </style>
 </head>
@@ -90,19 +95,19 @@
                         <input type="hidden" th:field="*{slug}" />
 
                         <div class="mb-3">
-                            <label for="imagenProducto" class="form-label">Imagen (URL)</label>
+                            <label for="imagenProducto" class="form-label"><i class="bi bi-image form-icon"></i>Imagen (URL)</label>
                             <input type="text" th:field="*{imagenProducto}" class="form-control" id="imagenProducto" placeholder="https://...">
                         </div>
                         <div class="mb-3">
-                            <label for="nombreProducto" class="form-label">Nombre</label>
+                            <label for="nombreProducto" class="form-label"><i class="bi bi-card-heading form-icon"></i>Nombre</label>
                             <input type="text" th:field="*{nombreProducto}" class="form-control" id="nombreProducto" required maxlength="255" placeholder="Ingrese nombre del producto">
                         </div>
                         <div class="mb-3">
-                            <label for="descripcionProducto" class="form-label">Descripción</label>
+                            <label for="descripcionProducto" class="form-label"><i class="bi bi-card-text form-icon"></i>Descripción</label>
                             <textarea th:field="*{descripcionProducto}" class="form-control" id="descripcionProducto" rows="3" maxlength="500" placeholder="Descripción detallada"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="pkCategoriaProducto" class="form-label">Categoría</label>
+                            <label for="pkCategoriaProducto" class="form-label"><i class="bi bi-tags form-icon"></i>Categoría</label>
                             <select th:field="*{pkCategoriaProducto}" class="form-select" id="pkCategoriaProducto" required>
                                 <option value="">-- Selecciona Categoría --</option>
                                 <option th:each="cat : ${categorias}" 
@@ -111,7 +116,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="pkMarcaProducto" class="form-label">Marca</label>
+                            <label for="pkMarcaProducto" class="form-label"><i class="bi bi-building form-icon"></i>Marca</label>
                             <select th:field="*{pkMarcaProducto}" class="form-select" id="pkMarcaProducto" required>
                                 <option value="">-- Selecciona Marca --</option>
                                 <option th:each="mar : ${marcas}" 
@@ -120,7 +125,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="pkEstadoProducto" class="form-label">Estado</label>
+                            <label for="pkEstadoProducto" class="form-label"><i class="bi bi-check-circle form-icon"></i>Estado</label>
                             <select th:field="*{pkEstadoProducto}" class="form-select" id="pkEstadoProducto" required>
                                 <option value="">-- Selecciona Estado --</option>
                                 <option th:each="est : ${estados}" 
@@ -130,11 +135,11 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="precioProducto" class="form-label">Precio (S/.)</label>
+                                <label for="precioProducto" class="form-label"><i class="bi bi-currency-dollar form-icon"></i>Precio (S/.)</label>
                                 <input type="number" th:field="*{precioProducto}" class="form-control" id="precioProducto" step="0.01" min="0" required placeholder="0.00">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="stockProducto" class="form-label">Stock</label>
+                                <label for="stockProducto" class="form-label"><i class="bi bi-stack form-icon"></i>Stock</label>
                                 <input type="number" th:field="*{stockProducto}" class="form-control" id="stockProducto" min="0" required placeholder="0">
                             </div>
                         </div>
