@@ -25,14 +25,14 @@ jobs:
           distribution: 'microsoft'
 
       - name: Build with Maven
-        working-directory: ./backend
+        working-directory: ./frontend
         run: mvn clean install
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: './backend/target/*.jar'
+          path: './frontend/target/*.jar'
 
   deploy:
     runs-on: ubuntu-latest
