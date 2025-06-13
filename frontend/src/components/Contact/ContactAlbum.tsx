@@ -1,4 +1,4 @@
-import React from 'react';
+//import React from 'react';
 
 const image1 = "/assets/contact-album1.png"; // 816x759
 const image2 = "/assets/contact-album2.webp"; // 852x349

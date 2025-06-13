@@ -6,7 +6,7 @@ import { Hero } from "../components/Hero";
 import { Cart } from "../components/Cart/Cart";
 import  ProductCarousel from "../components/Home/ProductCarousel"; // Importa el nuevo componente de carrusel de productos
 
-
+//actualizacion para prueba;
 
 
 function CartPage() {

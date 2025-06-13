@@ -1,4 +1,3 @@
-import React from 'react';
 import { ContactHero } from '../components/Contact/ContactHero';
 import { ContactSection } from '../components/Contact/ContactSection';
 import { Publicidad } from '../components/Publicidad';
