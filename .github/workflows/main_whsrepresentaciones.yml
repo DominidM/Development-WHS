@@ -25,13 +25,14 @@ jobs:
           distribution: 'microsoft'
 
       - name: Build with Maven
+        working-directory: ./backend
         run: mvn clean install
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: './backend/target/*.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -63,4 +64,3 @@ jobs:
           app-name: 'WHSrepresentaciones'
           slot-name: 'Production'
           package: '*.jar'
-          
