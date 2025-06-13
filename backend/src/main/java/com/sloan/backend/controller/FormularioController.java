@@ -42,6 +42,7 @@ public class FormularioController {
         return formularioService.listarTodos();
     }
 
+    
     // Permite que cualquier usuario (público) cree un formulario de reclamo
     @PostMapping
     public ResponseEntity<Formulario> crear(@RequestBody FormularioRequest request) {
