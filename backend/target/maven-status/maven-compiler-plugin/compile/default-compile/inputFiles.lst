@@ -1,6 +1,7 @@
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\BackendApplication.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\config\SecurityConfig.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\controller\AdminController.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\controller\AdminProductoController.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\controller\AuthController.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\controller\FormularioController.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\controller\OfertaController.java
@@ -32,6 +33,8 @@ C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\j
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\security\CustomUserDetailsService.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\AuthService.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\AuthServiceImpl.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\EstadoFormService.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\EstadoFormServiceImpl.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\FormularioService.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\FormularioServiceImpl.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\OfertaService.java
