@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { API_BASE_URL } from '../../apiConfig'; 
+
 
 export const ContactSection = () => {
     const [nombre, setNombre] = useState("");
@@ -31,7 +33,7 @@ export const ContactSection = () => {
         };
 
         try {
-            const res = await fetch('http://localhost:8081/api/public/formularios', {
+            const res = await fetch(`${API_BASE_URL}/api/public/formularios`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

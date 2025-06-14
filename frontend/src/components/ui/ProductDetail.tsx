@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Heart, Truck } from "lucide-react";
 import { useCart } from "./CartContext";
+import { API_BASE_URL } from '../../apiConfig'; 
+
 
 interface ProductDetailProps {
   slug: string;
@@ -24,7 +26,7 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
   const { addItem, items } = useCart();
 
   useEffect(() => {
-    fetch(`http://localhost:8081/api/public/productos/${slug}`)
+    fetch(`${API_BASE_URL}/api/public/productos/${slug}`)
       .then(res => res.json())
       .then(setProducto)
       .catch(() => setProducto(null));

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from '../../apiConfig'; 
+
 
 interface Producto {
   idProducto: number;
@@ -21,7 +23,7 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
   useEffect(() => {
     setProducto(null);
     setError(null);
-    fetch(`http://localhost:8081/api/public/productos/${slug}`)
+    fetch(`${API_BASE_URL}/api/public/productos/${slug}`)
       .then(res => {
         if (!res.ok) throw new Error("No encontrado");
         return res.json();

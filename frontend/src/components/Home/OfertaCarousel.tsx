@@ -1,5 +1,6 @@
-import{ useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "../ui/ProductCard";
+import { API_BASE_URL } from '../../apiConfig'; 
 
 interface Oferta {
   idOferta: number;
@@ -21,7 +22,7 @@ export default function OfertaCarousel() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:8081/api/public/ofertas/activas")
+    fetch(`${API_BASE_URL}/api/public/ofertas/activas`)
       .then(res => {
         if (!res.ok) throw new Error("No se pudo obtener ofertas");
         return res.json();

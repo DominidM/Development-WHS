@@ -1,3 +1,4 @@
+import React from 'react';
 import { ArrowDown } from 'lucide-react';
 
 const imageUrl1 = "/assets/hero1.png";

@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "../ui/ProductCard";
+import { API_BASE_URL } from '../../apiConfig'; 
 
 interface Producto {
   idProducto: number;
@@ -26,7 +27,7 @@ export default function ProductCarousel({ pkCategoria, titulo, subtitulo }: Prod
   useEffect(() => {
     setLoading(true);
 
-    fetch("http://localhost:8081/api/public/productos")
+    fetch(`${API_BASE_URL}/api/public/productos`)
       .then(res => res.json())
       .then(data => {
         setProductos(data);

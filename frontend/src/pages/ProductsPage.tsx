@@ -4,6 +4,8 @@ import { Carousel } from "@/components/Carousel";
 import { Publicidad } from '../components/Publicidad';
 import Marcas from '../components/Marcas';
 import ProductCard from '../components/ui/ProductCard';
+import { API_BASE_URL } from '../apiConfig'; 
+
 
 type ProductoBackend = {
   idProducto: number;
@@ -51,7 +53,7 @@ const ProductsPage: React.FC = () => {
   const searchQuery = params.get("search")?.toLowerCase() || "";
 
   useEffect(() => {
-    fetch("http://localhost:8081/api/public/productos")
+    fetch(`${API_BASE_URL}/api/public/productos`)
       .then(res => res.json())
       .then((data: ProductoBackend[]) => {
         const adaptados: Producto[] = data.map((p) => ({

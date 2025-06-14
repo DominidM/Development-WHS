@@ -1,3 +1,4 @@
+import React from 'react';
 import { FaBook } from 'react-icons/fa';
 
 export function Footer() {

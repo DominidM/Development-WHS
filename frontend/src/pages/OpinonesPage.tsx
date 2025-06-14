@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { UserCircle } from "lucide-react";
+import { API_BASE_URL } from '../apiConfig'; 
+
 
 interface Opinion {
   nombre: string;
@@ -52,7 +54,7 @@ export default function OpinionesPage() {
       };
 
       try {
-        const res = await fetch('http://localhost:8081/api/public/formularios',{
+        const res = await fetch(`${API_BASE_URL}/api/public/formularios`,{
           method: "POST",
           headers: {
             "Content-Type": "application/json",

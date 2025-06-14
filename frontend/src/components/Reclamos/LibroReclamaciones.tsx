@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { API_BASE_URL } from '../../apiConfig'; 
+
 
 interface FormData {
   nombre: string;
@@ -76,12 +78,11 @@ export function LibroReclamacionesForm() {
         textEstado: formData.detalle,
       };
     
-      const response = await fetch('http://localhost:8081/api/public/formularios', {
+      const response = await fetch(`${API_BASE_URL}/api/public/formularios`, { // ✅ Comilla invertida al final
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend),
       });
-
       if (!response.ok) {
         throw new Error(`Error al enviar el reclamo: ${response.status}`);
       }

@@ -1,6 +1,8 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react'
 import { User, X, LogOut, ShoppingBag } from 'lucide-react'
+import { API_BASE_URL } from '../../apiConfig'; 
+
 
 type Usuario = {
   nombrePersona: string
@@ -40,7 +42,7 @@ const handleLogin = async (e: React.FormEvent) => {
   e.preventDefault()
   setError('')
   try {
-    const response = await fetch('http://localhost:8081/api/admin/auth/login', {
+    const response = await fetch(`${API_BASE_URL}/api/admin/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ correo, password })
@@ -60,7 +62,7 @@ const handleRegister = async (e: React.FormEvent) => {
   e.preventDefault()
   setError('')
   try {
-    const response = await fetch('http://localhost:8081/api/admin/auth/register', {
+    const response = await fetch(`${API_BASE_URL}/api/admin/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ correo, password, nombre })
