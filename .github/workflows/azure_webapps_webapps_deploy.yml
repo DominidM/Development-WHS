@@ -9,9 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
     steps:
       - uses: actions/checkout@v4
 
@@ -26,7 +23,6 @@ jobs:
       - name: Build frontend
         run: cd frontend && bun run build
 
-      # Empaquetar SOLO el contenido de dist (no la carpeta dist)
       - name: Zip artifact for deployment
         run: cd frontend/dist && zip -r ../../../release.zip .
 
@@ -39,9 +35,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    environment:
-      name: 'Production'
-
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -51,8 +44,7 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'WHS'
