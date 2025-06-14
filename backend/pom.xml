@@ -14,24 +14,15 @@
 	<name>backend</name>
 	<description>Demo project for Spring Boot</description>
 
-	<properties>
-		<java.version>17</java.version>
-	</properties>
-
-	<repositories>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-
 
 	<dependencies>
+	 	
 		<!-- Spring Boot Starter Web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
 
 		<!-- Spring Data JPA -->
 		<dependency>
@@ -39,7 +30,7 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
-		<!-- Spring Security -->
+		<!-- Spring Security bCrypt-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -61,35 +52,34 @@
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
 
-		<!-- PostgreSQL Driver -->
+
+
 		<dependency>
+		    <!-- PostgreSQL Driver -->
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- DevTools -->
 		<dependency>
+		    <!-- DevTools -->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Tests -->
 		<dependency>
+		    <!-- Tests -->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- Mercado Pago SDK -->
+	
 		<dependency>
-			<groupId>com.github.mercadopago</groupId>
-			<artifactId>dx-java</artifactId>
-    		<version>2.5.0</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
-
 
 	</dependencies>
 </project>

@@ -74,6 +74,7 @@ spring.datasource.password=TU_CONTRASEÑA
 ```bash 
 cd backend  
 ./mvnw spring-boot:run
+
  ```
 3. Ejecuta el Frontend:
    
