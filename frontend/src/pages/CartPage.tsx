@@ -1,4 +1,4 @@
-//import { Outlet } from 'react-router-dom';
+//actualizacion para prueba para cooreccion de errores de importación;
 //update actulizacion para prueba;
 //import React from 'react';
 import { Publicidad } from '../components/Publicidad';

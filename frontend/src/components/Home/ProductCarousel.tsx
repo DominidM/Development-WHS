@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ProductCard from "../ui/ProductCard";
 import { API_BASE_URL } from '../../apiConfig'; 
 

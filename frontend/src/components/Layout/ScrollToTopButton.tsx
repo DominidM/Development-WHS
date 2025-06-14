@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react'; // Importa el icono de flecha hacia arriba
 
 const ScrollToTopButton = () => {
