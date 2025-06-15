@@ -27,7 +27,7 @@ jobs:
         run: ls -l frontend/dist
 
       - name: Zip artifact for deployment
-        run: cd frontend/dist && zip -r ../../../release.zip .
+        run: cd frontend/dist && zip -r ../../release.zip .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -44,11 +44,10 @@ jobs:
         with:
           name: bun-frontend
 
-      - name: Clean wwwroot
-        run: rm -rf ./*
-
-      - name: Unzip artifact for deployment
-        run: unzip -o release.zip -d .
+      - name: Extract artifact to folder
+        run: |
+          mkdir deploy
+          unzip -o release.zip -d deploy
 
       - name: Azure Login
         uses: azure/login@v2
@@ -56,11 +55,10 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_59528D59F9D14B3AB460E810E3FFBB34 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_78D16F13E55C4397B5E7C0F61A97EA5A }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DC6A68BBD38B49AD8E581CF39361EDB3 }}
-          allow-no-subscriptions: true
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'WHS'
           slot-name: 'Production'
-          package: .
+          package: './deploy'
