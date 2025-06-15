@@ -27,7 +27,7 @@ jobs:
         run: ls -l frontend/dist
 
       - name: Zip artifact for deployment
-        run: cd frontend/dist && zip -r ../../release.zip .
+        run: cd frontend/dist && zip -r ../../../release.zip .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
