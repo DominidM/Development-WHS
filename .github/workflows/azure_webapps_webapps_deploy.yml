@@ -1,4 +1,4 @@
-name: Build and deploy Bun frontend to Azure Web App - WHS
+name: Build and deploy Vite React frontend to Azure Web App - WHS
 
 on:
   push:
@@ -20,10 +20,12 @@ jobs:
       - name: Install dependencies (frontend)
         run: cd frontend && bun install
 
-      - name: Build frontend
+      - name: Build frontend (Vite + React + TS)
         run: cd frontend && bun run build
 
-      # Empaqueta SOLO el contenido de dist (no la carpeta dist)
+      - name: Show build output
+        run: ls -l frontend/dist
+
       - name: Zip artifact for deployment
         run: cd frontend/dist && zip -r ../../../release.zip .
 
@@ -45,10 +47,17 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+            client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_59528D59F9D14B3AB460E810E3FFBB34 }}
+            tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_78D16F13E55C4397B5E7C0F61A97EA5A }}
+            subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DC6A68BBD38B49AD8E581CF39361EDB3 }}
+            allow-no-subscriptions: true
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'WHS'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_1234 }}
