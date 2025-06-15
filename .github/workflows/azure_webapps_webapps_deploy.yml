@@ -44,8 +44,11 @@ jobs:
         with:
           name: bun-frontend
 
+      - name: Clean wwwroot
+        run: rm -rf ./*
+
       - name: Unzip artifact for deployment
-        run: unzip release.zip
+        run: unzip -o release.zip -d .
 
       - name: Azure Login
         uses: azure/login@v2
