@@ -23,6 +23,7 @@ jobs:
       - name: Build frontend
         run: cd frontend && bun run build
 
+      # Empaqueta SOLO el contenido de dist (no la carpeta dist)
       - name: Zip artifact for deployment
         run: cd frontend/dist && zip -r ../../../release.zip .
 
