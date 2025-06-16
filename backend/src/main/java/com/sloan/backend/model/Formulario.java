@@ -2,6 +2,7 @@ package com.sloan.backend.model;
 
 import java.time.LocalDateTime;
 
+// Importaciones necesarias para la persistencia JPA/Hibernate
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
