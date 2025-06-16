@@ -17,15 +17,22 @@ import com.sloan.backend.repository.EstadoFormRepository;
 import com.sloan.backend.repository.TipoFormRepository;
 import com.sloan.backend.service.FormularioService;
 
+/**
+ * Controlador REST para la gestión pública de formularios.
+ * Permite a usuarios listar y registrar formularios de reclamo.
+ */
 @RestController
 @RequestMapping("/api/public/formularios")
 public class FormularioController {
 
-    
+    // Servicios y repositorios requeridos para formularios
     private final FormularioService formularioService;
     private final TipoFormRepository tipoFormRepository;
     private final EstadoFormRepository estadoFormRepository;
 
+    /**
+     * Constructor de inyección de dependencias.
+     */
     public FormularioController(
         FormularioService formularioService,
         TipoFormRepository tipoFormRepository,
@@ -36,14 +43,22 @@ public class FormularioController {
         this.estadoFormRepository = estadoFormRepository;
     }
 
-    // Listar todos los formularios públicos (si lo deseas, puedes retirar este método)
+    /**
+     * Lista todos los formularios públicos.
+     * Puedes retirar este método si no deseas exponer la lista al público.
+     * @return Lista completa de formularios.
+     */
     @GetMapping
     public List<Formulario> listar() {
         return formularioService.listarTodos();
     }
 
-    
-    // Permite que cualquier usuario (público) cree un formulario de reclamo
+    /**
+     * Permite que cualquier usuario (público) cree un formulario de reclamo.
+     * Asigna tipo y estado de formulario, y guarda el registro.
+     * @param request DTO de datos del formulario a registrar.
+     * @return El formulario creado y guardado.
+     */
     @PostMapping
     public ResponseEntity<Formulario> crear(@RequestBody FormularioRequest request) {
         Formulario formulario = new Formulario();
@@ -58,7 +73,7 @@ public class FormularioController {
             .orElseThrow(() -> new IllegalArgumentException("Tipo de formulario no encontrado"));
         formulario.setTipoFormulario(tipo);
 
-        // Asignar estado inicial (por defecto SIN_ATENDER)
+        // Asignar estado inicial (por defecto se espera SIN_ATENDER)
         EstadoForm estado = estadoFormRepository.findById(request.getPkEstadoFormulario())
             .orElseThrow(() -> new IllegalArgumentException("Estado de formulario no encontrado"));
         formulario.setEstadoFormulario(estado);

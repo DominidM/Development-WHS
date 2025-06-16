@@ -2,19 +2,36 @@ package com.sloan.backend.dto;
 
 import java.math.BigDecimal;
 
+/**
+ * DTO que representa una oferta pública de un producto.
+ * Incluye información tanto de la oferta como del producto relacionado.
+ */
 public class OfertaDTO {
+    // Identificador de la oferta
     private Long idOferta;
+    // Identificador del producto relacionado con la oferta
     private Long idProducto;
+    // Nombre del producto
     private String nombreProducto;
+    // Descripción del producto
     private String descripcionProducto;
+    // URL o nombre de la imagen del producto
     private String imagenProducto;
+    // Slug único para enlaces amigables del producto
     private String slug;
-    private BigDecimal precioProducto; // precio original
-    private BigDecimal precioOferta;   // precio de oferta
-    private Integer stockProducto;     // <--- Añadido stock
+    // Precio original del producto
+    private BigDecimal precioProducto;
+    // Precio especial de la oferta
+    private BigDecimal precioOferta;
+    // Stock disponible del producto
+    private Integer stockProducto;
 
+    // Constructor vacío requerido para frameworks y serialización
     public OfertaDTO() {}
 
+    /**
+     * Constructor completo para inicializar todos los campos de la oferta.
+     */
     public OfertaDTO(Long idOferta, Long idProducto, String nombreProducto, String descripcionProducto,
                      String imagenProducto, String slug, BigDecimal precioProducto, BigDecimal precioOferta, Integer stockProducto) {
         this.idOferta = idOferta;
@@ -28,7 +45,8 @@ public class OfertaDTO {
         this.stockProducto = stockProducto;
     }
 
-    // Getters y setters...
+    // Getters y setters para cada campo
+
     public Long getIdOferta() { return idOferta; }
     public void setIdOferta(Long idOferta) { this.idOferta = idOferta; }
 

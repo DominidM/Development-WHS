@@ -9,6 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.sloan.backend.model.Usuario;
 
+/**
+ * Implementación personalizada de UserDetails para Spring Security,
+ * basada en la entidad Usuario de la aplicación.
+ */
 public class CustomUserDetails implements UserDetails {
     private final Usuario usuario;
 
@@ -16,6 +20,10 @@ public class CustomUserDetails implements UserDetails {
         this.usuario = usuario;
     }
 
+    /**
+     * Devuelve la colección de roles/autorizaciones del usuario.
+     * Se mapea el nombre del rol a la convención de Spring Security: "ROLE_NOMBRE".
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         String roleName = usuario.getRolUsuario().getNombreRol();
@@ -41,5 +49,8 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() { return true; }
 
+    /**
+     * Permite acceder al objeto Usuario original.
+     */
     public Usuario getUsuario() { return usuario; }
 }
