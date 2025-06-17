@@ -36,6 +36,12 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
+		<!-- Spring Boot Starter JavaMailSender Validation -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 		<!-- JWT (opcional, si deseas implementar tokens) -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>

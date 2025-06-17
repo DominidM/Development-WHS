@@ -3,7 +3,6 @@ import { Fragment, useEffect, useState } from 'react'
 import { User, X, LogOut, ShoppingBag } from 'lucide-react'
 import { API_BASE_URL } from '../../apiConfig'; 
 
-
 type Usuario = {
   nombrePersona: string
   correoPersona: string
@@ -18,6 +17,9 @@ export default function LoginModal() {
   const [nombre, setNombre] = useState('')
   const [error, setError] = useState('')
   const [usuario, setUsuario] = useState<Usuario | null>(null)
+  const [showForgot, setShowForgot] = useState(false)
+  const [forgotCorreo, setForgotCorreo] = useState('')
+  const [forgotMsg, setForgotMsg] = useState('')
 
   // Al cargar, busca usuario en localStorage
   useEffect(() => {
@@ -35,49 +37,73 @@ export default function LoginModal() {
     setPassword('')
     setNombre('')
     setError('')
+    setShowForgot(false)
+    setForgotCorreo('')
+    setForgotMsg('')
   }
 
   // Login
-const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault()
-  setError('')
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/admin/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ correo, password })
-    })
-    if (!response.ok) throw new Error('Datos inválidos')
-    const usuario = await response.json()
-    window.localStorage.setItem('usuario', JSON.stringify(usuario))
-    setUsuario(usuario)
-    closeModal()
-  } catch (err: unknown) {
-    if (err instanceof Error) setError(err.message)
-    else setError("Error desconocido")
-  }
-}
-
-const handleRegister = async (e: React.FormEvent) => {
-  e.preventDefault()
-  setError('')
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/admin/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ correo, password, nombre })
-    })
-    if (!response.ok) throw new Error('No se pudo registrar')
-    setIsRegister(false)
-    setCorreo('')
-    setPassword('')
-    setNombre('')
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
     setError('')
-  } catch (err: unknown) {
-    if (err instanceof Error) setError(err.message)
-    else setError('Error desconocido')
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo, password })
+      })
+      if (!response.ok) throw new Error('Datos inválidos')
+      const usuario = await response.json()
+      window.localStorage.setItem('usuario', JSON.stringify(usuario))
+      setUsuario(usuario)
+      closeModal()
+    } catch (err: unknown) {
+      if (err instanceof Error) setError(err.message)
+      else setError("Error desconocido")
+    }
   }
-}
+
+  // Register
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo, password, nombre })
+      })
+      if (!response.ok) throw new Error('No se pudo registrar')
+      setIsRegister(false)
+      setCorreo('')
+      setPassword('')
+      setNombre('')
+      setError('')
+    } catch (err: unknown) {
+      if (err instanceof Error) setError(err.message)
+      else setError('Error desconocido')
+    }
+  }
+
+  // Recuperar contraseña
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setForgotMsg('')
+    setError('')
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ correo: forgotCorreo })
+      })
+      if (!response.ok) throw new Error('No se pudo enviar el correo')
+      setForgotMsg('Se ha enviado un correo para restablecer la contraseña')
+      setForgotCorreo('')
+    } catch (err: unknown) {
+      if (err instanceof Error) setError(err.message)
+      else setError('Error desconocido')
+    }
+  }
 
   // Cerrar sesión
   const handleLogout = () => {
@@ -129,7 +155,7 @@ const handleRegister = async (e: React.FormEvent) => {
                     <Dialog.Title className="text-lg font-bold text-gray-900">
                       {usuario
                         ? `Bienvenido, ${usuario.nombrePersona}`
-                        : (isRegister ? 'Crear cuenta' : 'Iniciar sesión')
+                        : (isRegister ? 'Crear cuenta' : (showForgot ? 'Recuperar contraseña' : 'Iniciar sesión'))
                       }
                     </Dialog.Title>
                     <button onClick={closeModal}>
@@ -158,6 +184,33 @@ const handleRegister = async (e: React.FormEvent) => {
                         Cerrar sesión
                       </button>
                     </div>
+                  ) : showForgot ? (
+                    <form className="flex flex-col gap-4 mt-4" onSubmit={handleForgotPassword}>
+                      <input
+                        type="email"
+                        value={forgotCorreo}
+                        onChange={e => setForgotCorreo(e.target.value)}
+                        placeholder="Correo electrónico"
+                        className="border rounded px-3 py-2 w-full"
+                        required
+                        autoFocus
+                      />
+                      {error && <span className="text-red-500">{error}</span>}
+                      {forgotMsg && <span className="text-green-600">{forgotMsg}</span>}
+                      <button
+                        type="submit"
+                        className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+                      >
+                        Recuperar contraseña
+                      </button>
+                      <button
+                        type="button"
+                        className="text-blue-700 hover:underline"
+                        onClick={() => setShowForgot(false)}
+                      >
+                        Volver al inicio de sesión
+                      </button>
+                    </form>
                   ) : !isRegister ? (
                     <form className="flex flex-col gap-4 mt-4" onSubmit={handleLogin}>
                       <input
@@ -194,6 +247,13 @@ const handleRegister = async (e: React.FormEvent) => {
                           Crear cuenta
                         </button>
                       </span>
+                      <button
+                        type="button"
+                        className="text-blue-700 text-sm mt-2 hover:underline"
+                        onClick={() => setShowForgot(true)}
+                      >
+                        ¿Olvidaste tu contraseña?
+                      </button>
                     </form>
                   ) : (
                     <form className="flex flex-col gap-4 mt-4" onSubmit={handleRegister}>

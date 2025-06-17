@@ -11,4 +11,6 @@ public interface AuthService {
     Usuario buscarPorId(Long id);
     void eliminarPorId(Long id);
     Usuario findByUsername(String username);
+    boolean sendPasswordResetEmail(String correo);
+    boolean resetPasswordWithToken(String token, String newPassword); // <-- método nuevo
 }

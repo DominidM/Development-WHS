@@ -39,6 +39,12 @@ public class Usuario {
     @JoinColumn(name = "pk_rolUsuario", nullable = false)
     private RolUsuario rolUsuario;
 
+    @Column(name = "reset_token", length = 100)
+    private String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    private Long resetTokenExpiry;
+
     /**
      * Constructor por defecto (necesario para JPA)
      */
@@ -131,5 +137,18 @@ public class Usuario {
      */
     public void setRolUsuario(RolUsuario rolUsuario) {
         this.rolUsuario = rolUsuario;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+    public Long getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+    public void setResetTokenExpiry(Long resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
     }
 }

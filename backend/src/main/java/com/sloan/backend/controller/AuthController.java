@@ -96,4 +96,21 @@ public class AuthController {
         public String getPassword() { return password; }
         public void setPassword(String password) { this.password = password; }
     }
+
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        boolean enviado = authService.sendPasswordResetEmail(request.getCorreo());
+        if (enviado) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(404).body("Usuario no encontrado");
+        }
+    }
+
+    public static class ForgotPasswordRequest {
+        private String correo;
+        public String getCorreo() { return correo; }
+        public void setCorreo(String correo) { this.correo = correo; }
+    }
 }

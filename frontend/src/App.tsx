@@ -9,6 +9,7 @@ import LibroReclamaciones from './pages/LibroReclamacionesPage';
 import { DetalleProducto } from "./pages/DetalleProductoPage";
 
 import Layout from './layouts/Layout';
+import ResetPasswordPage from './pages/ResetPasswordPage'; // <--- Agrega este import
 
 const App: React.FC = () => {
   return (
@@ -21,8 +22,8 @@ const App: React.FC = () => {
         <Route path="/productos/:slug" element={<DetalleProducto />} />    
         <Route path="/libro" element={<LibroReclamaciones />} />
         <Route path="/opiniones" element={<OpinonesPage />} />
-
       </Route>
+      <Route path="/reset-password" element={<ResetPasswordPage />} /> {/* <-- Nueva ruta */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
