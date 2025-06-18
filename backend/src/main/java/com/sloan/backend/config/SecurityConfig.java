@@ -36,7 +36,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             // Configuración de login con formulario personalizado
             .formLogin(form -> form
-                .loginPage("/admin/login") // Página de login personalizada
+                .loginPage("/admin/login") // Página de login personalizada 
                 .defaultSuccessUrl("/admin/dashboard", true) // Redirección tras login exitoso
                 .permitAll()
             )
