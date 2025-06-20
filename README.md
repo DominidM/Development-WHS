@@ -67,6 +67,7 @@ Importar el proyecto como un proyecto Maven en tu IDE (por ejemplo, IntelliJ o E
 spring.datasource.url=jdbc:postgresql://localhost:5432/sloan_web  
 spring.datasource.username=TU_USUARIO  
 spring.datasource.password=TU_CONTRASEÑA  
+
 ```
 
 2. Ejecuta el Backend:
@@ -81,6 +82,7 @@ cd backend
 ```bash 
 cd frontend  
 bun run dev
+
 ```
 Frontend disponible en: http://localhost:5173  
 Backend disponible en: http://localhost:8081/admin/login
