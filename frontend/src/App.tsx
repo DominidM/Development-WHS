@@ -22,6 +22,9 @@ const App: React.FC = () => {
         <Route path="/productos/:slug" element={<DetalleProducto />} />    
         <Route path="/libro" element={<LibroReclamaciones />} />
         <Route path="/opiniones" element={<OpinonesPage />} />
+        <Route path="/instalacion" element={<OpinonesPage />} />
+        <Route path="/mantenimiento" element={<OpinonesPage />} />
+
       </Route>
       <Route path="/reset-password" element={<ResetPasswordPage />} /> {/* <-- Nueva ruta */}
       <Route path="*" element={<NotFoundPage />} />
