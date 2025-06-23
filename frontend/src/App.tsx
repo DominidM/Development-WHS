@@ -7,6 +7,8 @@ import NotFoundPage from './pages/NotFoundPage';
 import CartPage from './pages/CartPage';
 import LibroReclamaciones from './pages/LibroReclamacionesPage';
 import { DetalleProducto } from "./pages/DetalleProductoPage";
+import InstalacionPage from './pages/InstalacionPage';
+import MantenimientoPage from './pages/mantemientoPage';
 
 import Layout from './layouts/Layout';
 import ResetPasswordPage from './pages/ResetPasswordPage'; // <--- Agrega este import
@@ -22,8 +24,8 @@ const App: React.FC = () => {
         <Route path="/productos/:slug" element={<DetalleProducto />} />    
         <Route path="/libro" element={<LibroReclamaciones />} />
         <Route path="/opiniones" element={<OpinonesPage />} />
-        <Route path="/instalacion" element={<OpinonesPage />} />
-        <Route path="/mantenimiento" element={<OpinonesPage />} />
+        <Route path="/instalacion" element={<InstalacionPage />} />
+        <Route path="/mantenimiento" element={<MantenimientoPage />} />
 
       </Route>
       <Route path="/reset-password" element={<ResetPasswordPage />} /> {/* <-- Nueva ruta */}
