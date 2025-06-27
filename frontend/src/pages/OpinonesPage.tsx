@@ -42,7 +42,7 @@ export default function OpinionesPage() {
 
     if (nombre && comentario) {
       setEnviando(true);
-      // Construye el objeto para el backend
+      // Construye el objeto para el backend actualizacion t3
       const data = {
         nombreFormulario: nombre, 
         dniFormulario: "",
