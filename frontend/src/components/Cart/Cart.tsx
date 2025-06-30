@@ -1,9 +1,11 @@
 import { useCart } from "../ui/CartContext";
 import { useState } from "react";
+import { API_BASE_URL } from '../../apiConfig';
 
 export function Cart() {
-  const { items, updateQuantity } = useCart();
+  const { items, updateQuantity, removeItem } = useCart();
   const [servicioInstalacion, setServicioInstalacion] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleQuantityChange = (id: string, quantity: number) => {
     updateQuantity(id, quantity);
@@ -17,6 +19,77 @@ export function Cart() {
   const costoInstalacion = servicioInstalacion ? 100 : 0;
   const totalGeneral = totalProductos + costoInstalacion;
 
+  // Obtén el usuario logueado desde localStorage con la clave correcta
+  let userId: number | undefined = undefined;
+  try {
+    const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
+    userId = usuario?.idUsuario;
+  } catch {
+    userId = undefined;
+  }
+
+  const handleCheckout = async () => {
+    if (items.length === 0 || !userId) {
+      alert("Debes tener productos en el carrito y estar logueado.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const descripcion =
+        items.map(item => `${item.quantity}x ${item.name}`).join(", ") +
+        (servicioInstalacion ? " + instalación" : "");
+
+      const cantidad = items.reduce((acc, item) => acc + item.quantity, 0);
+
+      const response = await fetch(`${API_BASE_URL}/api/public/pedidos/pagar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          descripcion,
+          monto: totalGeneral,
+          cantidad,
+          pkUsuario: userId,
+        }),
+      });
+
+      const contentType = response.headers.get("content-type");
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        alert("Error al proceder con el pago:\n" + errorText.slice(0, 200));
+        return;
+      }
+
+      if (contentType && contentType.includes("application/json")) {
+        // Respuesta como JSON: recomendado
+        const data = await response.json();
+        if (data.link) {
+          window.location.href = data.link;
+        } else {
+          alert("El backend no devolvió un link de pago válido.");
+        }
+      } else if (contentType && contentType.includes("text/html")) {
+        // El backend devolvió HTML (probablemente el login)
+        const html = await response.text();
+        alert("El backend devolvió HTML (probablemente el login):\n" + html.slice(0, 200));
+      } else {
+        // Respuesta como texto plano (string)
+        const text = await response.text();
+        if (text.startsWith("http")) {
+          window.location.href = text;
+        } else {
+          alert("Respuesta inesperada del backend:\n" + text.slice(0, 200));
+        }
+      }
+    } catch (error) {
+      alert("Ocurrió un error al proceder con la transacción.\n" + error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-1 bg-white">
       <h2 className="text-2xl font-bold mb-6">Carro de compras</h2>
@@ -26,7 +99,6 @@ export function Cart() {
           {items.length === 0 && <div className="text-gray-500">Tu carrito está vacío.</div>}
           {items.map(item => (
             <div key={item.id} className="flex items-center gap-10 border-b pb-6">
-              {/* Imagen del producto */}
               <img src={item.image} alt={item.name} className="w-24 h-24 bg-gray-200 rounded-md" />
               <div className="flex-1">
                 <h3 className="font-semibold">{item.name}</h3>
@@ -53,6 +125,14 @@ export function Cart() {
                   ))}
                 </select>
               </div>
+              {/* Botón para eliminar producto */}
+              <button
+                className="ml-4 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700"
+                onClick={() => removeItem(item.id)}
+                title="Eliminar producto"
+              >
+                ✕
+              </button>
             </div>
           ))}
         </div>
@@ -67,7 +147,6 @@ export function Cart() {
             <span>Envío a 15000</span>
             <span className="text-green-600 font-semibold">Gratis</span>
           </div>
-          {/* Servicio de instalación */}
           <div className="mb-2 flex justify-between items-center">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -96,6 +175,8 @@ export function Cart() {
               flex items-center justify-center gap-3
               group
             "
+            disabled={loading || items.length === 0}
+            onClick={handleCheckout}
           >
             <span className="transition-all duration-300 group-hover:-translate-y-1">
               <svg
@@ -114,7 +195,7 @@ export function Cart() {
                 <circle cx="18" cy="16" r="1" fill="#379e1f" />
               </svg>
             </span>
-            Completar la transacción
+            {loading ? "Redirigiendo..." : "Completar la transacción"}
           </button>
           <div className="flex justify-center items-center gap-2 mt-4">
             <img src="./assets/visa.png" alt="Visa" className="h-6" />

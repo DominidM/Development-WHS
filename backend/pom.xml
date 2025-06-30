@@ -58,7 +58,11 @@
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
 
-
+		<dependency>
+			<groupId>com.mercadopago</groupId>
+			<artifactId>sdk-java</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 
 		<dependency>
 		    <!-- PostgreSQL Driver -->
