@@ -3,7 +3,6 @@ import { Heart, Truck } from "lucide-react";
 import { useCart } from "./CartContext";
 import { API_BASE_URL } from '../../apiConfig'; 
 
-
 interface ProductDetailProps {
   slug: string;
 }
@@ -118,12 +117,15 @@ export default function ProductDetail({ slug }: ProductDetailProps) {
               onClick={() => {
                 if (cantidadMaxSeleccionable === 0) return;
                 addItem({
-                  id: producto.idProducto.toString(),
+                  id: producto.idProducto.toString(), // string único para UI
+                  productId: producto.idProducto,     // numérico para backend
                   name: producto.nombreProducto,
                   price: producto.precioProducto,
                   quantity: cantidad,
                   image: producto.imagenProducto,
-                  stock: stockDisponible
+                  stock: stockDisponible,
+                  brand: producto.marca,
+                  description: producto.descripcionProducto,
                 });
               }}
               disabled={cantidadMaxSeleccionable === 0}

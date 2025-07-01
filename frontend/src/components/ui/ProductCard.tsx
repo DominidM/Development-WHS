@@ -3,14 +3,14 @@ import { ShoppingCart } from "lucide-react";
 import { useCart } from "./CartContext";
 
 interface ProductCardProps {
-  id?: string | number;
+  id: number; // <-- obligatorio y numérico
   nombre: string;
   descripcion: string;
   imagen?: string;
   slug: string;
   precio: number;
   precioOriginal?: number;
-  stock?: number; // Stock real del producto
+  stock?: number;
 }
 
 export default function ProductCard({
@@ -21,7 +21,7 @@ export default function ProductCard({
   slug,
   precio,
   precioOriginal,
-  stock, // No pongas valor por defecto aquí
+  stock,
 }: ProductCardProps) {
   const navigate = useNavigate();
   const { addItem, items } = useCart();
@@ -34,17 +34,17 @@ export default function ProductCard({
     navigate(`/productos/${slug}`);
   };
 
-  // Verifica si el producto está en el carrito y cuál es su cantidad actual
   const cartItem = items.find(
-    item => item.id === ((id ?? slug).toString())
+    item => item.id === id.toString()
   );
   const cantidadEnCarrito = cartItem?.quantity ?? 0;
-
-  // Si stock es undefined, muestra "Sin stock" o deshabilita el botón
-  // Cambia 99 por 0 si prefieres que undefined sea stock agotado
   const stockDisponible = typeof stock === "number" ? stock : 0;
 
   const handleAddToCart = () => {
+    if (typeof id !== "number" || isNaN(id)) {
+      alert("ID de producto no válido. No se puede agregar al carrito.");
+      return;
+    }
     if (stockDisponible === 0) {
       alert("Producto sin stock.");
       return;
@@ -54,15 +54,16 @@ export default function ProductCard({
       return;
     }
     addItem({
-      id: (id ?? slug).toString(),
+      id: id.toString(),      // string único para la UI
+      productId: id,          // numérico para el backend
       name: nombre,
       price: precio,
       quantity: 1,
       image: imagen,
-      stock: stockDisponible // Asegura que el stock se envía correctamente
+      stock: stockDisponible,
+      description: descripcion,
     });
   };
-
 
   return (
     <div

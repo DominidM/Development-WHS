@@ -13,7 +13,7 @@ interface Oferta {
   precioOferta: number;
   fechaInicio?: string;
   fechaFin?: string;
-  stockProducto: number; // <--- STOCK AÑADIDO
+  stockProducto: number;
 }
 
 export default function OfertaCarousel() {
@@ -64,13 +64,14 @@ export default function OfertaCarousel() {
                 className="min-w-[260px] max-w-[280px] snap-start flex-shrink-0"
               >
                 <ProductCard
+                  id={oferta.idProducto} // <-- ¡ESTO ES CLAVE!
                   nombre={oferta.nombreProducto}
                   descripcion={oferta.descripcionProducto}
                   imagen={oferta.imagenProducto}
                   slug={oferta.slug}
                   precio={oferta.precioOferta}
                   precioOriginal={oferta.precioProducto}
-                  stock={oferta.stockProducto} // <-- PASA EL STOCK AQUÍ
+                  stock={oferta.stockProducto}
                 />
               </div>
             ))
@@ -86,13 +87,14 @@ export default function OfertaCarousel() {
             ofertas.map(oferta => (
               <div key={oferta.idOferta} className="flex justify-center">
                 <ProductCard
+                  id={oferta.idProducto} // <-- ¡ESTO TAMBIÉN!
                   nombre={oferta.nombreProducto}
                   descripcion={oferta.descripcionProducto}
                   imagen={oferta.imagenProducto}
                   slug={oferta.slug}
                   precio={oferta.precioOferta}
                   precioOriginal={oferta.precioProducto}
-                  stock={oferta.stockProducto} // <-- PASA EL STOCK AQUÍ TAMBIÉN
+                  stock={oferta.stockProducto}
                 />
               </div>
             ))

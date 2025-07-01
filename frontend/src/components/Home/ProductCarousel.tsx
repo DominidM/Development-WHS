@@ -65,13 +65,14 @@ export default function ProductCarousel({ pkCategoria, titulo, subtitulo }: Prod
                   className="min-w-[260px] max-w-[280px] snap-start"
                 >
                   <ProductCard
-                  nombre={producto.nombreProducto}
-                  descripcion={producto.descripcionProducto}
-                  imagen={producto.imagenProducto}
-                  slug={producto.slug}
-                  precio={producto.precioProducto}
-                  stock={producto.stockProducto} 
-                />
+                    id={producto.idProducto} // <-- ¡Este es el fix!
+                    nombre={producto.nombreProducto}
+                    descripcion={producto.descripcionProducto}
+                    imagen={producto.imagenProducto}
+                    slug={producto.slug}
+                    precio={producto.precioProducto}
+                    stock={producto.stockProducto}
+                  />
                 </div>
               ))
             )}

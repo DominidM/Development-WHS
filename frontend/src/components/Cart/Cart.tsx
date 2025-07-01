@@ -1,11 +1,20 @@
 import { useCart } from "../ui/CartContext";
 import { useState } from "react";
-import { API_BASE_URL } from '../../apiConfig';
 
 export function Cart() {
   const { items, updateQuantity, removeItem } = useCart();
   const [servicioInstalacion, setServicioInstalacion] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Estado para mostrar/ocultar descripción por producto (mapa id->bool)
+  const [showDescriptions, setShowDescriptions] = useState<{ [id: string]: boolean }>({});
+
+  const handleToggleDescription = (id: string) => {
+    setShowDescriptions(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
 
   const handleQuantityChange = (id: string, quantity: number) => {
     updateQuantity(id, quantity);
@@ -19,7 +28,6 @@ export function Cart() {
   const costoInstalacion = servicioInstalacion ? 100 : 0;
   const totalGeneral = totalProductos + costoInstalacion;
 
-  // Obtén el usuario logueado desde localStorage con la clave correcta
   let userId: number | undefined = undefined;
   try {
     const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
@@ -43,27 +51,44 @@ export function Cart() {
 
       const cantidad = items.reduce((acc, item) => acc + item.quantity, 0);
 
-      const response = await fetch(`${API_BASE_URL}/api/public/pedidos/pagar`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      if (items.some(item => !item.productId || isNaN(item.productId))) {
+        alert("Hay productos con datos inválidos en el carrito. Intenta eliminarlos y agregarlos de nuevo.");
+        return;
+      }
+      const response = await fetch('http://localhost:8081/api/public/pedidos/pagar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({
           descripcion,
           monto: totalGeneral,
           cantidad,
           pkUsuario: userId,
+          items: items.map(item => ({
+            pkProductoPedido: item.productId,
+            cantidadPedido: item.quantity
+          }))
         }),
       });
 
       const contentType = response.headers.get("content-type");
 
       if (!response.ok) {
-        const errorText = await response.text();
+        let errorText = "";
+        try {
+          errorText = contentType && contentType.includes("application/json")
+            ? JSON.stringify(await response.json())
+            : await response.text();
+        } catch {
+          errorText = "Error desconocido";
+        }
         alert("Error al proceder con el pago:\n" + errorText.slice(0, 200));
         return;
       }
 
       if (contentType && contentType.includes("application/json")) {
-        // Respuesta como JSON: recomendado
         const data = await response.json();
         if (data.link) {
           window.location.href = data.link;
@@ -71,11 +96,9 @@ export function Cart() {
           alert("El backend no devolvió un link de pago válido.");
         }
       } else if (contentType && contentType.includes("text/html")) {
-        // El backend devolvió HTML (probablemente el login)
         const html = await response.text();
         alert("El backend devolvió HTML (probablemente el login):\n" + html.slice(0, 200));
       } else {
-        // Respuesta como texto plano (string)
         const text = await response.text();
         if (text.startsWith("http")) {
           window.location.href = text;
@@ -94,8 +117,9 @@ export function Cart() {
     <div className="max-w-4xl mx-auto p-4 md:p-1 bg-white">
       <h2 className="text-2xl font-bold mb-6">Carro de compras</h2>
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Lista de productos */}
-        <div className="flex-1 bg-white border rounded-x1 p-8 space-y-7">
+        {/* Lista de productos, ahora con scroll si hay muchos */}
+        <div className="flex-1 bg-white border rounded-x1 p-8 space-y-7"
+             style={{ maxHeight: 520, overflowY: "auto" }}>
           {items.length === 0 && <div className="text-gray-500">Tu carrito está vacío.</div>}
           {items.map(item => (
             <div key={item.id} className="flex items-center gap-10 border-b pb-6">
@@ -103,7 +127,19 @@ export function Cart() {
               <div className="flex-1">
                 <h3 className="font-semibold">{item.name}</h3>
                 <p className="text-sm text-gray-500">{item.brand}</p>
-                <p className="text-sm text-gray-600">{item.description}</p>
+                {/* Toggle descripción */}
+                <button
+                  className="text-xs text-blue-700 underline mb-1"
+                  onClick={() => handleToggleDescription(item.id)}
+                  type="button"
+                  tabIndex={0}
+                  style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                >
+                  {showDescriptions[item.id] ? "Ocultar descripción" : "Ver descripción"}
+                </button>
+                {showDescriptions[item.id] && (
+                  <p className="text-sm text-gray-600">{item.description}</p>
+                )}
                 <div className="mt-2 flex items-center gap-2 text-sm">
                   <span className="font-semibold text-gray-800"> S/{item.price.toFixed(2)}</span>
                   {item.originalPrice && (
@@ -112,7 +148,7 @@ export function Cart() {
                 </div>
                 <label className="text-sm mt-2 block">Cant</label>
                 <select
-                  className="border rounded px-2 py-1 mt1"
+                  className="border rounded px-2 py-1 mt-1"
                   value={item.quantity}
                   onChange={e =>
                     handleQuantityChange(item.id, Number(e.target.value))

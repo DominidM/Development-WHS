@@ -7,5 +7,5 @@ import com.sloan.backend.model.Pedido;
 
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
-    // Puedes agregar métodos personalizados si los necesitas
+
 }

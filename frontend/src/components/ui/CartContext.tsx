@@ -1,7 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 export interface CartItem {
-  id: string;
+  id: string;          // identificador único para el frontend (puede ser string, por ejemplo un slug)
+  productId: number;   // identificador numérico real del producto para el backend
   name: string;
   price: number;
   originalPrice?: number; 
@@ -15,8 +16,8 @@ export interface CartItem {
 interface CartContextType {
   items: CartItem[];
   addItem: (item: CartItem) => void;
-  removeItem: (itemId: string) => void;
-  updateQuantity: (itemId: string, quantity: number) => void;
+  removeItem: (itemId: string) => void; // Usamos el id (string) único del frontend
+  updateQuantity: (itemId: string, quantity: number) => void; // Igual aquí
   clearCart: () => void;
 }
 
@@ -50,7 +51,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       let updatedItems = [...prevItems];
       if (existingItemIndex > -1) {
         const item = updatedItems[existingItemIndex];
-        // Actualiza el stock si viene en newItem (por si cambió en el backend)
         if (newItem.stock !== undefined) {
           item.stock = newItem.stock;
         }
@@ -75,10 +75,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         item.id === itemId
           ? {
               ...item,
-              quantity: Math.max(
-                1,
-                Math.min(quantity, item.stock ?? 99)
-              ),
+              quantity: Math.max(1, Math.min(quantity, item.stock ?? 99)),
             }
           : item
       )

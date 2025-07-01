@@ -236,24 +236,25 @@ const ProductsPage: React.FC = () => {
         <main className="w-full lg:w-3/4">
           <div className="text-sm font-medium text-gray-700 mb-2 hidden lg:block">{cantidadResultados} Resultados</div>
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {loading ? (
-              <div className="col-span-full text-center">Cargando productos...</div>
-            ) : productosPaginados.length === 0 ? (
-              <div className="col-span-full text-center">No hay productos disponibles.</div>
-            ) : (
-              productosPaginados.map(producto => (
-                <ProductCard
-                  key={producto.idProducto}
-                  nombre={producto.nombreProducto}
-                  descripcion={producto.descripcionProducto}
-                  imagen={producto.imagenProducto}
-                  slug={producto.slug}
-                  precio={producto.precio}
-                  stock={producto.stockProducto}
-                />
-              ))
-            )}
-          </div>
+          {loading ? (
+            <div className="col-span-full text-center">Cargando productos...</div>
+          ) : productosPaginados.length === 0 ? (
+            <div className="col-span-full text-center">No hay productos disponibles.</div>
+          ) : (
+            productosPaginados.map(producto => (
+              <ProductCard
+                key={producto.idProducto}
+                id={producto.idProducto}           // <-- AGREGA ESTA LÍNEA
+                nombre={producto.nombreProducto}
+                descripcion={producto.descripcionProducto}
+                imagen={producto.imagenProducto}
+                slug={producto.slug}
+                precio={producto.precio}
+                stock={producto.stockProducto}
+              />
+            ))
+          )}
+        </div>
           {/* Paginación */}
           {totalPaginas > 1 && <Pagination />}
         </main>

@@ -24,13 +24,24 @@ public class PedidoDetalles {
     @Column(name = "pk_pedido")
     private Long pkPedido;
 
-    public PedidoDetalles(Integer cantidadPedido, Long idPedidoDetalle, Long pkPedido, Long pkProductoPedido) {
+    // Constructor vacío (requerido por JPA y para uso con setters)
+    public PedidoDetalles() {
+    }
+
+    // Constructor con todos los parámetros relevantes, excepto el id autogenerado
+    public PedidoDetalles(Integer cantidadPedido, Long pkPedido, Long pkProductoPedido) {
         this.cantidadPedido = cantidadPedido;
-        this.idPedidoDetalle = idPedidoDetalle;
         this.pkPedido = pkPedido;
         this.pkProductoPedido = pkProductoPedido;
     }
 
+    // Constructor completo (opcional, con idPedidoDetalle)
+    public PedidoDetalles(Long idPedidoDetalle, Integer cantidadPedido, Long pkPedido, Long pkProductoPedido) {
+        this.idPedidoDetalle = idPedidoDetalle;
+        this.cantidadPedido = cantidadPedido;
+        this.pkPedido = pkPedido;
+        this.pkProductoPedido = pkProductoPedido;
+    }
 
     public Long getIdPedidoDetalle() {
         return idPedidoDetalle;

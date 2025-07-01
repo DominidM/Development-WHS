@@ -18,41 +18,40 @@ public class Pedido {
     @Column(name = "id_pedido")
     private Long idPedido;
 
-    @Column(name = "fecha")
+    @Column(name = "fecha", nullable = false)
     private LocalDateTime fecha;
 
-    @Column(name = "pk_extra")
+    @Column(name = "pk_extra", nullable = false)
     private Long pkExtra;
 
-    @Column(name = "pk_usuario")
+    @Column(name = "pk_usuario", nullable = false)
     private Long pkUsuario;
 
-    @Column(name = "pk_metodopago")
+    @Column(name = "pk_metodopago", nullable = false)
     private Long pkMetodoPago;
 
     @Column(name = "id_mercadopago", length = 100)
     private String idMercadopago;
 
-    @Column(name = "estado_pago", length = 20)
+    @Column(name = "estado_pago", length = 20, nullable = false)
     private String estadoPago;
 
-    @Column(name = "monto_total", precision = 12, scale = 2)
+    @Column(name = "monto_total", precision = 12, scale = 2, nullable = false)
     private BigDecimal montoTotal;
 
     @Column(name = "preference_id", length = 100)
     private String preferenceId;
 
-    /**
-     * Constructor por defecto (necesario para JPA)
-     */
+    // Constructor por defecto (necesario para JPA)
     public Pedido() {
     }
 
-    public Pedido(String estadoPago, LocalDateTime fecha, String idMercadopago, Long idPedido, BigDecimal montoTotal, Long pkExtra, Long pkMetodoPago, Long pkUsuario, String preferenceId) {
+    // Constructor con todos los parámetros relevantes
+    public Pedido(String estadoPago, LocalDateTime fecha, String idMercadopago, BigDecimal montoTotal,
+                  Long pkExtra, Long pkMetodoPago, Long pkUsuario, String preferenceId) {
         this.estadoPago = estadoPago;
         this.fecha = fecha;
         this.idMercadopago = idMercadopago;
-        this.idPedido = idPedido;
         this.montoTotal = montoTotal;
         this.pkExtra = pkExtra;
         this.pkMetodoPago = pkMetodoPago;
@@ -131,6 +130,4 @@ public class Pedido {
     public void setPreferenceId(String preferenceId) {
         this.preferenceId = preferenceId;
     }
-
-   
 }
