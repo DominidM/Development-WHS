@@ -3,10 +3,13 @@ import { useState } from "react";
 
 export function Cart() {
   const { items, updateQuantity, removeItem } = useCart();
-  const [servicioInstalacion, setServicioInstalacion] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Estado para mostrar/ocultar descripción por producto (mapa id->bool)
+  // Estado para método de pago y servicio extra usando los IDs REALES de la BD
+  const [metodoPago, setMetodoPago] = useState<number>(1); // 1: MercadoPago
+  const [extraServicio, setExtraServicio] = useState<number>(1); // 1: Sin servicio extra
+
+  // Estado para mostrar/ocultar descripción por producto
   const [showDescriptions, setShowDescriptions] = useState<{ [id: string]: boolean }>({});
 
   const handleToggleDescription = (id: string) => {
@@ -25,8 +28,15 @@ export function Cart() {
     0
   );
 
-  const costoInstalacion = servicioInstalacion ? 100 : 0;
-  const totalGeneral = totalProductos + costoInstalacion;
+  // Busca el costo según el extra seleccionado
+  const extraServiciosCatalogo = [
+    { id: 1, nombre: "Sin servicio extra", costo: 0.00 },
+    { id: 2, nombre: "Instalación", costo: 50.00 },
+    { id: 3, nombre: "Mantenimiento", costo: 30.00 },
+    { id: 4, nombre: "Garantía extendida", costo: 25.00 }
+  ];
+  const costoExtra = extraServiciosCatalogo.find(e => e.id === extraServicio)?.costo ?? 0;
+  const totalGeneral = totalProductos + costoExtra;
 
   let userId: number | undefined = undefined;
   try {
@@ -47,7 +57,9 @@ export function Cart() {
     try {
       const descripcion =
         items.map(item => `${item.quantity}x ${item.name}`).join(", ") +
-        (servicioInstalacion ? " + instalación" : "");
+        (extraServicio !== 1
+          ? ` + ${extraServiciosCatalogo.find(e => e.id === extraServicio)?.nombre}`
+          : "");
 
       const cantidad = items.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -55,6 +67,7 @@ export function Cart() {
         alert("Hay productos con datos inválidos en el carrito. Intenta eliminarlos y agregarlos de nuevo.");
         return;
       }
+
       const response = await fetch('http://localhost:8081/api/public/pedidos/pagar', {
         method: 'POST',
         headers: {
@@ -69,7 +82,9 @@ export function Cart() {
           items: items.map(item => ({
             pkProductoPedido: item.productId,
             cantidadPedido: item.quantity
-          }))
+          })),
+          pkMetodoPago: metodoPago,
+          pkExtra: extraServicio
         }),
       });
 
@@ -183,17 +198,42 @@ export function Cart() {
             <span>Envío a 15000</span>
             <span className="text-green-600 font-semibold">Gratis</span>
           </div>
-          <div className="mb-2 flex justify-between items-center">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                className="accent-green-500"
-                checked={servicioInstalacion}
-                onChange={() => setServicioInstalacion(v => !v)}
-              />
-              <span>Servicio de instalación</span>
-            </label>
-            <span className="font-semibold">{servicioInstalacion ? "S/ 100.00" : "S/ 0.00"}</span>
+          {/* Selectores mejor presentados */}
+          <div className="mb-6">
+            {/* Servicio extra */}
+            <div className="flex flex-col mb-4">
+              <label htmlFor="extraServicio" className="font-semibold mb-1 text-gray-700">
+                Servicio extra:
+              </label>
+              <select
+                id="extraServicio"
+                className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white transition"
+                value={extraServicio}
+                onChange={e => setExtraServicio(Number(e.target.value))}
+              >
+                {extraServiciosCatalogo.map(serv => (
+                  <option key={serv.id} value={serv.id}>
+                    {serv.nombre} {serv.costo > 0 ? `(S/ ${serv.costo.toFixed(2)})` : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {/* Método de pago */}
+            <div className="flex flex-col">
+              <label htmlFor="metodoPago" className="font-semibold mb-1 text-gray-700">
+                Método de pago:
+              </label>
+              <select
+                id="metodoPago"
+                className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white transition"
+                value={metodoPago}
+                onChange={e => setMetodoPago(Number(e.target.value))}
+              >
+                <option value={1}>MercadoPago</option>
+                <option value={2}>Efectivo</option>
+                <option value={3}>Transferencia</option>
+              </select>
+            </div>
           </div>
           <hr className="my-2" />
           <div className="flex justify-between font-semibold text-lg">
