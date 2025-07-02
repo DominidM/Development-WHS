@@ -11,8 +11,10 @@ import com.mercadopago.resources.preference.Preference;
 import com.sloan.backend.dto.PedidoRequest.PedidoDetalleRequest;
 import com.sloan.backend.model.Pedido;
 import com.sloan.backend.model.PedidoDetalles;
+import com.sloan.backend.model.Usuario;
 import com.sloan.backend.repository.PedidoDetalleRepository;
 import com.sloan.backend.repository.PedidoRepository;
+import com.sloan.backend.repository.UsuarioRepository;
 
 @Service
 public class PedidoService {
@@ -24,9 +26,16 @@ public class PedidoService {
     private PedidoDetalleRepository pedidoDetalleRepository;
 
     @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
     private MercadoPagoService mercadoPagoService;
 
-    public String crearPedidoYObtenerLinkPago(
+    /**
+     * Crea un pedido y registra los detalles, pero NO genera link de pago.
+     * Devuelve el Pedido creado.
+     */
+    public Pedido crearPedido(
             String descripcion,
             BigDecimal monto,
             Integer cantidad,
@@ -34,18 +43,24 @@ public class PedidoService {
             List<PedidoDetalleRequest> items,
             Long pkExtra,
             Long pkMetodoPago
-    ) throws Exception {
-        // 1. Crear registro pedido (sin pago aún)
+    ) {
+        // Buscar el usuario y setearlo como relación (opcional)
+        Usuario usuario = usuarioRepository.findById(pkUsuario)
+                .orElse(null);
+
         Pedido pedido = new Pedido();
         pedido.setFecha(LocalDateTime.now());
         pedido.setPkUsuario(pkUsuario);
+        pedido.setUsuario(usuario); // Relación JPA, si tu modelo lo soporta
         pedido.setMontoTotal(monto);
         pedido.setEstadoPago("pendiente");
         pedido.setPkExtra(pkExtra);
         pedido.setPkMetodoPago(pkMetodoPago);
+        // Si tu modelo soporta descripción y cantidad, agrégalos aquí
+
         pedido = pedidoRepository.save(pedido);
 
-        // 2. Crear registros de detalle de pedido
+        // Guardar detalles del pedido
         if (items != null) {
             for (PedidoDetalleRequest item : items) {
                 PedidoDetalles detalle = new PedidoDetalles();
@@ -55,21 +70,49 @@ public class PedidoService {
                 pedidoDetalleRepository.save(detalle);
             }
         }
+        return pedido;
+    }
 
-        // 3. Crear preferencia en Mercado Pago
+    /**
+     * Genera y retorna un link de pago de MercadoPago para el pedido dado.
+     * Actualiza el pedido con los IDs de MercadoPago.
+     */
+    public String crearLinkMercadoPago(Pedido pedido) throws Exception {
         Preference preference = mercadoPagoService.crearPreferencia(
-                descripcion,
-                monto,
-                cantidad,
-                pedido.getIdPedido().toString() // externalReference
+            "Pedido #" + pedido.getIdPedido(),
+            pedido.getMontoTotal(),
+            1,
+            pedido.getIdPedido().toString()
         );
-
-        // 4. Guardar los ids de Mercado Pago en el pedido
         pedido.setIdMercadopago(preference.getId());
         pedido.setPreferenceId(preference.getId());
         pedidoRepository.save(pedido);
-
-        // 5. Retornar link de pago (init_point)
         return preference.getInitPoint();
+    }
+
+    /**
+     * (Opcional) Método original: crea pedido y retorna link de pago en una sola llamada.
+     * Úsalo solo si realmente necesitas esta funcionalidad.
+     */
+    public String crearPedidoYObtenerLinkPago(
+            String descripcion,
+            BigDecimal monto,
+            Integer cantidad,
+            Long pkUsuario,
+            List<PedidoDetalleRequest> items,
+            Long pkExtra,
+            Long pkMetodoPago
+    ) throws Exception {
+        Pedido pedido = crearPedido(
+            descripcion, monto, cantidad, pkUsuario, items, pkExtra, pkMetodoPago
+        );
+        return crearLinkMercadoPago(pedido);
+    }
+
+    /**
+     * Lista todos los pedidos registrados en la base de datos.
+     */
+    public List<Pedido> listarTodos() {
+        return pedidoRepository.findAll();
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 @Configuration
 public class SecurityConfig {
 
@@ -31,7 +32,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/api/public/**",
-                    "/api/admin/auth/**" // <--- PERMITIR endpoints públicos de auth para admin en la API
+                    "/api/admin/auth/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -60,10 +61,11 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/admin/login", 
-                    "/adminlte/**", 
+                    // Permitir recursos estáticos y públicos
+                    "/admin/login",
+                    "/adminlte/**",
                     "/css/**", "/js/**", "/images/**",
-                    "/favicon.ico", 
+                    "/favicon.ico",
                     "/bootstrap.min.css", "/bootstrap.bundle.min.js"
                 ).permitAll()
                 .anyRequest().hasRole("ADMINISTRADOR")
@@ -71,9 +73,22 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Cadena por defecto (bloquea todo lo demás)
+    // Cadena para recursos estáticos públicos (CSS, JS, imágenes, favicon)
     @Bean
     @Order(3)
+    public SecurityFilterChain staticResourcesSecurity(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/adminlte/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/bootstrap.min.css", "/bootstrap.bundle.min.js")
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .anyRequest().permitAll()
+            );
+        return http.build();
+    }
+
+    // Cadena por defecto (bloquea todo lo demás)
+    @Bean
+    @Order(4)
     public SecurityFilterChain defaultSecurity(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
@@ -91,7 +106,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of(
-            "http://localhost:5173", 
+            "http://localhost:5173",
             "https://delightful-desert-0cee57a03.1.azurestaticapps.net"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));

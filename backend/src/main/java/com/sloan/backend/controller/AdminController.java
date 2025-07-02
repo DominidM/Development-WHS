@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.sloan.backend.dto.ProductoDTO;
 import com.sloan.backend.model.EstadoForm;
 import com.sloan.backend.model.Formulario;
+import com.sloan.backend.model.Pedido;
 import com.sloan.backend.model.TipoForm;
 import com.sloan.backend.model.Usuario;
 import com.sloan.backend.repository.CategoriaProductoRepository;
@@ -27,11 +28,12 @@ import com.sloan.backend.repository.TipoFormRepository;
 import com.sloan.backend.service.AuthService;
 import com.sloan.backend.service.EstadoFormService;
 import com.sloan.backend.service.FormularioService;
+import com.sloan.backend.service.PedidoService;
 import com.sloan.backend.service.ProductoService;
 
 /**
  * Controlador para gestionar las vistas y operaciones del área de administración.
- * Incluye operaciones CRUD para productos, usuarios y formularios.
+ * Incluye operaciones CRUD para productos, usuarios, formularios y pedidos.
  */
 @Controller
 @RequestMapping("/admin")
@@ -44,6 +46,8 @@ public class AdminController {
     private AuthService usuarioService;
     @Autowired
     private FormularioService formularioService;
+    @Autowired
+    private PedidoService pedidoService; // <-- NUEVO para pedidos
 
     // Repositorios para entidades relacionadas con productos
     @Autowired
@@ -286,10 +290,12 @@ public class AdminController {
     // --------------------- PEDIDOS ---------------------
 
     /**
-     * Vista de pedidos (por implementar).
+     * Muestra la lista de pedidos.
      */
     @GetMapping("/pedidos")
-    public String pedidos() {
+    public String pedidos(Model model) {
+        List<Pedido> pedidos = pedidoService.listarTodos(); // Asegúrate que este método existe y trae los pedidos con usuario
+        model.addAttribute("pedidos", pedidos);
         return "admin/pedidos";
     }
 }

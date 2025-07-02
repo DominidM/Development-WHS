@@ -35,6 +35,7 @@ com\sloan\backend\repository\MarcaProductoRepository.class
 com\sloan\backend\service\AuthService.class
 com\sloan\backend\model\Pedido.class
 com\sloan\backend\controller\AdminController.class
+com\sloan\backend\service\EmailService.class
 com\sloan\backend\controller\AuthController$LoginRequest.class
 com\sloan\backend\repository\UsuarioRepository.class
 com\sloan\backend\security\CustomUserDetails.class
@@ -51,7 +52,6 @@ com\sloan\backend\controller\AuthController$ForgotPasswordRequest.class
 com\sloan\backend\repository\PedidoRepository.class
 com\sloan\backend\repository\ProductoRepository.class
 com\sloan\backend\dto\OfertaDTO.class
-com\sloan\backend\controller\AdminProductoController.class
 com\sloan\backend\model\EstadoForm.class
 com\sloan\backend\service\FormularioService.class
 com\sloan\backend\model\MetodoPago.class

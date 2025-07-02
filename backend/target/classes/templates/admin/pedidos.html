@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de Ventas</title>
+    <title>Gestión de Pedidos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,14 +13,18 @@
             border-radius: 0 !important;
             box-shadow: 0 4px 18px rgba(13,110,253,0.13);
         }
-        /* Puedes agregar más estilos personalizados aquí si lo necesitas */
+        .badge-pendiente { background: #ffe082; color: #6d4c00; }
+        .badge-pagado { background: #c8e6c9; color: #256029; }
+        .badge-cancelado { background: #ffcdd2; color: #b71c1c; }
+        .badge-otro { background: #ececec; color: #888; }
+        .actions-cell .btn-action { min-width: 2.5rem; }
     </style>
 </head>
 <body class="bg-light">
-    <div th:replace="admin/fragments/navbar :: navbar"></div>
+    <th:block th:replace="~{admin/fragments/navbar :: navbar}"></th:block>
     <div class="container py-5">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-            <h2 class="fw-bold text-primary mb-0">Ventas</h2>
+            <h2 class="fw-bold text-primary mb-0">Pedidos</h2>
             <a th:href="@{/admin/dashboard}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Regresar a Dashboard
             </a>
@@ -40,30 +44,40 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="venta : ${ventas}">
-                            <td th:text="${venta.id}">1</td>
-                            <td th:text="${venta.clienteNombre}">Juan Pérez</td>
-                            <td th:text="${#dates.format(venta.fecha, 'dd/MM/yyyy HH:mm')}">11/06/2025 13:30</td>
+                        <tr th:each="pedido : ${pedidos}">
+                            <td th:text="${pedido.idPedido}">1</td>
+                            <td th:text="${pedido.usuario != null ? pedido.usuario.nombrePersona : 'Sin usuario'}">Nombre Cliente</td>
+                            <td th:text="${pedido.fecha != null ? pedido.fecha.toString() : ''}"></td>
                             <td>
-                                <span th:text="${#numbers.formatDecimal(venta.montoTotal, 1, 'COMMA', 2, 'POINT')}">1200.00</span>
+                                <span th:text="${pedido.montoTotal != null ? #numbers.formatDecimal(pedido.montoTotal, 1, 'COMMA', 2, 'POINT') : '0.00'}">0.00</span>
                                 <span class="text-muted small">S/.</span>
                             </td>
                             <td>
-                                <span th:text="${venta.estado}">Pagado</span>
+                                <span th:classappend="
+                                    ${pedido.estadoPago?.toLowerCase()} == 'pendiente' ? 'badge badge-pendiente' :
+                                    (${pedido.estadoPago?.toLowerCase()} == 'pagado' ? 'badge badge-pagado' :
+                                    (${pedido.estadoPago?.toLowerCase()} == 'cancelado' ? 'badge badge-cancelado' : 'badge badge-otro'))"
+                                    th:text="${pedido.estadoPago != null ? #strings.capitalize(pedido.estadoPago) : 'Desconocido'}">Estado</span>
                             </td>
                             <td class="text-center actions-cell">
-                                <a th:href="@{'/admin/ventas/' + ${venta.id}}" class="btn btn-info btn-action me-1 mb-1 mb-lg-0" title="Ver Detalle">
+                                <a th:href="@{'/admin/pedidos/' + ${pedido.idPedido}}" class="btn btn-info btn-action me-1 mb-1 mb-lg-0" title="Ver Detalle">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <form th:action="@{'/admin/ventas/eliminar/' + ${venta.id}}" method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar esta venta?');">
+                                <form th:if="${pedido.estadoPago?.toLowerCase() == 'pendiente'}"
+                                      th:action="@{'/admin/pedidos/atender/' + ${pedido.idPedido}}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-success btn-action me-1 mb-1 mb-lg-0" title="Marcar como Atendido">
+                                        <i class="bi bi-check2"></i>
+                                    </button>
+                                </form>
+                                <form th:action="@{'/admin/pedidos/eliminar/' + ${pedido.idPedido}}" method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar este pedido?');">
                                     <button type="submit" class="btn btn-danger btn-action" title="Eliminar">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
                             </td>
                         </tr>
-                        <tr th:if="${#lists.isEmpty(ventas)}">
-                            <td colspan="6" class="text-center text-secondary">No hay ventas registradas.</td>
+                        <tr th:if="${#lists.isEmpty(pedidos)}">
+                            <td colspan="6" class="text-center text-secondary">No hay pedidos registrados.</td>
                         </tr>
                         </tbody>
                     </table>
@@ -71,7 +85,6 @@
             </div>
         </div>
     </div>
-    <!-- Bootstrap JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -65,6 +65,7 @@ export function Cart() {
 
       if (items.some(item => !item.productId || isNaN(item.productId))) {
         alert("Hay productos con datos inválidos en el carrito. Intenta eliminarlos y agregarlos de nuevo.");
+        setLoading(false);
         return;
       }
 
@@ -88,38 +89,21 @@ export function Cart() {
         }),
       });
 
-      const contentType = response.headers.get("content-type");
+      const data = await response.json();
 
-      if (!response.ok) {
-        let errorText = "";
-        try {
-          errorText = contentType && contentType.includes("application/json")
-            ? JSON.stringify(await response.json())
-            : await response.text();
-        } catch {
-          errorText = "Error desconocido";
-        }
-        alert("Error al proceder con el pago:\n" + errorText.slice(0, 200));
-        return;
-      }
-
-      if (contentType && contentType.includes("application/json")) {
-        const data = await response.json();
-        if (data.link) {
-          window.location.href = data.link;
-        } else {
-          alert("El backend no devolvió un link de pago válido.");
-        }
-      } else if (contentType && contentType.includes("text/html")) {
-        const html = await response.text();
-        alert("El backend devolvió HTML (probablemente el login):\n" + html.slice(0, 200));
+      if (data.tipo === "mercadopago" && data.link) {
+        window.location.href = data.link;
+      } else if (data.tipo === "efectivo") {
+        // Muestra un voucher o número de pedido
+        alert(`¡Pedido registrado!\n\nNúmero de pedido: ${data.numeroPedido}\n${data.mensaje}\n${data.voucherUrl ? `Descarga tu comprobante aquí: ${data.voucherUrl}` : ''}`);
+        // Aquí puedes redirigir a una página de confirmación o mostrar el voucher en pantalla
+      } else if (data.tipo === "transferencia") {
+        // Muestra datos bancarios y mensaje
+        alert(`¡Pedido registrado!\n\nNúmero de pedido: ${data.numeroPedido}\n${data.mensaje}\nBanco: ${data.datosBancarios?.banco}\nCuenta: ${data.datosBancarios?.cuenta}\nTitular: ${data.datosBancarios?.titular}`);
+        // Aquí puedes mostrar un botón para cargar el comprobante, si lo implementas
       } else {
-        const text = await response.text();
-        if (text.startsWith("http")) {
-          window.location.href = text;
-        } else {
-          alert("Respuesta inesperada del backend:\n" + text.slice(0, 200));
-        }
+        // Fallback para otros métodos o errores
+        alert('Pedido registrado. Revisa tu correo para más información.');
       }
     } catch (error) {
       alert("Ocurrió un error al proceder con la transacción.\n" + error);
