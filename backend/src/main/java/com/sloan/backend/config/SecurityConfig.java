@@ -61,24 +61,28 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    // Permitir recursos estáticos y públicos
                     "/admin/login",
+                    "/admin/logout",
                     "/adminlte/**",
                     "/css/**", "/js/**", "/images/**",
+                    "/webjars/**",
                     "/favicon.ico",
-                    "/bootstrap.min.css", "/bootstrap.bundle.min.js"
+                    "/bootstrap.min.css",
+                    "/bootstrap.bundle.min.js",
+                    "/avatar4.png"     
                 ).permitAll()
                 .anyRequest().hasRole("ADMINISTRADOR")
             );
         return http.build();
     }
 
+
     // Cadena para recursos estáticos públicos (CSS, JS, imágenes, favicon)
     @Bean
     @Order(3)
     public SecurityFilterChain staticResourcesSecurity(HttpSecurity http) throws Exception {
         http
-            .securityMatcher("/adminlte/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/bootstrap.min.css", "/bootstrap.bundle.min.js")
+            .securityMatcher("/adminlte/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/bootstrap.min.css", "/bootstrap.bundle.min.js", "/avatar4.png")
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .anyRequest().permitAll()

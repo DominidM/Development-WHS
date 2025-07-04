@@ -1,0 +1,67 @@
+<aside class="main-sidebar sidebar-dark-primary elevation-4" th:fragment="sidebar">
+    <!-- Logo -->
+    <a th:href="@{/admin/dashboard}" class="brand-link">
+        <i class="fas fa-tools mx-2"></i>
+        <span class="brand-text font-weight-light">Sloan Admin</span>
+    </a>
+
+    <!-- Sidebar contenido -->
+    <div class="sidebar">
+        <!-- User panel -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="/backend/src/main/resources/static/adminlte/assets/img/avatar4.png" class="img-circle elevation-2" alt="User Image" />
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">Administrador</a>
+            </div>
+        </div>
+
+        <!-- Menú lateral -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+
+                <li class="nav-item">
+                    <a th:href="@{/admin/dashboard}" class="nav-link"
+                       th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/admin/dashboard'} ? 'active'">
+                        <i class="nav-icon fas fa-home"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a th:href="@{/admin/productos}" class="nav-link"
+                       th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/productos')} ? 'active'">
+                        <i class="nav-icon fas fa-box"></i>
+                        <p>Productos</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a th:href="@{/admin/usuarios}" class="nav-link"
+                       th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/usuarios')} ? 'active'">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>Usuarios</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a th:href="@{/admin/formularios}" class="nav-link"
+                       th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/formularios')} ? 'active'">
+                        <i class="nav-icon fas fa-headset"></i>
+                        <p>Atención Cliente</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a th:href="@{/admin/pedidos}" class="nav-link"
+                       th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/pedidos')} ? 'active'">
+                        <i class="nav-icon fas fa-cash-register"></i>
+                        <p>Ventas</p>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+</aside>
