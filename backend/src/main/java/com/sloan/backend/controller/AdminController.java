@@ -255,12 +255,22 @@ public class AdminController {
         model.addAttribute("currentPage", "pedidos");
         return "admin/pedidos";
     }
-    
+
     @GetMapping("/pedidos/{id}")
     public String detallePedido(@PathVariable("id") Long id, Model model) {
         Pedido pedido = pedidoService.obtenerPorId(id); // tu método de servicio
         model.addAttribute("pedido", pedido);
         return "admin/pedidos-detalle";
     }
+    @PostMapping("/pedidos/rechazar/{id}")
+    public String rechazarPedido(@PathVariable("id") Long id) {
+        pedidoService.rechazarPedido(id); // Implementa este método en tu servicio
+        return "redirect:/admin/pedidos"; // O a donde debas redirigir tras rechazar
+    }
 
+    @PostMapping("/pedidos/atender/{id}")
+    public String atenderPedido(@PathVariable("id") Long id) {
+        pedidoService.atenderPedido(id);
+        return "redirect:/admin/pedidos";
+    }
 }

@@ -53,6 +53,19 @@
         .order-summary-box.attended {
             border-left: 7px solid #38a169;
         }
+        .order-summary-box.rejected {
+            border-left: 7px solid #ef4444 !important;
+        }
+        .order-summary-box.rejected .icon i {
+            color: #ef4444 !important;
+            background: #fff2;
+            border-radius: 50%;
+            padding: 2px;
+        }
+        .order-summary-box.rejected .summary-title {
+            color: #ef4444 !important;
+        }
+
         /* --- Filtros pedidos estilo Dashboard --- */
         .filter-btns {
             display: flex;
@@ -102,7 +115,14 @@
             background: #38a169 !important;
             color: #fff !important;
         }
-        .filter-btns .btn:not(.btn-primary):not(.btn-warning):not(.btn-success):not(.active):hover {
+        /* Filtro rechazado en rojo */
+        .filter-btns .btn.btn-danger,
+        .filter-btns .btn.btn-danger.active {
+            background: #ef4444 !important;
+            color: #fff !important;
+            box-shadow: 0 2px 7px #ef444415;
+        }
+        .filter-btns .btn:not(.btn-primary):not(.btn-warning):not(.btn-success):not(.btn-danger):not(.active):hover {
             background: #e5e9f2;
             color: #2563eb;
         }
@@ -262,25 +282,62 @@
             background: #38a169 !important;
             color: #fff !important;
         }
-        body.dark-mode .filter-btns .btn:not(.btn-primary):not(.btn-warning):not(.btn-success):not(.active):hover {
+        /* DARK MODE: Botón rechazado */
+        body.dark-mode .filter-btns .btn.btn-danger,
+        body.dark-mode .filter-btns .btn.btn-danger.active {
+            background: #ef4444 !important;
+            color: #fff !important;
+        }
+        body.dark-mode .filter-btns .btn:not(.btn-primary):not(.btn-warning):not(.btn-success):not(.btn-danger):not(.active):hover {
             background: #23293a !important;
             color: #fff !important;
         }
+        /* Box resumen rechazados en dark mode */
+        body.dark-mode .order-summary-box.rejected {
+            border-left: 7px solid #ef4444 !important;
+        }
+        body.dark-mode .order-summary-box.rejected .icon i {
+            color: #ef4444 !important;
+            background: #fff1;
+        }
+        body.dark-mode .order-summary-box.rejected .summary-title {
+            color: #ef4444 !important;
+        }
+
+         /* DARK MODE: Todas las cajas resumen (order-summary-box) paleta moderna */
         body.dark-mode .order-summary-box {
-            background: #1a1c23 !important;
-            color: #fff !important;
-            border-color: #353a41 !important;
+            background: #23272f !important;
+            color: #90cdf4 !important;
+            box-shadow: 0 2px 12px #0003 !important;
         }
         body.dark-mode .order-summary-box .summary-title,
         body.dark-mode .order-summary-box .summary-count {
-            color: #c4e2ff !important;
-            text-shadow: 0 1px 3px #0004;
+            color: #90cdf4 !important;
+            text-shadow: none;
         }
         body.dark-mode .order-summary-box.pending {
             border-left: 7px solid #ffe082 !important;
         }
         body.dark-mode .order-summary-box.attended {
             border-left: 7px solid #38a169 !important;
+        }
+        body.dark-mode .order-summary-box.rejected {
+            border-left: 7px solid #ef4444 !important;
+        }
+        body.dark-mode .order-summary-box .icon {
+            position: relative;
+        }
+        body.dark-mode .order-summary-box.pending .icon i {
+            color: #ffe082 !important;
+            background: none !important;
+            border-radius: 0;
+            padding: 0;
+        }
+        body.dark-mode .order-summary-box.rejected .icon i {
+            color: #ef4444 !important; 
+            background: none !important;
+            border-radius: 0; 
+            padding: 0; 
         }
     </style>
 </head>
@@ -362,7 +419,15 @@
                         <div>
                             <div class="summary-title">Pedidos Atendidos</div>
                             <div class="summary-count" id="countAtendidos"
-                                th:text="${pedidos.?[estadoPago?.toLowerCase() == 'pagado' or estadoPago?.toLowerCase() == 'cancelado']?.size()}">0</div>
+                                th:text="${pedidos.?[estadoPago?.toLowerCase() == 'atendido']?.size()}">0</div>
+                        </div>
+                    </div>
+                    <div class="order-summary-box rejected" id="boxRechazados">
+                        <span class="icon"><i class="bi bi-x-circle-fill"></i></span>
+                        <div>
+                            <div class="summary-title">Pedidos Rechazados</div>
+                            <div class="summary-count" id="countRechazados"
+                                th:text="${pedidos.?[estadoPago?.toLowerCase() == 'cancelado' or estadoPago?.toLowerCase() == 'rechazado']?.size()}">0</div>
                         </div>
                     </div>
                 </div>
@@ -371,6 +436,7 @@
                     <button class="btn" id="btnAll" type="button"><i class="fas fa-list"></i></button>
                     <button class="btn" id="btnPendiente" type="button"><i class="fas fa-hourglass-half"></i></button>
                     <button class="btn" id="btnAtendido" type="button"><i class="fas fa-check"></i></button>
+                    <button class="btn btn-danger" id="btnRechazado" type="button"><i class="fas fa-times"></i></button>
                     <span class="ms-2 me-2 fw-semibold" id="filtroLabel">Pendientes</span>
                 </div>
                 <!-- TABLA -->
@@ -413,9 +479,11 @@
                                         <i class="bi bi-check2"></i>
                                     </button>
                                 </form>
-                                <form th:action="@{'/admin/pedidos/eliminar/' + ${pedido.idPedido}}" method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar este pedido?');">
-                                    <button type="submit" class="btn btn-danger btn-action" title="Eliminar">
-                                        <i class="bi bi-trash"></i>
+                               <form th:if="${pedido.estadoPago?.toLowerCase() == 'pendiente'}"
+                                    th:action="@{'/admin/pedidos/rechazar/' + ${pedido.idPedido}}" method="post" class="d-inline"
+                                    onsubmit="return confirm('¿Seguro que deseas rechazar este pedido?');">
+                                    <button type="submit" class="btn btn-danger btn-action" title="Rechazar pedido">
+                                        <i class="bi bi-x-lg"></i>
                                     </button>
                                 </form>
                             </td>
@@ -456,16 +524,17 @@
         });
     </script>
     <!-- Filtro de pedidos (frontend JS, sin recarga) -->
-    <script>
+   <script>
         const btnAll = document.getElementById('btnAll');
         const btnPendiente = document.getElementById('btnPendiente');
         const btnAtendido = document.getElementById('btnAtendido');
+        const btnRechazado = document.getElementById('btnRechazado');
         const filtroLabel = document.getElementById('filtroLabel');
         const tabla = document.getElementById('tablaPedidos').getElementsByTagName('tbody')[0];
 
         function filtrarPedidos(filtro) {
             for (let row of tabla.rows) {
-                if (row.querySelector('td[colspan]')) continue; // salta fila "no hay pedidos"
+                if (row.querySelector('td[colspan]')) continue;
                 const estadoSpan = row.querySelector('td span[th\\:data-estado], td span[data-estado]');
                 const estado = estadoSpan ? (estadoSpan.getAttribute('data-estado') || estadoSpan.innerText.toLowerCase().trim()) : '';
                 if (filtro === 'todos') {
@@ -473,13 +542,16 @@
                 } else if (filtro === 'pendiente') {
                     row.style.display = (estado === 'pendiente') ? '' : 'none';
                 } else if (filtro === 'atendido') {
-                    row.style.display = ((estado === 'pagado' || estado === 'cancelado')) ? '' : 'none';
+                    row.style.display = (estado === 'atendido') ? '' : 'none';
+                } else if (filtro === 'rechazado') {
+                    row.style.display = ((estado === 'cancelado' || estado === 'rechazado')) ? '' : 'none';
                 }
             }
             // Cambia el estilo activo en los botones y el label
             btnAll.classList.remove('btn-primary', 'active');
             btnPendiente.classList.remove('btn-warning', 'active');
             btnAtendido.classList.remove('btn-success', 'active');
+            btnRechazado.classList.remove('btn-danger', 'active');
             if (filtro === 'todos') {
                 btnAll.classList.add('btn-primary', 'active');
                 filtroLabel.textContent = "Todos";
@@ -492,11 +564,15 @@
                 btnAtendido.classList.add('btn-success', 'active');
                 filtroLabel.textContent = "Atendidos";
             }
+            if (filtro === 'rechazado') {
+                btnRechazado.classList.add('btn-danger', 'active');
+                filtroLabel.textContent = "Rechazados";
+            }
         }
         btnAll.onclick = () => filtrarPedidos('todos');
         btnPendiente.onclick = () => filtrarPedidos('pendiente');
         btnAtendido.onclick = () => filtrarPedidos('atendido');
-        // Inicial en "pendiente" para que coincida con tu UI
+        btnRechazado.onclick = () => filtrarPedidos('rechazado');
         filtrarPedidos('pendiente');
     </script>
 </body>

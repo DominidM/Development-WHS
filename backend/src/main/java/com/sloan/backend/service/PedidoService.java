@@ -129,4 +129,25 @@ public class PedidoService {
         // (Opcional) Si usuario es LAZY, puedes forzar carga: pedido.getUsuario().getNombrePersona();
         return pedido;
     }
+
+
+    /**
+     * Rechaza un pedido cambiando su estado.
+     */
+    public void rechazarPedido(Long id) {
+        Pedido pedido = pedidoRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado con id: " + id));
+        pedido.setEstadoPago("rechazado"); // O usa tu campo de estado adecuado
+        pedidoRepository.save(pedido);
+    }
+
+        /**
+     * Acepta o atiende un pedido cambiando su estado.
+     */
+    public void atenderPedido(Long id) {
+        Pedido pedido = pedidoRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado con id: " + id));
+        pedido.setEstadoPago("atendido"); // O "aceptado" según tu modelo de negocio
+        pedidoRepository.save(pedido);
+    }
 }
