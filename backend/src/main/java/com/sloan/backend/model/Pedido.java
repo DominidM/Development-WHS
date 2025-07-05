@@ -2,6 +2,8 @@ package com.sloan.backend.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -48,6 +51,16 @@ public class Pedido {
 
     @Column(name = "preference_id", length = 100)
     private String preferenceId;
+
+    // Relación OneToMany para obtener los detalles del pedido
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pk_pedido", referencedColumnName = "id_pedido", insertable = false, updatable = false)
+    private List<PedidoDetalles> detalles = new ArrayList<>();
+
+    // ---- AGREGAR ESTA RELACIÓN ----
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pk_metodopago", referencedColumnName = "id_metodo_pago", insertable = false, updatable = false)
+    private MetodoPago metodoPago;
 
     public Pedido() {}
 
@@ -88,6 +101,22 @@ public class Pedido {
             this.pkUsuario = usuario.getIdUsuario();
         }
     }
+
+    public List<PedidoDetalles> getDetalles() {
+        return detalles;
+    }
+    public void setDetalles(List<PedidoDetalles> detalles) {
+        this.detalles = detalles;
+    }
+
+    // GETTER/SETTER para MetodoPago
+    public MetodoPago getMetodoPago() {
+        return metodoPago;
+    }
+    public void setMetodoPago(MetodoPago metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+
     // Alias para compatibilidad con el controlador
     public Long getId() { return getIdPedido(); }
     public BigDecimal getMonto() { return getMontoTotal(); }

@@ -115,4 +115,18 @@ public class PedidoService {
     public List<Pedido> listarTodos() {
         return pedidoRepository.findAll();
     }
+
+
+      /**
+     * Obtiene un pedido por su ID, incluyendo detalles y usuario.
+     */
+    public Pedido obtenerPorId(Long id) {
+        Pedido pedido = pedidoRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado con id: " + id));
+        // Cargar detalles del pedido si no están ya cargados (por ejemplo, si es LAZY loading)
+        List<PedidoDetalles> detalles = pedidoDetalleRepository.findByPkPedido(pedido.getIdPedido());
+        pedido.setDetalles(detalles);
+        // (Opcional) Si usuario es LAZY, puedes forzar carga: pedido.getUsuario().getNombrePersona();
+        return pedido;
+    }
 }

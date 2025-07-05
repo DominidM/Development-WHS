@@ -255,4 +255,12 @@ public class AdminController {
         model.addAttribute("currentPage", "pedidos");
         return "admin/pedidos";
     }
+    
+    @GetMapping("/pedidos/{id}")
+    public String detallePedido(@PathVariable("id") Long id, Model model) {
+        Pedido pedido = pedidoService.obtenerPorId(id); // tu método de servicio
+        model.addAttribute("pedido", pedido);
+        return "admin/pedidos-detalle";
+    }
+
 }

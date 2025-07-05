@@ -2,9 +2,12 @@ package com.sloan.backend.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,18 +27,22 @@ public class PedidoDetalles {
     @Column(name = "pk_pedido")
     private Long pkPedido;
 
-    // Constructor vacío (requerido por JPA y para uso con setters)
-    public PedidoDetalles() {
-    }
+    // Relación con Producto para facilitar el acceso a los datos del producto
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pk_producto_pedido", referencedColumnName = "id_producto", insertable = false, updatable = false)
+    private Producto producto;
 
-    // Constructor con todos los parámetros relevantes, excepto el id autogenerado
+    // Constructor vacío (requerido por JPA)
+    public PedidoDetalles() {}
+
+    // Constructor con parámetros (sin id autogenerado)
     public PedidoDetalles(Integer cantidadPedido, Long pkPedido, Long pkProductoPedido) {
         this.cantidadPedido = cantidadPedido;
         this.pkPedido = pkPedido;
         this.pkProductoPedido = pkProductoPedido;
     }
 
-    // Constructor completo (opcional, con idPedidoDetalle)
+    // Constructor completo (opcional)
     public PedidoDetalles(Long idPedidoDetalle, Integer cantidadPedido, Long pkPedido, Long pkProductoPedido) {
         this.idPedidoDetalle = idPedidoDetalle;
         this.cantidadPedido = cantidadPedido;
@@ -43,6 +50,7 @@ public class PedidoDetalles {
         this.pkProductoPedido = pkProductoPedido;
     }
 
+    // Getters y Setters
     public Long getIdPedidoDetalle() {
         return idPedidoDetalle;
     }
@@ -73,5 +81,13 @@ public class PedidoDetalles {
 
     public void setPkPedido(Long pkPedido) {
         this.pkPedido = pkPedido;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
     }
 }

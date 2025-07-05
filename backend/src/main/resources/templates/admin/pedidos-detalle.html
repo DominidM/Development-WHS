@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Pedido</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/admin-panel.css">
+    <style>
+        body { background: #f5f8fa; }
+        .pedido-card {
+            max-width: 700px;
+            margin: 2rem auto;
+            border-radius: 1rem;
+            box-shadow: 0 2px 24px 0 rgba(0,0,0,.10);
+            background: #fff;
+            color: #212529;
+            padding: 2rem;
+        }
+        .pedido-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2563eb;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+        .pedido-attribute { font-size: 1.1rem; margin-bottom: .35rem; }
+        .pedido-value { font-weight: 500; }
+        .price {
+            font-size: 1.4rem;
+            color: #16a34a;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .badge-estado {
+            font-size: 1rem;
+            padding: .4em 1em;
+            border-radius: 1em;
+        }
+        .table-dark th, .table-dark td {
+            background: #23272f;
+            color: #f4f8fb;
+        }
+        @media (max-width: 560px) {
+            .pedido-card { max-width: 98vw; padding: 0.7rem !important; }
+            .pedido-title { font-size: 1.3rem; }
+        }
+        /* DARK MODE */
+        body.dark-mode, body.dark-mode .pedido-card { background: #23272f !important; color: #f4f8fb !important; }
+        body.dark-mode .table th, body.dark-mode .table td { background: #23272f !important; color: #f4f8fb !important; }
+    </style>
+</head>
+<body>
+    <!-- Puedes incluir tu navbar y sidebar como en el resto del panel -->
+    <div th:replace="~{admin/fragments/navbar :: navbar}"></div>
+    <main class="container py-4">
+        <div class="pedido-card card">
+            <h1 class="pedido-title mb-0">
+                <i class="bi bi-receipt icon-box"></i>
+                Detalle del Pedido
+            </h1>
+            <div class="text-muted mb-1" th:text="'Pedido #'+${pedido.idPedido}"></div>
+            <div class="mb-2 row">
+                <div class="col-md-6">
+                    <div class="pedido-attribute">
+                        <i class="bi bi-person"></i>
+                        <b>Cliente:</b>
+                        <span class="pedido-value" th:text="${pedido.usuario?.nombrePersona}">Nombre Cliente</span>
+                    </div>
+                    <div class="pedido-attribute">
+                        <i class="bi bi-calendar-event"></i>
+                        <b>Fecha:</b>
+                        <span class="pedido-value" th:text="${pedido.fecha}">Fecha</span>
+                    </div>
+                    <div class="pedido-attribute">
+                        <i class="bi bi-credit-card"></i>
+                        <b>Método de pago:</b>
+                        <span class="pedido-value"
+                            th:text="${pedido.metodoPago != null ? pedido.metodoPago.nombreMetodoPago : 'Desconocido'}">
+                            Método
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="pedido-attribute">
+                        <i class="bi bi-currency-dollar"></i>
+                        <b>Total:</b>
+                        <span class="price" th:text="'S/ ' + ${pedido.montoTotal}">S/ 0.00</span>
+                    </div>
+                    <div class="pedido-attribute">
+                        <i class="bi bi-flag"></i>
+                        <b>Estado:</b>
+                        <span th:classappend="'badge badge-estado ' + 
+                            (${pedido.estadoPago?.toLowerCase()} == 'pendiente' ? 'bg-warning text-dark' : 
+                            (${pedido.estadoPago?.toLowerCase()} == 'pagado' ? 'bg-success' : 'bg-secondary'))"
+                            th:text="${pedido.estadoPago}">Pendiente</span>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <h5 class="mb-2"><i class="bi bi-box-seam"></i> Productos</h5>
+            <div class="table-responsive">
+                <table class="table align-middle table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="detalle, i : ${pedido.detalles}">
+                            <td th:text="${i.index + 1}">1</td>
+                            <td th:text="${detalle.producto.nombreProducto}">Producto</td>
+                            <td th:text="${detalle.cantidadPedido}">1</td>
+                            <td th:text="'S/ ' + ${detalle.producto.precioProducto}">S/ 0.00</td>
+                            <td th:text="'S/ ' + ${#numbers.formatDecimal(detalle.producto.precioProducto * detalle.cantidadPedido, 1, 'COMMA', 2, 'POINT')}">S/ 0.00</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(pedido.detalles)}">
+                            <td colspan="5" class="text-center text-secondary">No hay productos en este pedido.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <a href="/admin/pedidos" class="btn btn-outline-primary w-100 mt-3">
+                <i class="bi bi-arrow-left"></i> Volver al listado de pedidos
+            </a>
+        </div>
+    </main>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
