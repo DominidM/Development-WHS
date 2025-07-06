@@ -13,4 +13,5 @@ public interface AuthService {
     Usuario findByUsername(String username);
     boolean sendPasswordResetEmail(String correo);
     boolean resetPasswordWithToken(String token, String newPassword); // <-- método nuevo
+    Usuario actualizar(Usuario usuario);
 }

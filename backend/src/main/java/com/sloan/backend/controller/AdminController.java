@@ -21,6 +21,7 @@ import com.sloan.backend.dto.ProductoDTO;
 import com.sloan.backend.model.EstadoForm;
 import com.sloan.backend.model.Formulario;
 import com.sloan.backend.model.Pedido;
+import com.sloan.backend.model.RolUsuario;
 import com.sloan.backend.model.TipoForm;
 import com.sloan.backend.model.Usuario;
 import com.sloan.backend.repository.CategoriaProductoRepository;
@@ -32,6 +33,7 @@ import com.sloan.backend.service.EstadoFormService;
 import com.sloan.backend.service.FormularioService;
 import com.sloan.backend.service.PedidoService;
 import com.sloan.backend.service.ProductoService;
+import com.sloan.backend.service.RolUsuarioService;
 
 @Controller
 @RequestMapping("/admin")
@@ -55,6 +57,8 @@ public class AdminController {
     private EstadoFormService estadoFormService;
     @Autowired
     private TipoFormRepository tipoFormRepository;
+    @Autowired
+    private RolUsuarioService rolUsuarioService;
 
     // ---- NOMBRE DE USUARIO EN MODELO PARA TODAS LAS VISTAS ----
     @ModelAttribute
@@ -225,13 +229,31 @@ public class AdminController {
         return "admin/usuario-detalle";
     }
 
+   // ...tu método ya funcionará:
     @GetMapping("/usuarios/editar/{id}")
     public String editarUsuario(@PathVariable Long id, Model model) {
         Usuario usuario = usuarioService.buscarPorId(id);
+        List<RolUsuario> roles = rolUsuarioService.listarTodos();
         model.addAttribute("usuario", usuario);
+        model.addAttribute("roles", roles);
         model.addAttribute("currentPage", "usuarios");
         return "admin/usuario-editar";
     }
+
+    @PostMapping("/usuarios/editar/{id}")
+    public String actualizarUsuario(
+            @PathVariable Long id,
+            @ModelAttribute("usuario") Usuario usuario,
+            @RequestParam("pkRolUsuario") Long pkRolUsuario,
+            Model model) {
+
+        RolUsuario rol = rolUsuarioService.buscarPorId(pkRolUsuario);
+        usuario.setRolUsuario(rol);
+        usuarioService.actualizar(usuario); // Asegúrate de tener este método en tu servicio
+
+        return "redirect:/admin/usuarios";
+    }
+
 
     @GetMapping("/usuarios/nuevo")
     public String nuevoUsuario(Model model) {
@@ -244,6 +266,17 @@ public class AdminController {
     public String eliminarUsuario(@PathVariable Long id) {
         usuarioService.eliminarPorId(id);
         return "redirect:/admin/usuarios";
+    }
+
+    @GetMapping("/usuarios/movimientos/{id}")
+    public String movimientosUsuario(@PathVariable Long id, Model model) {
+        Usuario usuario = usuarioService.buscarPorId(id);
+        // Por ejemplo: lista de pedidos o transacciones de ese usuario
+        List<Pedido> movimientos = pedidoService.listarPorUsuario(id);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("movimientos", movimientos);
+        model.addAttribute("currentPage", "usuarios");
+        return "admin/usuario-movimientos"; // crea esta vista
     }
 
     // --------------------- PEDIDOS ---------------------

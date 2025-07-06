@@ -117,4 +117,21 @@ public class AuthServiceImpl implements AuthService {
         usuarioRepository.save(usuario);
         return true;
     }
+
+    @Override
+    public Usuario actualizar(Usuario usuario) {
+        Usuario usuarioOriginal = usuarioRepository.findById(usuario.getIdUsuario())
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (usuario.getPassword() == null || usuario.getPassword().isBlank()) {
+            usuario.setPassword(usuarioOriginal.getPassword());
+        } else {
+            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        }
+
+        usuario.setResetToken(usuarioOriginal.getResetToken());
+        usuario.setResetTokenExpiry(usuarioOriginal.getResetTokenExpiry());
+
+        return usuarioRepository.save(usuario);
+    }
 }

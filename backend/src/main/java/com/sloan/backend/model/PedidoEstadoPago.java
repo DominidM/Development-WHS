@@ -29,6 +29,8 @@ public class PedidoEstadoPago {
     @Column(name = "comentario")
     private String comentario;
 
+    public PedidoEstadoPago() {}
+    
     public PedidoEstadoPago(String comentario, String estado, LocalDateTime fechaEstado, Long idHistorial, Long pkPedido) {
         this.comentario = comentario;
         this.estado = estado;

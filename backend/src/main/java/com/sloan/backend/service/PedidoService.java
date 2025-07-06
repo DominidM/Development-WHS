@@ -11,13 +11,20 @@ import com.mercadopago.resources.preference.Preference;
 import com.sloan.backend.dto.PedidoRequest.PedidoDetalleRequest;
 import com.sloan.backend.model.Pedido;
 import com.sloan.backend.model.PedidoDetalles;
+import com.sloan.backend.model.PedidoEstadoPago;
+import com.sloan.backend.model.Producto;
 import com.sloan.backend.model.Usuario;
 import com.sloan.backend.repository.PedidoDetalleRepository;
+import com.sloan.backend.repository.PedidoEstadoPagoRepository;
 import com.sloan.backend.repository.PedidoRepository;
+import com.sloan.backend.repository.ProductoRepository;
 import com.sloan.backend.repository.UsuarioRepository;
 
 @Service
 public class PedidoService {
+
+    @Autowired
+    private PedidoEstadoPagoRepository pedidoEstadoPagoRepository;
 
     @Autowired
     private PedidoRepository pedidoRepository;
@@ -31,6 +38,8 @@ public class PedidoService {
     @Autowired
     private MercadoPagoService mercadoPagoService;
 
+    @Autowired
+    private ProductoRepository productoRepository;
     /**
      * Crea un pedido y registra los detalles, pero NO genera link de pago.
      * Devuelve el Pedido creado.
@@ -73,6 +82,10 @@ public class PedidoService {
         return pedido;
     }
 
+    public List<Pedido> listarPorUsuario(Long pkUsuario) {
+        return pedidoRepository.findByPkUsuario(pkUsuario);
+    }
+        
     /**
      * Genera y retorna un link de pago de MercadoPago para el pedido dado.
      * Actualiza el pedido con los IDs de MercadoPago.
@@ -145,9 +158,32 @@ public class PedidoService {
      * Acepta o atiende un pedido cambiando su estado.
      */
     public void atenderPedido(Long id) {
-        Pedido pedido = pedidoRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado con id: " + id));
-        pedido.setEstadoPago("atendido"); // O "aceptado" según tu modelo de negocio
-        pedidoRepository.save(pedido);
+    Pedido pedido = pedidoRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado con id: " + id));
+    
+    // Solo restar stock si aún NO estaba atendido antes
+    if (!"atendido".equalsIgnoreCase(pedido.getEstadoPago())) {
+        List<PedidoDetalles> detalles = pedidoDetalleRepository.findByPkPedido(pedido.getIdPedido());
+            for (PedidoDetalles detalle : detalles) {
+                Producto producto = productoRepository.findById(detalle.getPkProductoPedido())
+                    .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con id: " + detalle.getPkProductoPedido()));
+                int stockActual = producto.getStockProducto();
+                int cantidadPedido = detalle.getCantidadPedido();
+                if (stockActual < cantidadPedido) {
+                    throw new IllegalStateException("No hay stock suficiente para el producto: " + producto.getNombreProducto());
+                }
+                producto.setStockProducto(stockActual - cantidadPedido);
+                productoRepository.save(producto);
+            }
+            pedido.setEstadoPago("atendido");
+            pedidoRepository.save(pedido);
+        }
+         // ---- Guarda el historial ----
+        PedidoEstadoPago historial = new PedidoEstadoPago();
+        historial.setPkPedido(pedido.getIdPedido());
+        historial.setEstado("atendido");
+        historial.setFechaEstado(LocalDateTime.now());
+        historial.setComentario("Pedido atendido correctamente.");
+        pedidoEstadoPagoRepository.save(historial);
     }
 }
