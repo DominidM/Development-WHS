@@ -8,16 +8,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.sloan.backend.model.Oferta;
+import com.sloan.backend.model.Producto;
 
 public interface OfertaRepository extends JpaRepository<Oferta, Long> {
-    // Consultar ofertas activas por fecha actual
-    @Query("SELECT o FROM Oferta o WHERE :hoy BETWEEN o.fechaInicio AND o.fechaFin")
-    List<Oferta> findOfertasActivas(LocalDate hoy);
+    // Para evitar duplicados:
+    Optional<Oferta> findByProducto(Producto producto);
 
-    // Buscar oferta por producto específico y fecha (opcional)
-    @Query("SELECT o FROM Oferta o WHERE o.producto.idProducto = :idProducto AND :hoy BETWEEN o.fechaInicio AND o.fechaFin")
-    Oferta findOfertaActivaByProducto(Long idProducto, LocalDate hoy);
-
-    // Buscar oferta por producto (sin importar fecha, para admin)
+    // Si ya usas esto para el DTO:
     Optional<Oferta> findByProducto_IdProducto(Long idProducto);
+
+    // Ofertas activas por fecha
+    @Query("SELECT o FROM Oferta o WHERE o.fechaInicio <= :hoy AND o.fechaFin >= :hoy")
+    List<Oferta> findOfertasActivas(LocalDate hoy);
 }

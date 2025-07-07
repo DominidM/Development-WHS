@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +26,8 @@ import com.sloan.backend.model.Producto;
 import com.sloan.backend.model.RolUsuario;
 import com.sloan.backend.model.TipoForm;
 import com.sloan.backend.model.Usuario;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import com.sloan.backend.repository.CategoriaProductoRepository;
 import com.sloan.backend.repository.EstadoProductoRepository;
 import com.sloan.backend.repository.MarcaProductoRepository;
@@ -35,6 +35,7 @@ import com.sloan.backend.repository.TipoFormRepository;
 import com.sloan.backend.service.AuthService;
 import com.sloan.backend.service.EstadoFormService;
 import com.sloan.backend.service.FormularioService;
+import com.sloan.backend.service.MovimientoService;
 import com.sloan.backend.service.OfertaService;
 import com.sloan.backend.service.PedidoService;
 import com.sloan.backend.service.ProductoService;
@@ -66,7 +67,8 @@ public class AdminController {
     private TipoFormRepository tipoFormRepository;
     @Autowired
     private RolUsuarioService rolUsuarioService;
-
+    @Autowired
+    private MovimientoService movimientoService;
     @ModelAttribute
     public void addNombrePersonaToModel(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -226,7 +228,46 @@ public class AdminController {
         return "admin/ofertas-lista";
     }
 
+    // CREAR oferta
+    @GetMapping("/productos/oferta/nueva/{idProducto}")
+    public String nuevaOferta(@PathVariable Long idProducto, Model model) {
+        // Preparar DTO vacío con idProducto, pasar a la vista
+        OfertaFormDTO dto = new OfertaFormDTO();
+        dto.setIdProducto(idProducto);
+        model.addAttribute("oferta", dto);
+        // ...añadir info del producto si quieres
+        return "admin/producto-oferta";
+    }
+
+    @GetMapping("/productos/oferta/editar/{idOferta}")
+    public String editarOferta(@PathVariable Long idOferta, Model model) {
+        Optional<OfertaFormDTO> dto = ofertaService.getOfertaFormById(idOferta);
+        if (dto.isEmpty()) {
+            return "redirect:/admin/ofertas?notfound";
+        }
+        OfertaFormDTO oferta = dto.get();
+        model.addAttribute("oferta", oferta);
+
+        // Carga el producto relacionado y agrégalo al modelo
+        ProductoDTO producto = productoService.findByIdAsDTO(oferta.getIdProducto()).orElse(null);
+        model.addAttribute("producto", producto);
+
+        return "admin/producto-oferta";
+    }
+
     // --------------------- MOVIMIENTOS ---------------------
+
+
+    @GetMapping("/movimientos/total-pedidos-atendidos")
+    public String totalPedidosAtendidos(Model model) {
+        int total = movimientoService.getTotalProductosRestadosPorPedidosAtendidos();
+        model.addAttribute("totalPedidosAtendidos", total);
+        return "admin/movimientos-total"; // tu vista
+    }
+
+
+
+
 
 
 

@@ -268,7 +268,7 @@
                                         <td th:text="${oferta.fechaFin != null ? #temporals.format(oferta.fechaFin, 'dd/MM/yyyy') : ''}"></td>
                                         <td th:text="${oferta.stockProducto}"></td>
                                         <td>
-                                            <a th:href="@{|/admin/productos/oferta/${oferta.slug}|}" class="btn btn-info btn-action me-1 mb-1 mb-lg-0" title="Editar">
+                                            <a th:href="@{|/admin/productos/oferta/editar/${oferta.idOferta}|}" class="btn btn-info btn-action me-1 mb-1 mb-lg-0" title="Editar">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
                                             <form th:action="@{|/admin/productos/oferta/eliminar/${oferta.idOferta}|}" method="post" class="d-inline">

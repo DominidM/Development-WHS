@@ -22,6 +22,7 @@ C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\j
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\model\LogMercadoPago.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\model\MarcaProducto.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\model\MetodoPago.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\model\Movimiento.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\model\Oferta.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\model\Pedido.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\model\PedidoDetalles.java
@@ -35,6 +36,7 @@ C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\j
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\EstadoProductoRepository.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\FormularioRepository.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\MarcaProductoRepository.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\MovimientoRepository.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\OfertaRepository.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\PedidoDetalleRepository.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\repository\PedidoEstadoPagoRepository.java
@@ -53,6 +55,7 @@ C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\j
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\FormularioService.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\FormularioServiceImpl.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\MercadoPagoService.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\MovimientoService.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\OfertaService.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\PedidoService.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\service\ProductoService.java

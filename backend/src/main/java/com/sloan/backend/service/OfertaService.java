@@ -63,16 +63,21 @@ public class OfertaService {
     @Transactional
     public void saveOfertaForm(OfertaFormDTO form, Producto producto) {
         Oferta oferta;
+
         if (form.getIdOferta() != null) {
-            // Editar oferta existente
+            // Editar oferta existente por id
             oferta = ofertaRepository.findById(form.getIdOferta()).orElse(new Oferta());
         } else {
-            // Crear nueva oferta
-            oferta = new Oferta();
+            // Buscar si ya existe una oferta para este producto
+            Optional<Oferta> ofertaExistente = ofertaRepository.findByProducto(producto);
+            if (ofertaExistente.isPresent()) {
+                oferta = ofertaExistente.get();
+            } else {
+                oferta = new Oferta();
+            }
         }
         oferta.setProducto(producto);
         oferta.setPrecioOferta(form.getPrecioOferta());
-        // Convierte LocalDateTime a LocalDate
         oferta.setFechaInicio(form.getFechaInicio() != null ? form.getFechaInicio().toLocalDate() : null);
         oferta.setFechaFin(form.getFechaFin() != null ? form.getFechaFin().toLocalDate() : null);
         ofertaRepository.save(oferta);
@@ -85,27 +90,41 @@ public class OfertaService {
     }
 
     public List<OfertaAdminDTO> getOfertasParaAdmin() {
-    List<Oferta> ofertas = ofertaRepository.findAll(); // o como recuperes las ofertas
-    List<OfertaAdminDTO> dtos = new ArrayList<>();
-    for (Oferta o : ofertas) {
-        Producto p = o.getProducto();
-        LocalDateTime fechaInicio = o.getFechaInicio() != null ? o.getFechaInicio().atStartOfDay() : null;
-        LocalDateTime fechaFin = o.getFechaFin() != null ? o.getFechaFin().atStartOfDay() : null;
+        List<Oferta> ofertas = ofertaRepository.findAll();
+        List<OfertaAdminDTO> dtos = new ArrayList<>();
+        for (Oferta o : ofertas) {
+            Producto p = o.getProducto();
+            LocalDateTime fechaInicio = o.getFechaInicio() != null ? o.getFechaInicio().atStartOfDay() : null;
+            LocalDateTime fechaFin = o.getFechaFin() != null ? o.getFechaFin().atStartOfDay() : null;
 
-        OfertaAdminDTO dto = new OfertaAdminDTO(
-            p.getDescripcionProducto(),
-            fechaFin,
-            fechaInicio,
-            o.getIdOferta(),
-            p.getIdProducto(),
-            p.getNombreProducto(),
-            o.getPrecioOferta(),
-            p.getPrecioProducto(),
-            p.getSlug(),
-            p.getStockProducto()
-        );
-        dtos.add(dto);
+            OfertaAdminDTO dto = new OfertaAdminDTO(
+                p.getDescripcionProducto(),
+                fechaFin,
+                fechaInicio,
+                o.getIdOferta(),
+                p.getIdProducto(),
+                p.getNombreProducto(),
+                o.getPrecioOferta(),
+                p.getPrecioProducto(),
+                p.getSlug(),
+                p.getStockProducto()
+            );
+            dtos.add(dto);
+        }
+        return dtos;
     }
-    return dtos;
-}
+    
+    // Buscar oferta por ID
+    public Optional<OfertaFormDTO> getOfertaFormById(Long idOferta) {
+        return ofertaRepository.findById(idOferta)
+            .map(oferta -> {
+                OfertaFormDTO dto = new OfertaFormDTO();
+                dto.setIdOferta(oferta.getIdOferta());
+                dto.setIdProducto(oferta.getProducto().getIdProducto());
+                dto.setPrecioOferta(oferta.getPrecioOferta());
+                dto.setFechaInicio(oferta.getFechaInicio() != null ? oferta.getFechaInicio().atStartOfDay() : null);
+                dto.setFechaFin(oferta.getFechaFin() != null ? oferta.getFechaFin().atStartOfDay() : null);
+                return dto;
+            });
+    }
 }
