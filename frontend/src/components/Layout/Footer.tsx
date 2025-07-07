@@ -1,4 +1,5 @@
 import { FaBook } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export function Footer() {
   return (
@@ -8,20 +9,20 @@ export function Footer() {
           <h6 className="text-sm font-semibold uppercase mb-6 text-gray-400">Productos</h6>
           <ul className="text-sm">
             <li className="mb-3">
-              <a href="/productos" className="hover:text-white transition duration-200">
+              <Link to="/productos" className="hover:text-white transition duration-200">
                 Nuestros Productos
-              </a>
-            </li>            
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <h6 className="text-sm font-semibold uppercase mb-6 text-gray-400">Compañía</h6>
           <ul className="text-sm">
             <li className="mb-3">
-              <a href="/contacto" className="hover:text-white transition duration-200">Contacto</a>
+              <Link to="/contacto" className="hover:text-white transition duration-200">Contacto</Link>
             </li>
             <li>
-              <a href="/opiniones" className="hover:text-white transition duration-200">Opiniones de Clientes</a>
+              <Link to="/opiniones" className="hover:text-white transition duration-200">Opiniones de Clientes</Link>
             </li>
           </ul>
         </div>
@@ -29,10 +30,10 @@ export function Footer() {
           <h6 className="text-sm font-semibold uppercase mb-6 text-gray-400">Servicios</h6>
           <ul className="text-sm">
             <li className="mb-3">
-              <a href="/instalacion" className="hover:text-white transition duration-200">Servicio de Instalación</a>
+              <Link to="/instalacion" className="hover:text-white transition duration-200">Servicio de Instalación</Link>
             </li>
             <li>
-              <a href="/mantenimiento" className="hover:text-white transition duration-200">Servicio de Soporte y Mantenimiento</a>
+              <Link to="/mantenimiento" className="hover:text-white transition duration-200">Servicio de Soporte y Mantenimiento</Link>
             </li>
           </ul>
         </div>
@@ -40,9 +41,9 @@ export function Footer() {
           <h6 className="text-sm font-semibold uppercase mb-6 text-gray-400">Información Legal</h6>
           <ul className="text-sm">
             <li>
-              <a href="/libro" className="hover:text-white transition duration-200 flex items-center">
+              <Link to="/libro" className="hover:text-white transition duration-200 flex items-center">
                 <FaBook className="mr-2" /> Libro de Reclamaciones
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
