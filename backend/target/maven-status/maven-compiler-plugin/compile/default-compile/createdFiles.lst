@@ -5,6 +5,7 @@ com\sloan\backend\dto\PedidoRequest.class
 com\sloan\backend\model\PedidoDetalles.class
 com\sloan\backend\dto\FormularioRequest.class
 com\sloan\backend\repository\MarcaProductoRepository.class
+com\sloan\backend\dto\OfertaAdminDTO.class
 com\sloan\backend\service\EmailService.class
 com\sloan\backend\model\Producto.class
 com\sloan\backend\controller\FormularioController.class
@@ -28,10 +29,12 @@ com\sloan\backend\controller\OfertaController.class
 com\sloan\backend\repository\PedidoRepository.class
 com\sloan\backend\service\RolUsuarioService.class
 com\sloan\backend\dto\OfertaDTO.class
+com\sloan\backend\dto\PedidoEstadoPagoDto.class
 com\sloan\backend\service\FormularioService.class
 com\sloan\backend\model\MetodoPago.class
 com\sloan\backend\dto\PedidoRequest$PedidoDetalleRequest.class
 com\sloan\backend\repository\FormularioRepository.class
+com\sloan\backend\dto\OfertaFormDTO.class
 com\sloan\backend\repository\OfertaRepository.class
 com\sloan\backend\model\RolUsuario.class
 com\sloan\backend\BackendApplication.class

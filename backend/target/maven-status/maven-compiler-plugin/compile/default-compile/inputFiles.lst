@@ -7,7 +7,10 @@ C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\j
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\controller\PedidoController.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\controller\ProductoController.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\dto\FormularioRequest.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\dto\OfertaAdminDTO.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\dto\OfertaDTO.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\dto\OfertaFormDTO.java
+C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\dto\PedidoEstadoPagoDto.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\dto\PedidoRequest.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\dto\PedidoResponse.java
 C:\Users\ASKINET\Desktop\REPOSITORIES\WEB\whsRepresentaciones\backend\src\main\java\com\sloan\backend\dto\ProductoDTO.java

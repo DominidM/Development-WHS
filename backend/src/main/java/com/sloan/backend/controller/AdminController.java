@@ -16,11 +16,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.sloan.backend.dto.OfertaAdminDTO;
+import com.sloan.backend.dto.OfertaFormDTO;
 import com.sloan.backend.dto.ProductoDTO;
 import com.sloan.backend.model.EstadoForm;
 import com.sloan.backend.model.Formulario;
 import com.sloan.backend.model.Pedido;
+import com.sloan.backend.model.Producto;
 import com.sloan.backend.model.RolUsuario;
 import com.sloan.backend.model.TipoForm;
 import com.sloan.backend.model.Usuario;
@@ -31,6 +35,7 @@ import com.sloan.backend.repository.TipoFormRepository;
 import com.sloan.backend.service.AuthService;
 import com.sloan.backend.service.EstadoFormService;
 import com.sloan.backend.service.FormularioService;
+import com.sloan.backend.service.OfertaService;
 import com.sloan.backend.service.PedidoService;
 import com.sloan.backend.service.ProductoService;
 import com.sloan.backend.service.RolUsuarioService;
@@ -39,6 +44,8 @@ import com.sloan.backend.service.RolUsuarioService;
 @RequestMapping("/admin")
 public class AdminController {
 
+    @Autowired
+    private OfertaService ofertaService;
     @Autowired 
     private ProductoService productoService;
     @Autowired
@@ -60,7 +67,6 @@ public class AdminController {
     @Autowired
     private RolUsuarioService rolUsuarioService;
 
-    // ---- NOMBRE DE USUARIO EN MODELO PARA TODAS LAS VISTAS ----
     @ModelAttribute
     public void addNombrePersonaToModel(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -117,7 +123,6 @@ public class AdminController {
         model.addAttribute("categorias", categoriaRepo.findAll());
         model.addAttribute("marcas", marcaRepo.findAll());
         model.addAttribute("estados", estadoRepo.findAll());
-        // No se marca como productos para no activar menú lateral aquí
         model.addAttribute("currentPage", "productos");
         return "admin/producto-nuevo";
     }
@@ -164,6 +169,68 @@ public class AdminController {
         return "admin/producto-editar";
     }
 
+    @GetMapping("/productos/oferta/{slug}")
+    public String gestionarOfertaProducto(@PathVariable String slug, Model model) {
+        Optional<ProductoDTO> productoOpt = productoService.findBySlugAsDTO(slug);
+        if (productoOpt.isEmpty()) {
+            return "redirect:/admin/productos?notfound";
+        }
+        ProductoDTO producto = productoOpt.get();
+
+        // Cargar la oferta existente como DTO, o crear una nueva si no existe
+        var ofertaOpt = ofertaService.getOfertaByProductoId(producto.getIdProducto());
+        OfertaFormDTO ofertaForm = ofertaOpt.orElseGet(() -> {
+            OfertaFormDTO dto = new OfertaFormDTO();
+            dto.setIdProducto(producto.getIdProducto());
+            return dto;
+        });
+
+        model.addAttribute("producto", producto);
+        model.addAttribute("oferta", ofertaForm);
+        model.addAttribute("currentPage", "productos");
+        return "admin/producto-oferta";
+    }
+
+  @PostMapping("/productos/oferta/guardar")
+    public String guardarOfertaProducto(@ModelAttribute("oferta") OfertaFormDTO ofertaForm,
+                                        Model model,
+                                        RedirectAttributes redirectAttributes) {
+        Optional<ProductoDTO> prodOpt = productoService.findByIdAsDTO(ofertaForm.getIdProducto());
+        if (prodOpt.isEmpty()) {
+            return "redirect:/admin/productos?notfound";
+        }
+
+        ProductoDTO productoDTO = prodOpt.get();
+        Producto producto = productoService.findById(ofertaForm.getIdProducto());
+        ofertaService.saveOfertaForm(ofertaForm, producto);
+
+        // Añade el mensaje flash aquí:
+        redirectAttributes.addFlashAttribute("mensajeExito", "¡Oferta guardada correctamente!");
+
+        return "redirect:/admin/productos/oferta/" + productoDTO.getSlug();
+    }
+
+    @PostMapping("/productos/oferta/eliminar/{idOferta}")
+    public String eliminarOferta(@PathVariable Long idOferta, @RequestParam("slug") String slug) {
+        ofertaService.eliminar(idOferta);
+        return "redirect:/admin/productos/oferta/" + slug + "?deleted";
+    }
+
+    // --------------------- OFERTAS ---------------------
+
+    @GetMapping("/ofertas")
+    public String listarOfertas(Model model) {
+        List<OfertaAdminDTO> ofertas = ofertaService.getOfertasParaAdmin();
+        model.addAttribute("ofertas", ofertas);
+        model.addAttribute("currentPage", "ofertas");
+        return "admin/ofertas-lista";
+    }
+
+    // --------------------- MOVIMIENTOS ---------------------
+
+
+
+
     // --------------------- FORMULARIOS ---------------------
 
     @GetMapping("/formularios")
@@ -207,7 +274,6 @@ public class AdminController {
         form.setTextEstado(textEstado);
         formularioService.guardar(form);
 
-        // No hace falta currentPage porque es redirect
         return "redirect:/admin/formularios";
     }
 
@@ -229,7 +295,6 @@ public class AdminController {
         return "admin/usuario-detalle";
     }
 
-   // ...tu método ya funcionará:
     @GetMapping("/usuarios/editar/{id}")
     public String editarUsuario(@PathVariable Long id, Model model) {
         Usuario usuario = usuarioService.buscarPorId(id);
@@ -249,11 +314,10 @@ public class AdminController {
 
         RolUsuario rol = rolUsuarioService.buscarPorId(pkRolUsuario);
         usuario.setRolUsuario(rol);
-        usuarioService.actualizar(usuario); // Asegúrate de tener este método en tu servicio
+        usuarioService.actualizar(usuario);
 
         return "redirect:/admin/usuarios";
     }
-
 
     @GetMapping("/usuarios/nuevo")
     public String nuevoUsuario(Model model) {
@@ -271,18 +335,17 @@ public class AdminController {
     @GetMapping("/usuarios/movimientos/{id}")
     public String movimientosUsuario(@PathVariable Long id, Model model) {
         Usuario usuario = usuarioService.buscarPorId(id);
-        // Por ejemplo: lista de pedidos o transacciones de ese usuario
         List<Pedido> movimientos = pedidoService.listarPorUsuario(id);
         model.addAttribute("usuario", usuario);
         model.addAttribute("movimientos", movimientos);
         model.addAttribute("currentPage", "usuarios");
-        return "admin/usuario-movimientos"; // crea esta vista
+        return "admin/usuario-movimientos";
     }
 
     // --------------------- PEDIDOS ---------------------
     @GetMapping("/pedidos")
     public String pedidos(Model model) {
-        List<Pedido> pedidos = pedidoService.listarTodos(); // Todos
+        List<Pedido> pedidos = pedidoService.listarTodos();
         long pendientes = pedidos.stream().filter(p -> "pendiente".equalsIgnoreCase(p.getEstadoPago())).count();
         long atendidos  = pedidos.stream().filter(p -> "atendido".equalsIgnoreCase(p.getEstadoPago())).count();
         long rechazados = pedidos.stream().filter(p -> "rechazado".equalsIgnoreCase(p.getEstadoPago())).count();
@@ -297,14 +360,14 @@ public class AdminController {
 
     @GetMapping("/pedidos/{id}")
     public String detallePedido(@PathVariable("id") Long id, Model model) {
-        Pedido pedido = pedidoService.obtenerPorId(id); // tu método de servicio
+        Pedido pedido = pedidoService.obtenerPorId(id);
         model.addAttribute("pedido", pedido);
         return "admin/pedidos-detalle";
     }
     @PostMapping("/pedidos/rechazar/{id}")
     public String rechazarPedido(@PathVariable("id") Long id) {
-        pedidoService.rechazarPedido(id); // Implementa este método en tu servicio
-        return "redirect:/admin/pedidos"; // O a donde debas redirigir tras rechazar
+        pedidoService.rechazarPedido(id);
+        return "redirect:/admin/pedidos";
     }
 
     @PostMapping("/pedidos/atender/{id}")

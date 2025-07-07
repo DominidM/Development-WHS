@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ofertas activas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/adminlte/css/productos-admin.css">    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/admin-panel.css">
+    <style>
+        /* Copiado y adaptado del panel de productos */
+        nav.navbar {
+            border-radius: 0 !important;
+            box-shadow: 0 4px 18px rgba(13,110,253,0.13);
+        }
+        @media (max-width: 991px) {
+            .table-responsive-stack tr {
+                display: flex;
+                flex-direction: column;
+                border-bottom: 1px solid #dee2e6;
+                margin-bottom: 1rem;
+            }
+            .table-responsive-stack td,
+            .table-responsive-stack th {
+                display: block;
+                width: 100%;
+                text-align: left;
+            }
+            .table-responsive-stack thead {
+                display: none;
+            }
+            .table-responsive-stack .actions-cell {
+                display: flex;
+                flex-direction: row;
+                gap: 0.5rem;
+                justify-content: flex-start;
+            }
+        }
+        .table thead th {
+            vertical-align: middle;
+        }
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            font-size: 1.1rem;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+        .btn-action.btn-info {
+            background-color: #2563eb;
+            border: none;
+            color: #fff;
+        }
+        .btn-action.btn-danger {
+            background-color: #ef4444;
+            border: none;
+            color: #fff;
+        }
+        .btn-action.btn-info:hover {
+            background-color: #1d4fd7;
+        }
+        .btn-action.btn-danger:hover {
+            background-color: #dc2626;
+        }
+        .search-box {
+            max-width: 320px;
+            margin-left: auto;
+        }
+        .link-logout {
+            color: #212529;
+        }
+        body.dark-mode .link-logout {
+            color: #fff !important;
+        }
+        @media (max-width: 767px) {
+            .search-box {
+                width: 100%;
+                margin: 1rem 0 0 0;
+            }
+        }
+        .main-layout {
+            display: flex;
+            flex-direction: row;
+            min-height: 100vh;
+            background: #f4f6f9;
+        }
+        .dashboard-content {
+            margin-left: 240px;
+            padding: 2rem 0 0 0;
+            flex: 1;
+            min-height: calc(100vh - 0px);
+        }
+        @media (max-width: 900px) {
+            .dashboard-content {
+                margin-left: 60px;
+                padding: 1rem 0 0 0;
+            }
+        }
+        /* ---- DARK MODE ---- */
+        body.dark-mode,
+        body.dark-mode .dashboard-content,
+        body.dark-mode .main-layout {
+            background: #23272f !important;
+            color: #f5f5f5 !important;
+        }
+        body.dark-mode .navbar,
+        body.dark-mode .sidebar,
+        body.dark-mode .sidebar-footer {
+            background: #181a20 !important;
+            color: #e2e2e2 !important;
+        }
+        body.dark-mode .sidebar .nav-link,
+        body.dark-mode .sidebar .brand-link,
+        body.dark-mode .sidebar .fw-semibold {
+            color: #c2c7d0 !important;
+        }
+        body.dark-mode .sidebar .nav-link.active {
+            background: #2563eb !important;
+            color: #fff !important;
+        }
+        body.dark-mode .sidebar .nav-link:hover {
+            background: #3b4253 !important;
+            color: #fff !important;
+        }
+        body.dark-mode .card,
+        body.dark-mode .table-responsive-stack,
+        body.dark-mode .table {
+            background: #23272f !important;
+            color: #f5f5f5 !important;
+            box-shadow: none !important;
+        }
+        body.dark-mode .table thead,
+        body.dark-mode .table-light,
+        body.dark-mode .table thead th {
+            background: #23272f !important;
+            color: #90cdf4 !important;
+            border-color: #353a41 !important;
+        }
+        body.dark-mode .table td {
+            background: #23272f !important;
+            color: #f5f5f5 !important;
+            border-color: #353a41 !important;
+        }
+        .fw-bold.text-primary,
+        .dashboard-content h2,
+        body.dark-mode .fw-bold.text-primary,
+        body.dark-mode .dashboard-content h2 {
+            color: #2563eb !important;
+            text-shadow: 0 1px 3px #0001;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navbar igual que en dashboard.html -->
+    <div class="navbar d-flex justify-content-between align-items-center px-3">
+        <div class="d-flex align-items-center">
+            <button class="btn btn-link text-dark d-md-none" style="font-size:1.3rem;">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="#" class="ms-2 text-decoration-none fw-bold" style="color:#007bff;">Sloan Admin</a>
+        </div>
+        <div class="d-flex align-items-center">
+            <form id="logoutForm" th:action="@{/admin/logout}" method="post" style="display:none;"></form>
+            <a href="#" class="me-3 link-logout" onclick="document.getElementById('logoutForm').submit(); return false;">
+                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+            </a>
+            <!-- Botón de modo oscuro/claro igual que dashboard.html -->
+            <button class="btn btn-outline-secondary btn-sm" id="toggleModeBtn" aria-label="Cambiar modo">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </div>
+    <div class="main-layout">
+        <!-- Sidebar igual que en dashboard.html -->
+        <div class="sidebar d-flex flex-column">
+            <a href="/admin/dashboard" class="brand-link">
+                <i class="fas fa-tools mx-2"></i>
+                <span class="brand-text">Sloan Admin</span>
+            </a>
+            <div class="user-panel mt-3 mb-3 d-flex align-items-center">
+                <div class="image">
+                    <img src="/adminlte/assets/img/user2-160x160.jpg" alt="User Image" />
+                </div>
+                <div class="info ms-2">
+                    <a href="#" class="d-block" th:text="${nombre_persona != null ? nombre_persona : 'Administrador'}">Administrador</a>
+                </div>
+            </div>
+            <nav class="flex-grow-1">
+                <a href="/admin/dashboard" class="nav-link">
+                    <i class="nav-icon fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/productos" class="nav-link">
+                    <i class="nav-icon fas fa-box"></i>
+                    <span>Productos</span>
+                </a>
+                <a href="/admin/usuarios" class="nav-link">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span>Usuarios</span>
+                </a>
+                <a href="/admin/formularios" class="nav-link">
+                    <i class="nav-icon fas fa-headset"></i>
+                    <span>Atención Cliente</span>
+                </a>
+                <a href="/admin/pedidos" class="nav-link">
+                    <i class="nav-icon fas fa-cash-register"></i>
+                    <span>Ventas</span>
+                </a>
+                <a href="/admin/ofertas" class="nav-link active">
+                    <i class="nav-icon fas fa-percent"></i>
+                    <span>Ofertas</span>
+                </a>
+                <a href="/admin/movimientos" class="nav-link">
+                    <i class="nav-icon fas fa-exchange-alt"></i>
+                    <span>Movimientos</span>
+                </a>
+            </nav>
+            <!-- Footer del sidebar, SIEMPRE dice Administrador -->
+            <div class="sidebar-footer text-center mt-auto mb-3">
+                <div class="fw-semibold">Administrador</div>
+            </div>
+        </div>
+        <div class="dashboard-content flex-grow-1">
+            <div class="container py-5">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+                    <h2 class="fw-bold text-primary mb-0">Ofertas activas</h2>
+                </div>
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <div class="table-responsive table-responsive-stack">
+                            <table class="table table-bordered table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Precio Actual</th>
+                                        <th>Precio Oferta</th>
+                                        <th>Fecha Inicio</th>
+                                        <th>Fecha Fin</th>
+                                        <th>Stock</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${#lists.isEmpty(ofertas)}">
+                                        <td colspan="7" class="text-center text-secondary">No hay ofertas activas.</td>
+                                    </tr>
+                                    <tr th:each="oferta : ${ofertas}">
+                                        <td>
+                                            <div>
+                                                <strong th:text="${oferta.nombreProducto}">Producto</strong>
+                                                <div th:text="${oferta.descripcionProducto}" class="text-muted small"></div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span th:text="'S/ ' + ${#numbers.formatDecimal(oferta.precioProducto, 1, 'COMMA', 2, 'POINT')}"></span>
+                                        </td>
+                                        <td>
+                                            <span th:text="'S/ ' + ${#numbers.formatDecimal(oferta.precioOferta, 1, 'COMMA', 2, 'POINT')}"></span>
+                                        </td>
+                                        <td th:text="${oferta.fechaInicio != null ? #temporals.format(oferta.fechaInicio, 'dd/MM/yyyy') : ''}"></td>
+                                        <td th:text="${oferta.fechaFin != null ? #temporals.format(oferta.fechaFin, 'dd/MM/yyyy') : ''}"></td>
+                                        <td th:text="${oferta.stockProducto}"></td>
+                                        <td>
+                                            <a th:href="@{|/admin/productos/oferta/${oferta.slug}|}" class="btn btn-info btn-action me-1 mb-1 mb-lg-0" title="Editar">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <form th:action="@{|/admin/productos/oferta/eliminar/${oferta.idOferta}|}" method="post" class="d-inline">
+                                                <input type="hidden" name="slug" th:value="${oferta.slug}" />
+                                                <button type="submit" class="btn btn-danger btn-action" title="Eliminar" onclick="return confirm('¿Eliminar la oferta?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <a href="/admin/productos" class="btn btn-link mt-3">&larr; Volver a productos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FontAwesome -->
+    <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/js/all.min.js"></script>
+    <!-- Botón modo oscuro/claro igual que dashboard.html -->
+    <script>
+        const toggleBtn = document.getElementById('toggleModeBtn');
+        const icon = toggleBtn.querySelector('i');
+        if (localStorage.getItem('dark-mode') === 'true') {
+            document.body.classList.add('dark-mode');
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+        toggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('dark-mode', isDark);
+            if (isDark) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+    </script>
+</body>
+</html>

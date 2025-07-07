@@ -2,6 +2,7 @@ package com.sloan.backend.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,7 @@ public interface OfertaRepository extends JpaRepository<Oferta, Long> {
     // Buscar oferta por producto específico y fecha (opcional)
     @Query("SELECT o FROM Oferta o WHERE o.producto.idProducto = :idProducto AND :hoy BETWEEN o.fechaInicio AND o.fechaFin")
     Oferta findOfertaActivaByProducto(Long idProducto, LocalDate hoy);
+
+    // Buscar oferta por producto (sin importar fecha, para admin)
+    Optional<Oferta> findByProducto_IdProducto(Long idProducto);
 }

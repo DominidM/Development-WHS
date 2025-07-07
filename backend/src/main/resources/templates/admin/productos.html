@@ -251,6 +251,15 @@
                     <i class="nav-icon fas fa-cash-register"></i>
                     <span>Ventas</span>
                 </a>
+                <a href="/admin/ofertas" class="nav-link">
+                    <i class="nav-icon fas fa-percent"></i>
+                    <span>Ofertas</span>
+                </a>
+                <!-- NUEVO: Movimientos -->
+                <a href="/admin/movimientos" class="nav-link">
+                    <i class="nav-icon fas fa-exchange-alt"></i>
+                    <span>Movimientos</span>
+                </a>
             </nav>
             <!-- Footer del sidebar, SIEMPRE dice Administrador -->
             <div class="sidebar-footer text-center mt-auto mb-3">
@@ -313,6 +322,12 @@
                                         <!-- Editar (amarillo) -->
                                         <a th:href="@{'/admin/productos/editar/' + ${prod.slug}}" class="btn btn-warning btn-action me-1 mb-1 mb-lg-0" title="Editar">
                                             <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <!-- Oferta (verde) -->
+                                        <a th:href="@{'/admin/productos/oferta/' + ${prod.slug}}" 
+                                        class="btn btn-success btn-action me-1 mb-1 mb-lg-0" 
+                                        title="Gestionar Oferta">
+                                            <i class="bi bi-percent"></i>
                                         </a>
                                         <!-- Eliminar (rojo) -->
                                         <form th:action="@{'/admin/productos/eliminar/' + ${prod.idProducto}}" method="post" class="d-inline" 

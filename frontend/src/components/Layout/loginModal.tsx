@@ -2,6 +2,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react'
 import { User, X, LogOut, ShoppingBag } from 'lucide-react'
 import { API_BASE_URL } from '../../apiConfig'; 
+import { useNavigate } from 'react-router-dom';
 
 type Usuario = {
   nombrePersona: string
@@ -10,6 +11,7 @@ type Usuario = {
 }
 
 export default function LoginModal() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false)
   const [isRegister, setIsRegister] = useState(false)
   const [correo, setCorreo] = useState('')
@@ -112,9 +114,7 @@ export default function LoginModal() {
     closeModal()
   }
 
-  // URL para pedidos anteriores, podrías personalizarlo
-  const pedidosUrl = "/mis-pedidos"
-
+ 
   return (
     <>
       <button
@@ -164,18 +164,21 @@ export default function LoginModal() {
                   </div>
 
                   {/* Si está logueado, muestra menú */}
-                  {usuario ? (
-                    <div className="flex flex-col items-center gap-4 mt-6">
-                      <span className="text-lg text-gray-800 mb-2">
-                        ¡Hola, <b>{usuario.nombrePersona}</b>!
-                      </span>
-                      <a
-                        href={pedidosUrl}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                      >
-                        <ShoppingBag className="w-5 h-5" />
-                        Ver pedidos anteriores
-                      </a>
+                {usuario ? (
+                  <div className="flex flex-col items-center gap-4 mt-6">
+                    <span className="text-lg text-gray-800 mb-2">
+                      ¡Hola, <b>{usuario.nombrePersona}</b>!
+                    </span>
+                    <button
+                      onClick={() => {
+                        closeModal();
+                        navigate("/mis-pedidos");
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                    >
+                      <ShoppingBag className="w-5 h-5" />
+                      Ver pedidos anteriores
+                     </button>
                       <button
                         onClick={handleLogout}
                         className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition"

@@ -148,5 +148,15 @@ public class ProductoService {
     // MÉTODO NUEVO: Eliminar producto por ID
     public void eliminarPorId(Long id) {
     productoRepository.deleteById(id);
-}
+    }
+
+    // Busca un ProductoDTO por id (para el controller)
+    public Optional<ProductoDTO> findByIdAsDTO(Long idProducto) {
+        return productoRepository.findById(idProducto).map(this::toDTO);
+    }
+
+    // Busca la entidad Producto por id (para lógica interna)
+    public Producto findById(Long idProducto) {
+        return productoRepository.findById(idProducto).orElse(null);
+    }
 }

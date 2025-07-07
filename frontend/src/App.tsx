@@ -11,7 +11,8 @@ import InstalacionPage from './pages/InstalacionPage';
 import MantenimientoPage from './pages/MantemientoPage';
 
 import Layout from './layouts/Layout';
-import ResetPasswordPage from './pages/ResetPasswordPage'; // <--- Agrega este import
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import MisPedidosPage from './pages/MisPedidosPage'; // <--- Nuevo import
 
 const App: React.FC = () => {
   return (
@@ -26,8 +27,9 @@ const App: React.FC = () => {
         <Route path="/opiniones" element={<OpinonesPage />} />
         <Route path="/instalacion" element={<InstalacionPage />} />
         <Route path="/mantenimiento" element={<MantenimientoPage />} />
+        <Route path="/mis-pedidos" element={<MisPedidosPage />} /> {/* <-- Nueva ruta */}
       </Route>
-      <Route path="/reset-password" element={<ResetPasswordPage />} /> {/* <-- Nueva ruta */}
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
