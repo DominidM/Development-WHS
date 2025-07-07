@@ -8,8 +8,8 @@ public class PedidoRequest {
     public BigDecimal monto;
     public Integer cantidad;
     public Long pkUsuario;
-    public Long pkExtra;        // <--- AGREGAR ESTA LÍNEA
-    public Long pkMetodoPago;   // <--- AGREGAR ESTA LÍNEA
+    public Long pkExtra;       
+    public Long pkMetodoPago;   
     public List<PedidoDetalleRequest> items;
 
     // Clase interna para cada producto del carrito
