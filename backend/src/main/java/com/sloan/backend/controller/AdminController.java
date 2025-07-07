@@ -23,6 +23,7 @@ import com.sloan.backend.model.EstadoForm;
 import com.sloan.backend.model.Formulario;
 import com.sloan.backend.model.Pedido;
 import com.sloan.backend.model.Producto;
+import com.sloan.backend.model.Movimiento;
 import com.sloan.backend.model.RolUsuario;
 import com.sloan.backend.model.TipoForm;
 import com.sloan.backend.model.Usuario;
@@ -257,6 +258,12 @@ public class AdminController {
 
     // --------------------- MOVIMIENTOS ---------------------
 
+    @GetMapping("/movimientos")
+    public String movimientos(Model model) {
+        List<Movimiento> movimientos = movimientoService.getAllMovimientos();
+        model.addAttribute("movimientos", movimientos);
+        return "admin/movimientos";
+    }
 
     @GetMapping("/movimientos/total-pedidos-atendidos")
     public String totalPedidosAtendidos(Model model) {
@@ -264,12 +271,6 @@ public class AdminController {
         model.addAttribute("totalPedidosAtendidos", total);
         return "admin/movimientos-total"; // tu vista
     }
-
-
-
-
-
-
 
 
     // --------------------- FORMULARIOS ---------------------

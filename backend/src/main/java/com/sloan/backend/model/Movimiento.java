@@ -22,6 +22,9 @@ public class Movimiento {
 
     private String observacion; // opcional
 
+
+    public Movimiento() {}
+
     // Getters y setters
     public Long getIdMovimiento() {
         return idMovimiento;
