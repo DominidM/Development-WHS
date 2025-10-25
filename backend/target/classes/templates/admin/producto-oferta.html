@@ -5,6 +5,10 @@
     <title>Gestionar Oferta - [[${producto.nombreProducto}]]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/admin-panel.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+      .sync-hint { font-size: .9rem; color: #6c757d; }
+    </style>
 </head>
 <body>
     <div class="container py-5">
@@ -12,47 +16,285 @@
         <h2 class="fw-bold text-primary mb-4">
             Gestionar Oferta para: <span th:text="${producto.nombreProducto}">Producto</span>
         </h2>
+
         <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
         <div th:if="${mensajeError}" class="alert alert-danger" th:text="${mensajeError}"></div>
+
         <div class="card shadow-sm">
             <div class="card-body">
-                <form th:action="@{/admin/productos/oferta/guardar}" th:object="${oferta}" method="post">
+                <!-- Añadimos needs-validation y novalidate para control con Bootstrap/JS -->
+                <form th:action="@{/admin/productos/oferta/guardar}" th:object="${oferta}" method="post" class="needs-validation" novalidate>
                     <input type="hidden" th:field="*{idProducto}" />
                     <input type="hidden" th:value="${producto.slug}" name="slug" />
+
                     <div class="mb-3">
                         <label class="form-label">Precio actual</label>
-                        <input type="text" class="form-control" th:value="${producto.precioProducto}" readonly>
+                        <input type="text" class="form-control" th:value="${producto.precioProducto}" readonly id="precioActualDisplay"
+                               th:attr="data-precio-actual=${producto.precioProducto}">
                     </div>
+
+                    <!-- Porcentaje entero 1..99 -->
+                    <div class="mb-3">
+                        <label for="porcentajeDescuento" class="form-label">Porcentaje de Descuento (%)</label>
+                        <input type="number"
+                               id="porcentajeDescuento"
+                               th:field="*{porcentajeDescuento}"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('porcentajeDescuento')} ? ' is-invalid'"
+                               min="1" max="99" step="1" placeholder="Ej: 25"
+                               required
+                               th:disabled="${mensajeExito != null}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('porcentajeDescuento')}" th:errors="*{porcentajeDescuento}">Porcentaje inválido.</div>
+                        <div class="form-text sync-hint">Entero entre 1 y 99. Si introduces porcentaje se calculará el precio de oferta.</div>
+                    </div>
+
                     <div class="mb-3">
                         <label for="precioOferta" class="form-label">Precio de Oferta</label>
-                        <input type="number" step="0.01" min="0" class="form-control" id="precioOferta" th:field="*{precioOferta}" required
-                               th:disabled="${mensajeExito != null}">
+                        <input type="number"
+                               id="precioOferta"
+                               th:field="*{precioOferta}"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('precioOferta')} ? ' is-invalid'"
+                               step="0.01" min="0.01"
+                               placeholder="Ej: 75.00"
+                               required
+                               th:disabled="${mensajeExito != null}"
+                               <!-- guardamos el precio actual en un atributo data para validación JS -->
+                               th:attrappend="data-precio-actual=${producto.precioProducto}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('precioOferta')}" th:errors="*{precioOferta}">Precio inválido.</div>
+                        <div class="form-text sync-hint">Debe ser un número positivo y menor que el precio actual del producto.</div>
                     </div>
+
                     <div class="mb-3">
                         <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
-                        <input type="datetime-local" class="form-control" id="fechaInicio" th:field="*{fechaInicio}" required
+                        <input type="datetime-local"
+                               class="form-control"
+                               id="fechaInicio"
+                               th:field="*{fechaInicio}"
+                               th:classappend="${#fields.hasErrors('fechaInicio')} ? ' is-invalid'"
+                               required
                                th:disabled="${mensajeExito != null}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('fechaInicio')}" th:errors="*{fechaInicio}">Fecha de inicio inválida.</div>
+                        <div class="form-text">La fecha de inicio debe ser hoy o posterior.</div>
                     </div>
+
                     <div class="mb-3">
                         <label for="fechaFin" class="form-label">Fecha de Fin</label>
-                        <input type="datetime-local" class="form-control" id="fechaFin" th:field="*{fechaFin}" required
+                        <input type="datetime-local"
+                               class="form-control"
+                               id="fechaFin"
+                               th:field="*{fechaFin}"
+                               th:classappend="${#fields.hasErrors('fechaFin')} ? ' is-invalid'"
+                               required
                                th:disabled="${mensajeExito != null}">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('fechaFin')}" th:errors="*{fechaFin}">Fecha de fin inválida.</div>
+                        <div class="form-text">La fecha de fin debe ser posterior a la fecha de inicio.</div>
                     </div>
+
                     <div class="mb-3">
                         <label for="stockProducto" class="form-label">Stock disponible</label>
                         <input type="number" min="0" class="form-control" id="stockProducto" th:value="${producto.stockProducto}" readonly>
                     </div>
+
                     <div class="mb-3">
                         <label for="descripcionProducto" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="descripcionProducto" rows="2" th:value="${producto.descripcionProducto}" readonly></textarea>
+                        <textarea class="form-control" id="descripcionProducto" rows="2" readonly th:text="${producto.descripcionProducto}"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-success"
-                            th:disabled="${mensajeExito != null}">
+
+                    <!-- Mostrar errores globales del binding (ej. oferta solapada, producto inexistente) -->
+                    <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger" role="alert">
+                        <ul class="mb-0">
+                            <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="btn btn-success" th:disabled="${mensajeExito != null}">
                         <i class="bi bi-percent"></i> Guardar Oferta
                     </button>
                 </form>
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const precioActualDisplay = document.getElementById('precioActualDisplay');
+        const precioActualAttr = precioActualDisplay ? precioActualDisplay.getAttribute('data-precio-actual') : null;
+        const precioActual = precioActualAttr ? parseFloat(precioActualAttr) : NaN;
+
+        const porcentajeInput = document.getElementById('porcentajeDescuento');
+        const precioOfertaInput = document.getElementById('precioOferta');
+        const fechaInicioInput = document.getElementById('fechaInicio');
+        const fechaFinInput = document.getElementById('fechaFin');
+
+        // helper to format to local datetime string yyyy-MM-ddTHH:mm
+        function toLocalDatetimeInputValue(date) {
+            const pad = n => String(n).padStart(2, '0');
+            const yyyy = date.getFullYear();
+            const mm = pad(date.getMonth() + 1);
+            const dd = pad(date.getDate());
+            const hh = pad(date.getHours());
+            const min = pad(date.getMinutes());
+            return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
+        }
+
+        // fija el mínimo de fechaInicio a hoy (00:00)
+        (function setMinFechaInicio() {
+            if (!fechaInicioInput) return;
+            const now = new Date();
+            const minStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0);
+            fechaInicioInput.min = toLocalDatetimeInputValue(minStart);
+        })();
+
+        // Funciones para sincronizar porcentaje <-> precio
+        function porcentajeToPrecio(pct) {
+            if (isNaN(precioActual) || precioActual <= 0) return '';
+            const p = parseInt(pct, 10);
+            if (isNaN(p)) return '';
+            const price = precioActual * (1 - (p / 100));
+            return price > 0 ? price.toFixed(2) : '';
+        }
+        function precioToPorcentaje(precio) {
+            if (isNaN(precioActual) || precioActual <= 0) return '';
+            const pr = parseFloat(precio);
+            if (isNaN(pr)) return '';
+            const pct = (1 - (pr / precioActual)) * 100;
+            // redondear hacia abajo al entero más cercano
+            return Math.max(0, Math.floor(pct));
+        }
+
+        if (porcentajeInput) {
+            porcentajeInput.addEventListener('input', function () {
+                const val = this.value;
+                if (val === '') return;
+                const p = parseInt(val, 10);
+                if (isNaN(p)) return;
+                // validar rango 1..99
+                if (p < 1 || p > 99) {
+                    this.setCustomValidity("Porcentaje debe ser entero entre 1 y 99.");
+                    this.classList.add('is-invalid');
+                } else {
+                    this.setCustomValidity("");
+                    this.classList.remove('is-invalid');
+                    if (precioOfertaInput && !isNaN(precioActual)) {
+                        precioOfertaInput.value = porcentajeToPrecio(p);
+                        precioOfertaInput.setCustomValidity("");
+                        precioOfertaInput.classList.remove('is-invalid');
+                    }
+                }
+            });
+        }
+
+        if (precioOfertaInput) {
+            // cargar validación inicial si hay valor prellenado
+            precioOfertaInput.addEventListener('input', function () {
+                const val = parseFloat(this.value);
+                if (isNaN(val) || val <= 0) {
+                    this.setCustomValidity("Precio de oferta inválido.");
+                    this.classList.add('is-invalid');
+                } else if (!isNaN(precioActual) && val >= precioActual) {
+                    this.setCustomValidity("Precio de oferta debe ser menor que el precio actual.");
+                    this.classList.add('is-invalid');
+                } else {
+                    this.setCustomValidity("");
+                    this.classList.remove('is-invalid');
+                    if (porcentajeInput && !isNaN(precioActual)) {
+                        porcentajeInput.value = precioToPorcentaje(val);
+                        porcentajeInput.setCustomValidity("");
+                        porcentajeInput.classList.remove('is-invalid');
+                    }
+                }
+            });
+
+            // trigger initial check if field has a value on load
+            if (precioOfertaInput.value) {
+                precioOfertaInput.dispatchEvent(new Event('input'));
+            }
+        }
+
+        // Validaciones de fechas y formulario con Bootstrap
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    let valid = form.checkValidity();
+
+                    // Fechas: inicio >= hoy y fin > inicio
+                    const now = new Date();
+                    const inicioVal = fechaInicioInput && fechaInicioInput.value ? new Date(fechaInicioInput.value) : null;
+                    const finVal = fechaFinInput && fechaFinInput.value ? new Date(fechaFinInput.value) : null;
+
+                    if (!inicioVal) {
+                        valid = false;
+                        fechaInicioInput.classList.add('is-invalid');
+                        fechaInicioInput.setCustomValidity("Fecha de inicio requerida");
+                    } else {
+                        // inicioVal puede ser hoy o posterior; hemos fijado min en el input pero reforzamos aquí
+                        const minAllowed = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0);
+                        if (inicioVal < minAllowed) {
+                            valid = false;
+                            fechaInicioInput.classList.add('is-invalid');
+                            fechaInicioInput.setCustomValidity("La fecha de inicio debe ser hoy o posterior");
+                        } else {
+                            fechaInicioInput.setCustomValidity("");
+                            fechaInicioInput.classList.remove('is-invalid');
+                        }
+                    }
+
+                    if (!finVal) {
+                        valid = false;
+                        fechaFinInput.classList.add('is-invalid');
+                        fechaFinInput.setCustomValidity("Fecha de fin requerida");
+                    } else if (inicioVal && finVal <= inicioVal) {
+                        valid = false;
+                        fechaFinInput.classList.add('is-invalid');
+                        fechaFinInput.setCustomValidity("La fecha de fin debe ser posterior a la fecha de inicio");
+                    } else {
+                        fechaFinInput.setCustomValidity("");
+                        fechaFinInput.classList.remove('is-invalid');
+                    }
+
+                    // precioOferta < precioActual
+                    if (precioOfertaInput) {
+                        const po = parseFloat(precioOfertaInput.value);
+                        if (isNaN(po) || po <= 0) {
+                            valid = false;
+                            precioOfertaInput.classList.add('is-invalid');
+                            precioOfertaInput.setCustomValidity("Precio de oferta inválido");
+                        } else if (!isNaN(precioActual) && po >= precioActual) {
+                            valid = false;
+                            precioOfertaInput.classList.add('is-invalid');
+                            precioOfertaInput.setCustomValidity("Precio de oferta debe ser menor que el precio actual.");
+                        } else {
+                            precioOfertaInput.setCustomValidity("");
+                            precioOfertaInput.classList.remove('is-invalid');
+                        }
+                    }
+
+                    // porcentaje entero 1..99
+                    if (porcentajeInput) {
+                        const p = parseInt(porcentajeInput.value, 10);
+                        if (isNaN(p) || p < 1 || p > 99) {
+                            valid = false;
+                            porcentajeInput.classList.add('is-invalid');
+                            porcentajeInput.setCustomValidity("Porcentaje debe ser entero entre 1 y 99.");
+                        } else {
+                            porcentajeInput.setCustomValidity("");
+                            porcentajeInput.classList.remove('is-invalid');
+                        }
+                    }
+
+                    if (!valid) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    });
+    </script>
 </body>
 </html>

@@ -98,6 +98,18 @@ public class OfertaDTO {
         this.stockProducto = stockProducto;
     }
 
+    /**
+     * Constructor conveniente de 9 argumentos usado por la capa de servicio para
+     * representar ofertas públicas (sin campos de fechas ni porcentaje).
+     * Delegamos al constructor completo pasando null para los campos que no se proporcionan.
+     */
+    public OfertaDTO(Long idOferta, Long idProducto, String nombreProducto, String descripcionProducto,
+                     String imagenProducto, String slug, BigDecimal precioProducto, BigDecimal precioOferta,
+                     Integer stockProducto) {
+        this(idOferta, idProducto, nombreProducto, descripcionProducto, imagenProducto, slug,
+             precioProducto, precioOferta, /*porcentajeDescuento=*/null, /*fechaInicio=*/null, /*fechaFin=*/null, stockProducto);
+    }
+
     // Getters y setters
 
     public Long getIdOferta() { return idOferta; }
