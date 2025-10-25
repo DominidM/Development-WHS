@@ -81,71 +81,125 @@
             <div class="row g-3">
                 <!-- Imagen a la izquierda para previsualización URL -->
                 <div class="col-md-4 img-col mb-3 mb-md-0">
+                    <!-- Mostrar la imagen si existe en el backend; el JS también la actualizará -->
                     <img id="previewImg"
                          th:if="${producto.imagenProducto != null and !#strings.isEmpty(producto.imagenProducto)}"
                          th:src="${producto.imagenProducto}"
                          alt="Imagen del producto"
                          class="img-fluid preview-img"
-                         style="display:none;">
+                         style="display:none;"
+                         onerror="this.style.display='none'; document.getElementById('noImgText').style.display='';"
+                         onload="this.style.display=''; document.getElementById('noImgText').style.display='none';">
                     <div id="noImgText"
                          th:if="${producto.imagenProducto == null or #strings.isEmpty(producto.imagenProducto)}"
                          class="text-muted small fst-italic">Sin imagen</div>
                 </div>
                 <!-- Formulario a la derecha -->
                 <div class="col-md-8">
-                    <form th:action="@{/admin/productos/guardar}" th:object="${producto}" method="post" autocomplete="off">
+                    <!-- Añadimos clase needs-validation para validar con Bootstrap y novalidate para controlar con JS -->
+                    <form th:action="@{/admin/productos/guardar}" th:object="${producto}" method="post" autocomplete="off" class="needs-validation" novalidate>
                         <input type="hidden" th:field="*{idProducto}" />
                         <input type="hidden" th:field="*{slug}" />
 
                         <div class="mb-3">
                             <label for="imagenProducto" class="form-label"><i class="bi bi-image form-icon"></i>Imagen (URL)</label>
-                            <input type="text" th:field="*{imagenProducto}" class="form-control" id="imagenProducto" placeholder="https://...">
+                            <!-- usamos type="url" y un pattern simple para que el navegador ayude; maxlength para proteger -->
+                            <input type="url" th:field="*{imagenProducto}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('imagenProducto')} ? ' is-invalid'"
+                                   id="imagenProducto"
+                                   placeholder="https://..."
+                                   maxlength="2083"
+                                   pattern="https?://.+">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('imagenProducto')}" th:errors="*{imagenProducto}">URL inválida.</div>
+                            <div class="form-text">Debe comenzar con http:// o https://</div>
                         </div>
+
                         <div class="mb-3">
                             <label for="nombreProducto" class="form-label"><i class="bi bi-card-heading form-icon"></i>Nombre</label>
-                            <input type="text" th:field="*{nombreProducto}" class="form-control" id="nombreProducto" required maxlength="255" placeholder="Ingrese nombre del producto">
+                            <!-- minlength y maxlength; required ya estaba -->
+                            <input type="text" th:field="*{nombreProducto}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('nombreProducto')} ? ' is-invalid'"
+                                   id="nombreProducto" required minlength="3" maxlength="255" placeholder="Ingrese nombre del producto">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('nombreProducto')}" th:errors="*{nombreProducto}">Nombre inválido.</div>
                         </div>
+
                         <div class="mb-3">
                             <label for="descripcionProducto" class="form-label"><i class="bi bi-card-text form-icon"></i>Descripción</label>
-                            <textarea th:field="*{descripcionProducto}" class="form-control" id="descripcionProducto" rows="3" maxlength="500" placeholder="Descripción detallada"></textarea>
+                            <!-- se añade minlength opcional y maxlength ya existente -->
+                            <textarea th:field="*{descripcionProducto}"
+                                      class="form-control"
+                                      th:classappend="${#fields.hasErrors('descripcionProducto')} ? ' is-invalid'"
+                                      id="descripcionProducto" rows="3" minlength="10" maxlength="500" placeholder="Descripción detallada"></textarea>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcionProducto')}" th:errors="*{descripcionProducto}">Descripción inválida.</div>
+                            <div class="form-text">Máx. 500 caracteres.</div>
                         </div>
+
                         <div class="mb-3">
                             <label for="pkCategoriaProducto" class="form-label"><i class="bi bi-tags form-icon"></i>Categoría</label>
-                            <select th:field="*{pkCategoriaProducto}" class="form-select" id="pkCategoriaProducto" required>
+                            <select th:field="*{pkCategoriaProducto}"
+                                    class="form-select"
+                                    th:classappend="${#fields.hasErrors('pkCategoriaProducto')} ? ' is-invalid'"
+                                    id="pkCategoriaProducto" required>
                                 <option value="">-- Selecciona Categoría --</option>
-                                <option th:each="cat : ${categorias}" 
-                                        th:value="${cat.idCategoriaProducto}" 
+                                <option th:each="cat : ${categorias}"
+                                        th:value="${cat.idCategoriaProducto}"
                                         th:text="${cat.nombreCategoriaProducto}"></option>
                             </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('pkCategoriaProducto')}" th:errors="*{pkCategoriaProducto}">Selecciona una categoría.</div>
                         </div>
+
                         <div class="mb-3">
                             <label for="pkMarcaProducto" class="form-label"><i class="bi bi-building form-icon"></i>Marca</label>
-                            <select th:field="*{pkMarcaProducto}" class="form-select" id="pkMarcaProducto" required>
+                            <select th:field="*{pkMarcaProducto}"
+                                    class="form-select"
+                                    th:classappend="${#fields.hasErrors('pkMarcaProducto')} ? ' is-invalid'"
+                                    id="pkMarcaProducto" required>
                                 <option value="">-- Selecciona Marca --</option>
-                                <option th:each="mar : ${marcas}" 
-                                        th:value="${mar.idMarcaProducto}" 
+                                <option th:each="mar : ${marcas}"
+                                        th:value="${mar.idMarcaProducto}"
                                         th:text="${mar.nombreMarcaProducto}"></option>
                             </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('pkMarcaProducto')}" th:errors="*{pkMarcaProducto}">Selecciona una marca.</div>
                         </div>
+
                         <div class="mb-3">
                             <label for="pkEstadoProducto" class="form-label"><i class="bi bi-check-circle form-icon"></i>Estado</label>
-                            <select th:field="*{pkEstadoProducto}" class="form-select" id="pkEstadoProducto" required>
+                            <select th:field="*{pkEstadoProducto}"
+                                    class="form-select"
+                                    th:classappend="${#fields.hasErrors('pkEstadoProducto')} ? ' is-invalid'"
+                                    id="pkEstadoProducto" required>
                                 <option value="">-- Selecciona Estado --</option>
-                                <option th:each="est : ${estados}" 
-                                        th:value="${est.idEstadoProducto}" 
+                                <option th:each="est : ${estados}"
+                                        th:value="${est.idEstadoProducto}"
                                         th:text="${est.nombreEstadoProducto}"></option>
                             </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('pkEstadoProducto')}" th:errors="*{pkEstadoProducto}">Selecciona un estado.</div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="precioProducto" class="form-label"><i class="bi bi-currency-dollar form-icon"></i>Precio (S/.)</label>
-                                <input type="number" th:field="*{precioProducto}" class="form-control" id="precioProducto" step="0.01" min="0" required placeholder="0.00">
+                                <!-- min, max y step para controlar moneda; pattern para asegurar formato decimal en algunos navegadores -->
+                                <input type="number" th:field="*{precioProducto}"
+                                       class="form-control"
+                                       th:classappend="${#fields.hasErrors('precioProducto')} ? ' is-invalid'"
+                                       id="precioProducto" step="0.01" min="0.01" max="1000000" required placeholder="0.00">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('precioProducto')}" th:errors="*{precioProducto}">Precio inválido.</div>
+                                <div class="form-text">Valor permitido: 0.01 - 1,000,000.00</div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="stockProducto" class="form-label"><i class="bi bi-stack form-icon"></i>Stock</label>
-                                <input type="number" th:field="*{stockProducto}" class="form-control" id="stockProducto" min="0" required placeholder="0">
+                                <input type="number" th:field="*{stockProducto}"
+                                       class="form-control"
+                                       th:classappend="${#fields.hasErrors('stockProducto')} ? ' is-invalid'"
+                                       id="stockProducto" min="0" max="100000" step="1" required placeholder="0">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('stockProducto')}" th:errors="*{stockProducto}">Stock inválido.</div>
+                                <div class="form-text">Máximo permitido: 100,000</div>
                             </div>
                         </div>
+
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <a th:href="@{/admin/productos}" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-left"></i> Cancelar
@@ -160,6 +214,7 @@
             </div>
         </div>
     </main>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -168,24 +223,65 @@
         const noImgText = document.getElementById('noImgText');
 
         function updatePreview() {
-            const url = input.value.trim();
+            const url = input.value ? input.value.trim() : '';
             if (url) {
-                img.src = url;
-                img.style.display = '';
-                noImgText.style.display = 'none';
+                // si hay un elemento img existente lo actualizamos, si no, creamos uno temporal para validar carga
+                if (img) {
+                    img.src = url;
+                    img.style.display = '';
+                    noImgText.style.display = 'none';
+                } else {
+                    // no hay img element (por th:if), mostrar texto
+                    noImgText.style.display = '';
+                    noImgText.textContent = "Sin imagen";
+                }
             } else {
-                img.src = '';
-                img.style.display = 'none';
+                if (img) {
+                    img.src = '';
+                    img.style.display = 'none';
+                }
                 noImgText.style.display = '';
                 noImgText.textContent = "Sin imagen";
-                noImgText.style.display = '';
             }
+        }
+
+        // manejar load/error de la imagen (por si la URL es inválida)
+        if (img) {
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+                if (noImgText) {
+                    noImgText.textContent = "Sin imagen (URL no válida o inaccesible)";
+                    noImgText.style.display = '';
+                }
+            });
+            img.addEventListener('load', function() {
+                this.style.display = '';
+                if (noImgText) { noImgText.style.display = 'none'; }
+            });
         }
 
         // Si ya hay valor, mostrarlo al cargar
         updatePreview();
 
-        input.addEventListener('input', updatePreview);
+        if (input) {
+            input.addEventListener('input', updatePreview);
+        }
+
+        // Validación con Bootstrap: agrega clase was-validated y evita enviar si inválido
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+        })();
     });
     </script>
 </body>
