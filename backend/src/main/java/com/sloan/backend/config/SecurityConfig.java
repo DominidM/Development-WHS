@@ -1,10 +1,10 @@
 package com.sloan.backend.config;
 
 import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +19,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 
-    // Cadena para la API
     @Bean
     @Order(1)
     public SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
@@ -42,7 +41,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Cadena para el panel admin (sólo /admin/**, no /api/admin/**)
     @Bean
     @Order(2)
     public SecurityFilterChain adminSecurity(HttpSecurity http) throws Exception {
@@ -69,15 +67,16 @@ public class SecurityConfig {
                     "/favicon.ico",
                     "/bootstrap.min.css",
                     "/bootstrap.bundle.min.js",
-                    "/avatar4.png"     
+                    "/avatar4.png"
                 ).permitAll()
+                // Permitir temporalmente GET a /admin/productos/nuevo para depuración:
+                .requestMatchers(HttpMethod.GET, "/admin/productos/nuevo").permitAll()
+                // El resto requiere rol:
                 .anyRequest().hasRole("ADMINISTRADOR")
             );
         return http.build();
     }
 
-
-    // Cadena para recursos estáticos públicos (CSS, JS, imágenes, favicon)
     @Bean
     @Order(3)
     public SecurityFilterChain staticResourcesSecurity(HttpSecurity http) throws Exception {
@@ -90,7 +89,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Cadena por defecto (bloquea todo lo demás)
     @Bean
     @Order(4)
     public SecurityFilterChain defaultSecurity(HttpSecurity http) throws Exception {
