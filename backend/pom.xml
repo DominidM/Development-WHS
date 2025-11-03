@@ -71,6 +71,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Añade esto dentro de <dependencies> -->
+		<dependency>
+		<groupId>org.springdoc</groupId>
+		<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+		<version>2.1.0</version>
+		</dependency>
+
 		<dependency>
 		    <!-- DevTools -->
 			<groupId>org.springframework.boot</groupId>

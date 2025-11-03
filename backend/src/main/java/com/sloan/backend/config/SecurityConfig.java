@@ -31,7 +31,11 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/api/public/**",
-                    "/api/admin/auth/**"
+                    "/api/admin/auth/**",
+                    // Permitir acceso a docs si consumo desde UI que haga llamadas a /api/...
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -67,7 +71,11 @@ public class SecurityConfig {
                     "/favicon.ico",
                     "/bootstrap.min.css",
                     "/bootstrap.bundle.min.js",
-                    "/avatar4.png"
+                    "/avatar4.png",
+                    // permitir docs si se accede desde rutas administrativas
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
                 ).permitAll()
                 // Permitir temporalmente GET a /admin/productos/nuevo para depuración:
                 .requestMatchers(HttpMethod.GET, "/admin/productos/nuevo").permitAll()
@@ -81,7 +89,15 @@ public class SecurityConfig {
     @Order(3)
     public SecurityFilterChain staticResourcesSecurity(HttpSecurity http) throws Exception {
         http
-            .securityMatcher("/adminlte/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/bootstrap.min.css", "/bootstrap.bundle.min.js", "/avatar4.png")
+            .securityMatcher(
+                "/adminlte/**",
+                "/css/**", "/js/**", "/images/**", "/favicon.ico",
+                "/bootstrap.min.css", "/bootstrap.bundle.min.js", "/avatar4.png",
+                // Swagger / OpenAPI
+                "/v3/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-ui.html"
+            )
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .anyRequest().permitAll()
