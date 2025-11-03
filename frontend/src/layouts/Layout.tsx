@@ -3,7 +3,7 @@ import { Navbar } from '../components/Layout/Navbar';
 import {Footer} from '../components/Layout/Footer';
 import ScrollToTopButton  from '../components/Layout/ScrollToTopButton'; // Importa el nuevo componente
 import { WhatsAppButton } from '../components/Layout/WhatsAppButton';
-
+import AccessibilityButton from '../components/Layout/AccesibilityButton';
 const Layout: React.FC = () => {
   return (
     <>
@@ -13,7 +13,8 @@ const Layout: React.FC = () => {
       </main>
       <WhatsAppButton />
       <ScrollToTopButton/>
-      
+      <AccessibilityButton />
+
       <Footer />
     </>
   );
