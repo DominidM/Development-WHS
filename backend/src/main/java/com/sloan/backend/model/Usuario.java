@@ -8,6 +8,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "usuario")
@@ -18,16 +23,26 @@ public class Usuario {
     private Long idUsuario;
 
     @Column(name = "correo_persona", nullable = false, unique = true, length = 100)
+    @NotBlank(message = "El correo es requerido")
+    @Email(message = "Formato de email inválido")
+    @Size(max = 100, message = "El correo no puede exceder 100 caracteres")
     private String correoPersona;
 
     @Column(nullable = false, length = 255)
+    @NotBlank(message = "La contraseña es requerida")
+    @Size(min = 8, max = 15, message = "La contraseña debe tener entre 8 y 15 caracteres")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z]).+$", 
+    message = "La contraseña debe contener letras y números")
     private String password;
 
     @Column(name = "nombre_persona", nullable = false, length = 100)
+    @NotBlank(message = "El nombre es requerido")
+    @Size(min = 1, max = 100, message = "El nombre no puede exceder 100 caracteres")
     private String nombrePersona;
 
     @ManyToOne
     @JoinColumn(name = "pk_rol_usuario", nullable = false)
+    @NotNull(message = "El rol es requerido")
     private RolUsuario rolUsuario;
 
     @Column(name = "reset_token", length = 100)
