@@ -23,7 +23,7 @@ export const ContactHero = () => {
         <div className="w-full font-montserrat bg-gradient-to-br from-[#f4f8fb] to-[#e4eaf2] pb-0">
             {/* HERO HEADER */}
             <div className="flex flex-col gap-8 sm:gap-12">
-                <div className="relative w-full max-h-[420px] md:max-h-[520px] rounded-3xl overflow-hidden shadow-2xl border border-[#e3e6ed]">
+                <div className="relative w-full max-h-[420px] md:max-h-[520px]  overflow-hidden shadow-2xl border-[#e3e6ed]">
                     <img
                         src={imageUrl1}
                         alt="Imagen de Contacto 1"

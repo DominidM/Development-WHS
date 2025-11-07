@@ -11,7 +11,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -28,11 +27,10 @@ public class Usuario {
     @Size(max = 100, message = "El correo no puede exceder 100 caracteres")
     private String correoPersona;
 
+    // Permitir almacenar hashes largos (ej. bcrypt ~60). Validación de la contraseña en DTOs.
     @Column(nullable = false, length = 255)
     @NotBlank(message = "La contraseña es requerida")
-    @Size(min = 8, max = 15, message = "La contraseña debe tener entre 8 y 15 caracteres")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z]).+$", 
-    message = "La contraseña debe contener letras y números")
+    @Size(min = 8, max = 255, message = "La contraseña debe tener entre 8 y 255 caracteres")
     private String password;
 
     @Column(name = "nombre_persona", nullable = false, length = 100)

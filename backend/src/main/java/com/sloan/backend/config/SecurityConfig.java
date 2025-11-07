@@ -1,6 +1,7 @@
 package com.sloan.backend.config;
 
 import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -29,14 +30,24 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                // Permitir explícitamente preflight OPTIONS
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                // Permitir explícitamente POSTs a los endpoints públicos de auth
+                .requestMatchers(HttpMethod.POST, "/api/admin/auth/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/admin/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/admin/auth/forgot-password").permitAll()
+
+                // Resto de endpoints públicos (por si acaso)
                 .requestMatchers(
                     "/api/public/**",
                     "/api/admin/auth/**",
-                    // Permitir acceso a docs si consumo desde UI que haga llamadas a /api/...
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
                     "/swagger-ui.html"
                 ).permitAll()
+
+                // El resto de /api/** requiere autenticación
                 .anyRequest().authenticated()
             )
             .exceptionHandling(eh -> eh
@@ -45,9 +56,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // ... mantiene tus otros SecurityFilterChain (adminSecurity, staticResourcesSecurity, defaultSecurity) ...
     @Bean
     @Order(2)
     public SecurityFilterChain adminSecurity(HttpSecurity http) throws Exception {
+        // (usa tu implementación actual para /admin/**)
         http
             .securityMatcher("/admin/**")
             .csrf(csrf -> csrf.disable())
@@ -72,14 +85,11 @@ public class SecurityConfig {
                     "/bootstrap.min.css",
                     "/bootstrap.bundle.min.js",
                     "/avatar4.png",
-                    // permitir docs si se accede desde rutas administrativas
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
                     "/swagger-ui.html"
                 ).permitAll()
-                // Permitir temporalmente GET a /admin/productos/nuevo para depuración:
                 .requestMatchers(HttpMethod.GET, "/admin/productos/nuevo").permitAll()
-                // El resto requiere rol:
                 .anyRequest().hasRole("ADMINISTRADOR")
             );
         return http.build();
@@ -93,7 +103,6 @@ public class SecurityConfig {
                 "/adminlte/**",
                 "/css/**", "/js/**", "/images/**", "/favicon.ico",
                 "/bootstrap.min.css", "/bootstrap.bundle.min.js", "/avatar4.png",
-                // Swagger / OpenAPI
                 "/v3/api-docs/**",
                 "/swagger-ui/**",
                 "/swagger-ui.html"
