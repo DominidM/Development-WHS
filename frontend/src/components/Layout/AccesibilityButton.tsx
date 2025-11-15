@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 type Settings = {
-  textScale: 1 | 2 | 3; // 1 = normal, 2 = medio, 3 = grande
+  textScale: 1 | 2 | 3; 
   colorblind: boolean;
   highContrast: boolean;
   reducedMotion: boolean;
@@ -35,15 +35,6 @@ const saveSettings = (s: Settings) => {
   }
 };
 
-/**
- * AccessibilityButton Mejorado
- * - Soporta: tamaño de letra (3 niveles), modo daltonismo, alto contraste,
- *   reducir movimiento y subrayar enlaces.
- * - Persiste en localStorage.
- * - Aplica clases al <html> (document.documentElement) para afectar toda la app.
- * - Posicionamiento: se usa flex-col-reverse para que los elementos flotantes se apilen
- *   de abajo hacia arriba (panel encima del botón), evitando solapamientos visuales.
- */
 const AccessibilityButton: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [settings, setSettings] = useState<Settings>(defaultSettings);
@@ -53,7 +44,6 @@ const AccessibilityButton: React.FC = () => {
     setSettings(s);
     applySettingsToRoot(s);
     injectRootStyles();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const applySettingsToRoot = (s: Settings) => {
@@ -128,7 +118,6 @@ const AccessibilityButton: React.FC = () => {
 
   return (
     <div
-      // flex-col-reverse hace que los hijos se apilen desde abajo hacia arriba: el primer hijo queda en la base
       className="fixed right-20 bottom-6 z-60 flex flex-col-reverse items-end gap-1 pointer-events-auto"
       aria-hidden={false}
     >
