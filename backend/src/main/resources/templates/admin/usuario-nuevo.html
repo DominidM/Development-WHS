@@ -12,27 +12,27 @@
 </head>
 <body>
     <div th:replace="~{admin/fragments/navbar :: navbar}"></div>
+    
     <div class="container py-5">
         <h2 class="mb-4"><i class="bi bi-person-plus"></i> Nuevo Usuario</h2>
 
-        <!-- Errores globales (p. ej. correo duplicado, validaciones de servicio) -->
-        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger" role="alert">
-            <ul class="mb-0">
-                <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
-            </ul>
-        </div>
-
-        <!-- Mensaje de error genérico del controlador -->
         <div th:if="${errorGuardar}" class="alert alert-danger" th:text="${errorGuardar}"></div>
         <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
 
         <div class="card shadow-sm">
             <div class="card-body">
-                <!-- needs-validation + novalidate para control cliente con Bootstrap -->
                 <form th:action="@{/admin/usuarios/nuevo}" th:object="${usuario}" method="post" class="needs-validation" novalidate>
+                    
+                    <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger" role="alert">
+                        <ul class="mb-0">
+                            <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+                        </ul>
+                    </div>
+
                     <div class="mb-3">
-                        <label class="form-label">Nombre</label>
+                        <label for="nombrePersona" class="form-label">Nombre</label>
                         <input type="text"
+                               id="nombrePersona"
                                th:field="*{nombrePersona}"
                                class="form-control"
                                th:classappend="${#fields.hasErrors('nombrePersona')} ? ' is-invalid'"
@@ -41,12 +41,14 @@
                                maxlength="255"
                                placeholder="Nombre completo">
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('nombrePersona')}" th:errors="*{nombrePersona}">Nombre inválido.</div>
+                        <div class="valid-feedback">¡Correcto!</div>
                         <div class="form-text form-text-limits">Longitud 3-255 caracteres.</div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Correo</label>
+                        <label for="correoPersona" class="form-label">Correo</label>
                         <input type="email"
+                               id="correoPersona"
                                th:field="*{correoPersona}"
                                class="form-control"
                                th:classappend="${#fields.hasErrors('correoPersona')} ? ' is-invalid'"
@@ -55,12 +57,14 @@
                                placeholder="correo@ejemplo.com"
                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('correoPersona')}" th:errors="*{correoPersona}">Correo inválido.</div>
-                        <div class="form-text form-text-limits">Ingrese un correo válido. El sistema verificará si ya existe.</div>
+                        <div class="valid-feedback">¡Formato correcto!</div>
+                        <div class="form-text form-text-limits">Ingrese un correo válido.</div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Contraseña</label>
+                        <label for="password" class="form-label">Contraseña</label>
                         <input type="password"
+                               id="password"
                                th:field="*{password}"
                                class="form-control"
                                th:classappend="${#fields.hasErrors('password')} ? ' is-invalid'"
@@ -69,25 +73,24 @@
                                maxlength="100"
                                placeholder="Mínimo 8 caracteres">
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Contraseña inválida.</div>
-                        <div class="form-text form-text-limits">Mínimo 8 caracteres. Se recomienda usar cifras y letras.</div>
+                        <div class="valid-feedback">¡Correcto!</div>
+                        <div class="form-text form-text-limits">Mínimo 8 caracteres.</div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Rol</label>
+                        <label for="pkRolUsuario" class="form-label">Rol</label>
                         <select class="form-select"
-                                th:field="*{rolUsuario.idRolUsuario}"
-                                th:classappend="${#fields.hasErrors('rolUsuario.idRolUsuario')} ? ' is-invalid'"
+                                id="pkRolUsuario"
+                                name="pkRolUsuario"  th:classappend="${#fields.hasErrors('rolUsuario')} ? ' is-invalid'"
                                 required>
                             <option value="">-- Selecciona Rol --</option>
                             <option th:each="rol : ${roles}"
                                     th:value="${rol.idRolUsuario}"
                                     th:text="${rol.nombreRol}"></option>
                         </select>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('rolUsuario.idRolUsuario')}" th:errors="*{rolUsuario.idRolUsuario}">Selecciona un rol válido.</div>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('rolUsuario')}" th:errors="*{rolUsuario}">Selecciona un rol válido.</div>
+                        <div class="valid-feedback">¡Rol seleccionado!</div>
                     </div>
-
-                    <!-- Si quieres mostrar errores específicos de binding por campo adicionalmente,
-                         Thymeleaf con th:errors ya los mostrará en los invalid-feedback correspondientes. -->
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Crear Usuario</button>
@@ -98,24 +101,23 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS + validación cliente -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Bootstrap custom validation
+        // Script de validación de Bootstrap
         (function () {
             'use strict'
             var forms = document.querySelectorAll('.needs-validation')
             Array.prototype.slice.call(forms)
-                 .forEach(function (form) {
-                     form.addEventListener('submit', function (event) {
-                         if (!form.checkValidity()) {
-                             event.preventDefault()
-                             event.stopPropagation()
-                         }
-                         form.classList.add('was-validated')
-                     }, false)
-                 })
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
         })()
     });
     </script>

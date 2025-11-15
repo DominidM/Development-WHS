@@ -36,16 +36,17 @@ const MisPedidosPage: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        if (!usuario) {
+        if (!usuario || !usuario.token) { 
+          setError("Debes iniciar sesión para ver tus pedidos.");
           setPedidos([]);
           setLoading(false);
           return;
         }
         // Aquí debes pasar el token si tu backend lo requiere
-        const res = await fetch("/api/public/pedidos/mis-pedidos", {
+        const res = await fetch("http://localhost:8081/api/user/pedidos/mis-pedidos", {
           headers: {
             "Content-Type": "application/json",
-            // 'Authorization': 'Bearer TOKEN' // Si usas JWT
+            "Authorization": `Bearer ${usuario.token}`
           },
         });
         if (!res.ok) throw new Error("No se pudieron obtener los pedidos");
@@ -63,7 +64,7 @@ const MisPedidosPage: React.FC = () => {
       }
     };
     fetchPedidos();
-  }, [usuario?.id]); // Si usuario no cambia, también puedes usar []
+  }, [usuario]); // Si usuario no cambia, también puedes usar []
 
   if (!usuario) {
     return (

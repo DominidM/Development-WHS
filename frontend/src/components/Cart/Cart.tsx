@@ -38,15 +38,14 @@ export function Cart() {
   const costoExtra = extraServiciosCatalogo.find(e => e.id === extraServicio)?.costo ?? 0;
   const totalGeneral = totalProductos + costoExtra;
 
-  let userId: number | undefined = undefined;
-  try {
-    const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
-    userId = usuario?.idUsuario;
-  } catch {
-    userId = undefined;
-  }
-
   const handleCheckout = async () => {
+    let userId: number | undefined = undefined;
+    try {
+      const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
+      userId = usuario?.idUsuario;
+    } catch {
+      userId = undefined;
+    }
     if (items.length === 0 || !userId) {
       alert("Debes tener productos en el carrito y estar logueado.");
       return;
@@ -118,7 +117,7 @@ export function Cart() {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Lista de productos, ahora con scroll si hay muchos */}
         <div className="flex-1 bg-white border rounded-x1 p-8 space-y-7"
-             style={{ maxHeight: 520, overflowY: "auto" }}>
+          style={{ maxHeight: 520, overflowY: "auto" }}>
           {items.length === 0 && <div className="text-gray-500">Tu carrito está vacío.</div>}
           {items.map(item => (
             <div key={item.id} className="flex items-center gap-10 border-b pb-6">

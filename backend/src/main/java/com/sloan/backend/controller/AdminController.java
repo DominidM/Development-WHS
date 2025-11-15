@@ -48,7 +48,7 @@ public class AdminController {
 
     @Autowired
     private OfertaService ofertaService;
-    @Autowired 
+    @Autowired
     private ProductoService productoService;
     @Autowired
     private AuthService usuarioService;
@@ -70,6 +70,7 @@ public class AdminController {
     private RolUsuarioService rolUsuarioService;
     @Autowired
     private MovimientoService movimientoService;
+
     @ModelAttribute
     public void addNombrePersonaToModel(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -84,7 +85,7 @@ public class AdminController {
         model.addAttribute("nombre_persona", "Administrador");
     }
 
-    @GetMapping({"", "/"})
+    @GetMapping({ "", "/" })
     public String adminRoot() {
         return "redirect:/admin/dashboard";
     }
@@ -194,10 +195,10 @@ public class AdminController {
         return "admin/producto-oferta";
     }
 
-  @PostMapping("/productos/oferta/guardar")
+    @PostMapping("/productos/oferta/guardar")
     public String guardarOfertaProducto(@ModelAttribute("oferta") OfertaFormDTO ofertaForm,
-                                        Model model,
-                                        RedirectAttributes redirectAttributes) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
         Optional<ProductoDTO> prodOpt = productoService.findByIdAsDTO(ofertaForm.getIdProducto());
         if (prodOpt.isEmpty()) {
             return "redirect:/admin/productos?notfound";
@@ -272,7 +273,6 @@ public class AdminController {
         return "admin/movimientos-total"; // tu vista
     }
 
-
     // --------------------- FORMULARIOS ---------------------
 
     @GetMapping("/formularios")
@@ -282,8 +282,8 @@ public class AdminController {
 
         if (tipo != null && !tipo.isEmpty()) {
             formularios = formularios.stream()
-                .filter(f -> tipo.contains(f.getTipoFormulario().getNombreTipo()))
-                .toList();
+                    .filter(f -> tipo.contains(f.getTipoFormulario().getNombreTipo()))
+                    .toList();
         }
 
         model.addAttribute("formularios", formularios);
@@ -363,9 +363,49 @@ public class AdminController {
 
     @GetMapping("/usuarios/nuevo")
     public String nuevoUsuario(Model model) {
+        // Carga un usuario vacío y la lista de roles para el formulario
         model.addAttribute("usuario", new Usuario());
+        model.addAttribute("roles", rolUsuarioService.listarTodos()); // <--- Tu HTML necesita esto
         model.addAttribute("currentPage", "usuarios");
         return "admin/usuario-nuevo";
+    }
+
+    // En AdminController.java
+
+    @PostMapping("/usuarios/nuevo")
+    public String guardarNuevoUsuario(
+            @ModelAttribute("usuario") Usuario usuario,
+            @RequestParam("pkRolUsuario") Long pkRolUsuario, // Recibe el ID del rol
+            RedirectAttributes redirectAttributes,
+            Model model) {
+
+        try {
+            // 1. Busca el Rol usando el ID
+            RolUsuario rol = rolUsuarioService.buscarPorId(pkRolUsuario);
+            if (rol == null) {
+                // Si el rol no existe, regresa al formulario con un error
+                model.addAttribute("errorGuardar", "El rol seleccionado no es válido.");
+                model.addAttribute("usuario", usuario);
+                model.addAttribute("roles", rolUsuarioService.listarTodos());
+                model.addAttribute("currentPage", "usuarios");
+                return "admin/usuario-nuevo";
+            }
+
+            // 2. Asigna el objeto Rol completo al usuario
+            usuario.setRolUsuario(rol);
+            usuarioService.register(usuario);
+
+            redirectAttributes.addFlashAttribute("mensajeExito", "¡Usuario creado exitosamente!");
+            return "redirect:/admin/usuarios";
+
+        } catch (Exception e) {
+            // Captura errores (ej. correo duplicado)
+            model.addAttribute("errorGuardar", "No se pudo guardar el usuario: " + e.getMessage());
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("roles", rolUsuarioService.listarTodos());
+            model.addAttribute("currentPage", "usuarios");
+            return "admin/usuario-nuevo";
+        }
     }
 
     @PostMapping("/usuarios/eliminar/{id}")
@@ -389,7 +429,7 @@ public class AdminController {
     public String pedidos(Model model) {
         List<Pedido> pedidos = pedidoService.listarTodos();
         long pendientes = pedidos.stream().filter(p -> "pendiente".equalsIgnoreCase(p.getEstadoPago())).count();
-        long atendidos  = pedidos.stream().filter(p -> "atendido".equalsIgnoreCase(p.getEstadoPago())).count();
+        long atendidos = pedidos.stream().filter(p -> "atendido".equalsIgnoreCase(p.getEstadoPago())).count();
         long rechazados = pedidos.stream().filter(p -> "rechazado".equalsIgnoreCase(p.getEstadoPago())).count();
 
         model.addAttribute("pedidos", pedidos);
@@ -406,6 +446,7 @@ public class AdminController {
         model.addAttribute("pedido", pedido);
         return "admin/pedidos-detalle";
     }
+
     @PostMapping("/pedidos/rechazar/{id}")
     public String rechazarPedido(@PathVariable("id") Long id) {
         pedidoService.rechazarPedido(id);
