@@ -1,8 +1,8 @@
 //actualizacion para prueba para cooreccion de errores de importación;
 //update actulizacion para prueba;
 //import React from 'react';
-import { Publicidad } from '../components/Publicidad';
-import { Hero } from "../components/Hero";
+import { Publicidad } from '../components/ui/Publicidad';
+import { Hero } from "../components/ui/Hero";
 import { Cart } from "../components/Cart/Cart";
 import  ProductCarousel from "../components/Home/ProductCarousel"; // Importa el nuevo componente de carrusel de productos
 

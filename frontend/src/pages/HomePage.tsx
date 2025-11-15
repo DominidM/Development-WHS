@@ -1,11 +1,11 @@
 //import { Outlet } from 'react-router-dom';
 //import React from 'react';
-import { Carousel } from "../components/Carousel";
+import { Carousel } from "../components/ui/Carousel";
 import { ImagenPrincipalConSecundarias } from '../components/Home/PublicidadSection'; // Importa el componente
-import { Publicidad } from '../components/Publicidad';
+import { Publicidad } from '../components/ui/Publicidad';
 import  ProductCarousel from "../components/Home/ProductCarousel"; // Importa el nuevo componente de carrusel de productos
 import OfertaCarousel from "../components/Home/OfertaCarousel";
-import  Marcas from '../components/Marcas'; // Importa el nuevo componente
+import  Marcas from '../components/ui/Marcas'; // Importa el nuevo componente
 import Text from "../components/ui/text"; // Importa el nuevo componente de texto
 //import ProductCarousel from "../components/ui/ProductCarousel";
 

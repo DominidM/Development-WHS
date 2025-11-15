@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from "react-router-dom";
-import { Carousel } from "@/components/Carousel";
-import { Publicidad } from '../components/Publicidad';
-import Marcas from '../components/Marcas';
+import { Carousel } from "@/components/ui/Carousel";
+import { Publicidad } from '../components/ui/Publicidad';
+import Marcas from '../components/ui/Marcas';
 import ProductCard from '../components/ui/ProductCard';
 import { API_BASE_URL } from '../apiConfig'; 
 

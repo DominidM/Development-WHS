@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
-import { Hero } from "../components/Hero";
-import { Publicidad } from '../components/Publicidad';
-import Marcas from '../components/Marcas';
+import { Hero } from "../components/ui/Hero";
+import { Publicidad } from '../components/ui/Publicidad';
+import Marcas from '../components/ui/Marcas';
 import ProductDetail from '../components/ui/ProductDetail';
 
 export function DetalleProducto() {

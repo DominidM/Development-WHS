@@ -14,7 +14,7 @@ import Layout from './layouts/Layout';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import MisPedidosPage from './pages/MisPedidosPage'; 
 
-import ScrollToTop from './components/ScrollToTop'; // <-- Importa el componente de scroll al top
+import ScrollToTop from './components/ui/ScrollToTop'; // <-- Importa el componente de scroll al top
 
 const App: React.FC = () => {
   return (
