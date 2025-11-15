@@ -28,6 +28,7 @@ com\sloan\backend\model\Pedido.class
 com\sloan\backend\security\CustomUserDetails.class
 com\sloan\backend\controller\OfertaController.class
 com\sloan\backend\repository\MovimientoRepository.class
+com\sloan\backend\service\InventoryService.class
 com\sloan\backend\repository\PedidoRepository.class
 com\sloan\backend\service\RolUsuarioService.class
 com\sloan\backend\dto\OfertaDTO.class
@@ -53,6 +54,7 @@ com\sloan\backend\model\CategoriaProducto.class
 com\sloan\backend\config\SecurityConfig.class
 com\sloan\backend\service\EstadoFormServiceImpl.class
 com\sloan\backend\service\MercadoPagoService.class
+com\sloan\backend\controller\UsuarioPedidoController.class
 com\sloan\backend\controller\PedidoController.class
 com\sloan\backend\repository\RolUsuarioRepository.class
 com\sloan\backend\security\CustomUserDetailsService.class

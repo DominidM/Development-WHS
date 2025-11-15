@@ -1,1 +1,8 @@
+com\sloan\backend\auth\AuthControllerTest$MockConfig.class
+com\sloan\backend\auth\AuthControllerTest.class
+com\sloan\backend\auth\AuthControllerIT.class
+com\sloan\backend\product\ProductoControllerTest.class
+com\sloan\backend\auth\SecurityConfigTest.class
+com\sloan\backend\comon\AbstractIntegrationTest.class
+com\sloan\backend\inventory\InventoryServiceTest.class
 com\sloan\backend\BackendApplicationTests.class

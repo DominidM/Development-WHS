@@ -30,15 +30,10 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // Permitir explícitamente preflight OPTIONS
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                // Permitir explícitamente POSTs a los endpoints públicos de auth
                 .requestMatchers(HttpMethod.POST, "/api/admin/auth/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/admin/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/admin/auth/forgot-password").permitAll()
-
-                // Resto de endpoints públicos (por si acaso)
                 .requestMatchers(
                     "/api/public/**",
                     "/api/admin/auth/**",
@@ -46,21 +41,15 @@ public class SecurityConfig {
                     "/swagger-ui/**",
                     "/swagger-ui.html"
                 ).permitAll()
-
-                // El resto de /api/** requiere autenticación
                 .anyRequest().authenticated()
             )
-            .exceptionHandling(eh -> eh
-                .authenticationEntryPoint(restAuthenticationEntryPoint)
-            );
+            .exceptionHandling(eh -> eh.authenticationEntryPoint(restAuthenticationEntryPoint));
         return http.build();
     }
 
-    // ... mantiene tus otros SecurityFilterChain (adminSecurity, staticResourcesSecurity, defaultSecurity) ...
     @Bean
     @Order(2)
     public SecurityFilterChain adminSecurity(HttpSecurity http) throws Exception {
-        // (usa tu implementación actual para /admin/**)
         http
             .securityMatcher("/admin/**")
             .csrf(csrf -> csrf.disable())
@@ -108,19 +97,14 @@ public class SecurityConfig {
                 "/swagger-ui.html"
             )
             .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
-            );
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
     }
 
     @Bean
     @Order(4)
     public SecurityFilterChain defaultSecurity(HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().denyAll()
-            );
+        http.authorizeHttpRequests(auth -> auth.anyRequest().denyAll());
         return http.build();
     }
 
