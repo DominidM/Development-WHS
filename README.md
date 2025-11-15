@@ -10,7 +10,6 @@ Sloan_WebSystem/
 │
 ├── backend/      # Backend del sistema (API REST con Spring Boot)
 ├── frontend/     # Aplicación cliente (React + Vite)
-├── docs/         # Documentación técnica (diagramas, manuales, etc.)
 ├── README.md     # Archivo actual
 └── .env          # Variables de entorno (excluidas del control de versiones)
  ```
