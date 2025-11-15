@@ -5,6 +5,7 @@ import { API_BASE_URL } from '../../apiConfig'
 import { useNavigate } from 'react-router-dom'
 
 type Usuario = {
+  idUsuario: number;
   nombrePersona: string
   correoPersona: string
   token?: string
@@ -20,7 +21,7 @@ export default function LoginModal() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [nombre, setNombre] = useState('')
   const [error, setError] = useState('')
-  const [fieldErrors, setFieldErrors] = useState<Record<string,string>>({})
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [usuario, setUsuario] = useState<Usuario | null>(null)
   const [showForgot, setShowForgot] = useState(false)
   const [forgotCorreo, setForgotCorreo] = useState('')
@@ -104,7 +105,7 @@ export default function LoginModal() {
   const runLoginValidations = () => {
     const eCorreo = validateEmail(correo)
     const ePass = validatePassword(password)
-    const errs: Record<string,string> = {}
+    const errs: Record<string, string> = {}
     if (eCorreo) errs.correo = eCorreo
     if (ePass) errs.password = ePass
     setFieldErrors(errs)
@@ -115,7 +116,7 @@ export default function LoginModal() {
     const eNombre = validateNombre(nombre)
     const eCorreo = validateEmail(correo)
     const ePass = validatePassword(password)
-    const errs: Record<string,string> = {}
+    const errs: Record<string, string> = {}
     if (eNombre) errs.nombre = eNombre
     if (eCorreo) errs.correo = eCorreo
     if (ePass) errs.password = ePass
@@ -136,7 +137,7 @@ export default function LoginModal() {
         return json.message || 'Errores de validación'
       }
       if (Array.isArray(json.errors)) {
-        const fe: Record<string,string> = {}
+        const fe: Record<string, string> = {}
         // Define a minimal shape for items in the errors array and guard at runtime
         interface ServerErrorItem {
           field?: string
@@ -184,12 +185,19 @@ export default function LoginModal() {
       })
       const dataText = await response.text().catch(() => '')
       const data = dataText ? JSON.parse(dataText) : {}
+      const userIdFromBackend = data.idUsuario ?? data.usuario?.idUsuario;
+
+      if (!userIdFromBackend) {
+        console.error("Respuesta del login exitosa, pero no incluyó un ID de usuario.", data);
+        throw new Error("Error de autenticación: No se recibió el ID de usuario.");
+      }
       if (!response.ok) {
         const msg = await extractServerError(response)
         throw new Error(msg)
       }
       // store only non-sensitive data; prefer token or minimal user info
       const userToStore: Usuario = {
+        idUsuario: Number(userIdFromBackend),
         nombrePersona: String(data.nombrePersona ?? data.usuario?.nombrePersona ?? ''),
         correoPersona: String(data.correoPersona ?? data.usuario?.correoPersona ?? ''),
         token: data.token ? String(data.token) : undefined

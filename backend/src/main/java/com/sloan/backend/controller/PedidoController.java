@@ -33,7 +33,6 @@ public class PedidoController {
     private PedidoService pedidoService;
     @Autowired
     private EmailService emailService;
-
     @Autowired
     private PedidoRepository pedidoRepository;
     @Autowired
@@ -66,8 +65,6 @@ public class PedidoController {
             result.put("tipo", "mercadopago");
             result.put("link", link);
         } else if (request.pkMetodoPago == 2) { // Efectivo
-            // (Opcional) Genera un voucher PDF y obtén la URL
-            // String voucherUrl = voucherService.generarVoucherPDF(pedido);
             String voucherUrl = null; // Si tienes esa lógica, si no, deja null
 
             // Envía el correo al cliente
@@ -113,44 +110,5 @@ public class PedidoController {
         }
 
         return result;
-    }
-
-    // NUEVO ENDPOINT: Listar pedidos del usuario autenticado con historial de estados/pagos
-    @GetMapping("/mis-pedidos")
-    public List<PedidoResponse> getMisPedidos(Authentication authentication) {
-        String correo = authentication.getName();
-        Usuario usuario = usuarioRepository.findByCorreoPersona(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-    List<Pedido> pedidos = pedidoRepository.findByPkUsuario(usuario.getId());
-
-        return pedidos.stream().map(pedido -> {
-            PedidoResponse resp = new PedidoResponse();
-            resp.idPedido = pedido.getId();
-            resp.fecha = pedido.getFecha();
-            resp.montoTotal = pedido.getMonto();
-            resp.estadoPago = pedido.getEstadoPago();
-
-           if (pedido.getDetalles() != null) {
-                resp.items = pedido.getDetalles().stream().map(det -> {
-                    PedidoResponse.Detalle d = new PedidoResponse.Detalle();
-                    d.productoId = det.getProducto().getIdProducto(); // <-- CAMBIADO
-                    d.nombreProducto = det.getProducto().getNombreProducto(); // <-- CAMBIADO
-                    d.cantidad = det.getCantidadPedido();
-                    d.precioUnitario = det.getProducto().getPrecioProducto(); // <-- CAMBIADO
-                    return d;
-                }).collect(Collectors.toList());
-            }
-
-            // Historial de estados/pagos
-            List<PedidoEstadoPago> historial = pedidoEstadoPagoRepository.findByPkPedidoOrderByFechaEstadoAsc(pedido.getId());
-            resp.setHistorialEstados(historial.stream().map(e -> new PedidoEstadoPagoDto(
-                    e.getComentario(),
-                    e.getEstado(),
-                    e.getFechaEstado()
-            )).collect(Collectors.toList()));
-
-            return resp;
-        }).collect(Collectors.toList());
     }
 }

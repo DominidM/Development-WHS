@@ -78,6 +78,4 @@ public class PedidoEstadoPago {
     public void setComentario(String comentario) {
         this.comentario = comentario;
     }
-
-
 }
