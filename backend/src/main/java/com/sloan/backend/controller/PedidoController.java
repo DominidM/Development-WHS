@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,75 +41,93 @@ public class PedidoController {
     @Autowired
     private PedidoEstadoPagoRepository pedidoEstadoPagoRepository;
 
-    @PostMapping("/pagar")
-    public Map<String, Object> pagar(@RequestBody PedidoRequest request) throws Exception {
+    @PostMapping(value = "/pagar", produces = "application/json")
+    public ResponseEntity<?> pagar(@RequestBody PedidoRequest request) {
         System.out.println(">>> /api/public/pedidos/pagar called <<<");
 
         Map<String, Object> result = new HashMap<>();
 
-        // Crear el pedido (implementa este método para que devuelva el pedido creado)
-        Pedido pedido = pedidoService.crearPedido(
-                request.descripcion,
-                request.monto,
-                request.cantidad,
-                request.pkUsuario,
-                request.items,
-                request.pkExtra,
-                request.pkMetodoPago
-        );
+        try {
 
-        // Obtén el correo del usuario (ajusta según tu modelo)
-        String emailUsuario = pedido.getUsuario().getCorreoPersona();
-
-        if (request.pkMetodoPago == 1) { // MercadoPago
-            String link = pedidoService.crearLinkMercadoPago(pedido);
-            result.put("tipo", "mercadopago");
-            result.put("link", link);
-        } else if (request.pkMetodoPago == 2) { // Efectivo
-            String voucherUrl = null; // Si tienes esa lógica, si no, deja null
-
-            // Envía el correo al cliente
-            emailService.enviarCorreo(
-                    emailUsuario,
-                    "Pedido registrado - Pago en efectivo",
-                    "Hola, tu pedido #" + pedido.getId() +
-                            " ha sido registrado por un total de S/" + pedido.getMonto() + ".\n" +
-                            "Presenta este número al pagar en tienda o al repartidor.\n" +
-                            (voucherUrl != null ? "Voucher: " + voucherUrl : "")
+            // Crear pedido
+            Pedido pedido = pedidoService.crearPedido(
+                    request.descripcion,
+                    request.monto,
+                    request.cantidad,
+                    request.pkUsuario,
+                    request.items,
+                    request.pkExtra,
+                    request.pkMetodoPago
             );
 
-            result.put("tipo", "efectivo");
-            result.put("numeroPedido", pedido.getId());
-            result.put("mensaje", "Presenta este número al momento de pagar en tienda o al repartidor.");
-            result.put("voucherUrl", voucherUrl);
-        } else if (request.pkMetodoPago == 3) { // Transferencia
-            // Datos bancarios de ejemplo, puedes obtenerlos de la BD/config
-            Map<String, String> datosBancarios = Map.of(
-                    "banco", "BCP",
-                    "cuenta", "123-456-7890",
-                    "titular", "WHC REPRESENTACIONES"
-            );
+            String emailUsuario = pedido.getUsuario().getCorreoPersona();
+            result.put("pedidoId", pedido.getId());
+            result.put("monto", pedido.getMonto());
 
-            // Envía el correo al cliente
-            emailService.enviarCorreo(
-                    emailUsuario,
-                    "Pedido registrado - Pago por transferencia",
-                    "Hola, tu pedido #" + pedido.getId() +
-                            " ha sido registrado por un total de S/" + pedido.getMonto() + ".\n" +
-                            "Transfiere el monto y envía el comprobante a pagos@tusitio.com.\n" +
-                            "Banco: " + datosBancarios.get("banco") + "\n" +
-                            "Cuenta: " + datosBancarios.get("cuenta") + "\n" +
-                            "Titular: " + datosBancarios.get("titular")
-            );
+            try {
+                switch (request.pkMetodoPago.intValue()) {
 
-            result.put("tipo", "transferencia");
-            result.put("numeroPedido", pedido.getId());
-            result.put("mensaje", "Transfiere el monto a la cuenta indicada y envía el comprobante.");
-            result.put("datosBancarios", datosBancarios);
-        } else {
-            result.put("mensaje", "Método de pago no soportado.");
+                    case 1: // MercadoPago
+                        String link = pedidoService.crearLinkMercadoPago(pedido);
+                        result.put("tipo", "mercadopago");
+                        result.put("link", link);
+
+                        emailService.enviarCorreo(
+                            emailUsuario,
+                            "Pago vía MercadoPago",
+                            "Tu pedido #" + pedido.getId() + " está listo para el pago."
+                        );
+                        break;
+
+                    case 2: // Efectivo
+                        emailService.enviarCorreo(
+                            emailUsuario,
+                            "Pedido registrado - Pago en efectivo",
+                            "Tu pedido #" + pedido.getId() + " fue registrado. Presenta este número al pagar."
+                        );
+
+                        result.put("tipo", "efectivo");
+                        break;
+
+                    case 3: // Transferencia
+                        Map<String, String> datosBancarios = Map.of(
+                                "banco", "BCP",
+                                "cuenta", "123-456-7890",
+                                "titular", "WHC REPRESENTACIONES"
+                        );
+
+                        emailService.enviarCorreo(
+                                emailUsuario,
+                                "Pedido registrado - Transferencia",
+                                "Tu pedido #" + pedido.getId() + " está registrado.\n" +
+                                        "Datos bancarios:\n" +
+                                        "Banco: " + datosBancarios.get("banco") + "\n" +
+                                        "Cuenta: " + datosBancarios.get("cuenta") + "\n" +
+                                        "Titular: " + datosBancarios.get("titular")
+                        );
+
+                        result.put("tipo", "transferencia");
+                        result.put("datosBancarios", datosBancarios);
+                        break;
+                }
+
+            } catch (Exception emailError) {
+                System.err.println("⚠ No se pudo enviar correo pero el pedido sigue válido: " + emailError.getMessage());
+                result.put("warning", "El pedido fue registrado pero no se pudo enviar correo.");
+            }
+
+            result.put("status", "success");
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+
+            e.printStackTrace(); // log para debugging
+
+            return ResponseEntity.status(500).body(Map.of(
+                    "status", "error",
+                    "mensaje", "Error al procesar el pedido",
+                    "detalle", e.getMessage()
+            ));
         }
-
-        return result;
     }
 }

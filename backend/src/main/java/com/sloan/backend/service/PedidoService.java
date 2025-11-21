@@ -126,9 +126,12 @@ public class PedidoService {
      * Lista todos los pedidos registrados en la base de datos.
      */
     public List<Pedido> listarTodos() {
-        return pedidoRepository.findAll();
+        return pedidoRepository.findAllWithUsuario();
     }
-
+    
+    public List<Pedido> listarPorEstado(String estado) {
+    return pedidoRepository.findByEstadoWithUsuario(estado);
+}
 
       /**
      * Obtiene un pedido por su ID, incluyendo detalles y usuario.

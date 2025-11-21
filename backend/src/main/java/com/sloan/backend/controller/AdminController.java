@@ -426,8 +426,15 @@ public class AdminController {
 
     // --------------------- PEDIDOS ---------------------
     @GetMapping("/pedidos")
-    public String pedidos(Model model) {
-        List<Pedido> pedidos = pedidoService.listarTodos();
+    public String pedidos(@RequestParam(required = false) String estado, Model model) {
+
+        List<Pedido> pedidos;
+
+        if (estado != null && !estado.isBlank()) {
+            pedidos = pedidoService.listarPorEstado(estado);
+        } else {
+            pedidos = pedidoService.listarTodos();
+        }
         long pendientes = pedidos.stream().filter(p -> "pendiente".equalsIgnoreCase(p.getEstadoPago())).count();
         long atendidos = pedidos.stream().filter(p -> "atendido".equalsIgnoreCase(p.getEstadoPago())).count();
         long rechazados = pedidos.stream().filter(p -> "rechazado".equalsIgnoreCase(p.getEstadoPago())).count();
@@ -436,7 +443,9 @@ public class AdminController {
         model.addAttribute("pendientesCount", pendientes);
         model.addAttribute("atendidosCount", atendidos);
         model.addAttribute("rechazadosCount", rechazados);
-        model.addAttribute("currentPage", "pedidos");
+
+        model.addAttribute("estadoSeleccionado", estado);
+
         return "admin/pedidos";
     }
 
