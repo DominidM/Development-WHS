@@ -6,8 +6,8 @@ export function Cart() {
   const [loading, setLoading] = useState(false);
 
   // Estado para método de pago. 
-  // CAMBIO: Iniciamos en 2 (Efectivo) porque borramos MercadoPago (1)
-  const [metodoPago, setMetodoPago] = useState<number>(2); 
+  // Restaurado a 1 (MercadoPago) como default
+  const [metodoPago, setMetodoPago] = useState<number>(1); 
   const [extraServicio, setExtraServicio] = useState<number>(1); // 1: Sin servicio extra
 
   // Estado para mostrar/ocultar descripción por producto
@@ -106,23 +106,20 @@ export function Cart() {
       }
       const data = await response.json();
 
-      // --- CORRECCIÓN DE LA RESPUESTA ---
-      // Tu backend devuelve { pedidoId: 123, tipo: "efectivo", status: "success" }
-      
       if (data.tipo === "mercadopago" && data.link) {
+        // Redirigir a la pasarela de pago
         window.location.href = data.link;
       } else if (data.tipo === "efectivo") {
         alert(
           `¡Pedido registrado con éxito!\n\n` +
-          `Número de pedido: ${data.pedidoId}\n` + // Usamos data.pedidoId
+          `Número de pedido: ${data.pedidoId}\n` +
           `Monto a pagar: S/ ${totalGeneral.toFixed(2)}\n\n` +
           `Acércate a caja con tu número de pedido para realizar el pago.`
         );
-        // Opcional: Limpiar carrito o redirigir
       } else if (data.tipo === "transferencia") {
         alert(
           `¡Pedido registrado!\n\n` +
-          `Número de pedido: ${data.pedidoId}\n` + // Usamos data.pedidoId
+          `Número de pedido: ${data.pedidoId}\n` +
           `Banco: ${data.datosBancarios?.banco}\n` +
           `Cuenta: ${data.datosBancarios?.cuenta}\n` +
           `Titular: ${data.datosBancarios?.titular}`
@@ -256,7 +253,7 @@ export function Cart() {
               </select>
             </div>
             
-            {/* Método de pago (SIN MERCADOPAGO) */}
+            {/* Método de pago - RESTAURADO MERCADOPAGO */}
             <div className="flex flex-col">
               <label
                 htmlFor="metodoPago"
@@ -270,7 +267,7 @@ export function Cart() {
                 value={metodoPago}
                 onChange={(e) => setMetodoPago(Number(e.target.value))}
               >
-                {/* Opción 1 (MercadoPago) eliminada */}
+                <option value={1}>MercadoPago</option>
                 <option value={2}>Efectivo</option>
                 <option value={3}>Transferencia</option>
               </select>
@@ -316,9 +313,9 @@ export function Cart() {
           </button>
           
           <div className="flex justify-center items-center gap-4 mt-4 opacity-70 grayscale hover:grayscale-0 transition-all duration-300">
-            {/* Imagenes placeholder, asegúrate de tenerlas o usar iconos */}
+            {/* Imagenes placeholder */}
             <div className="text-xs text-gray-500 text-center">
-              Pago 100% Seguro <br/> Contra-entrega o Transferencia
+              Pago 100% Seguro <br/> MercadoPago, Efectivo o Transferencia
             </div>
           </div>
         </div>
