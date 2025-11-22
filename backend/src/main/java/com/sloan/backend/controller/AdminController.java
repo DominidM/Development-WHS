@@ -84,7 +84,16 @@ public class AdminController {
         }
         model.addAttribute("nombre_persona", "Administrador");
     }
-
+    @ModelAttribute
+    public void debugSeguridad() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            System.out.println("=== DEBUG SEGURIDAD ===");
+            System.out.println("Usuario: " + auth.getName());
+            System.out.println("Roles detectados: " + auth.getAuthorities());
+            System.out.println("=======================");
+        }
+    }
     @GetMapping({ "", "/" })
     public String adminRoot() {
         return "redirect:/admin/dashboard";
@@ -256,7 +265,18 @@ public class AdminController {
 
         return "admin/producto-oferta";
     }
-
+// Agregar este método en la sección de PRODUCTOS
+    @PostMapping("/productos/eliminar/{id}")
+    public String eliminarProducto(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            // Asumiendo que tu servicio tiene un método delete o eliminar
+            productoService.eliminarPorId(id); 
+            redirectAttributes.addFlashAttribute("mensajeExito", "Producto eliminado correctamente.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorProductos", "No se pudo eliminar el producto: " + e.getMessage());
+        }
+        return "redirect:/admin/productos";
+    }
     // --------------------- MOVIMIENTOS ---------------------
 
     @GetMapping("/movimientos")

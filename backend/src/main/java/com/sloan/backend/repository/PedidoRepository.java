@@ -15,4 +15,5 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     List<Pedido> findAllWithUsuario();
     @Query("SELECT p FROM Pedido p LEFT JOIN FETCH p.usuario WHERE p.estadoPago = :estado")
     List<Pedido> findByEstadoWithUsuario(String estado);
+    List<Pedido> findByUsuario_IdUsuario(Long idUsuario);
 }

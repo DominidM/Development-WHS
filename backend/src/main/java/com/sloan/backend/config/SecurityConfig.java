@@ -43,6 +43,7 @@ public class SecurityConfig {
                 ).permitAll()
                 .anyRequest().authenticated()
             )
+            .httpBasic(org.springframework.security.config.Customizer.withDefaults()) 
             .exceptionHandling(eh -> eh.authenticationEntryPoint(restAuthenticationEntryPoint));
         return http.build();
     }
@@ -116,10 +117,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of(
-            "http://localhost:5173",
-            "https://delightful-desert-0cee57a03.1.azurestaticapps.net"
-        ));
+        configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
