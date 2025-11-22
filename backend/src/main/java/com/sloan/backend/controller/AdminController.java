@@ -429,8 +429,15 @@ public class AdminController {
     }
 
     @PostMapping("/usuarios/eliminar/{id}")
-    public String eliminarUsuario(@PathVariable Long id) {
-        usuarioService.eliminarPorId(id);
+    public String eliminarUsuario(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            usuarioService.eliminarPorId(id);
+            redirectAttributes.addFlashAttribute("mensajeExito", "Usuario eliminado correctamente.");
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("errorGuardar", "No se puede eliminar el usuario porque tiene pedidos o registros asociados. Considere desactivarlo en su lugar.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorGuardar", "Ocurrió un error al eliminar: " + e.getMessage());
+        }
         return "redirect:/admin/usuarios";
     }
 
